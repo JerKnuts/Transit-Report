@@ -1,0 +1,270 @@
+[
+  {
+    "name": "Hours Slept",
+    "category": "general"
+  },
+  {
+    "name": "Hours Waiting",
+    "category": "general"
+  },
+  {
+    "name": "Days Passed",
+    "category": "general"
+  },
+  {
+    "name": "Credits Found",
+    "category": "general"
+  },
+  {
+    "name": "Most Credits Carried",
+    "category": "general"
+  },
+  {
+    "name": "Chests Looted",
+    "category": "general"
+  },
+  {
+    "name": "Food Eaten",
+    "category": "general"
+  },
+  {
+    "name": "Chems Taken",
+    "category": "general"
+  },
+  {
+    "name": "Data Slates Read",
+    "category": "general"
+  },
+  {
+    "name": "Magazines Found",
+    "category": "general"
+  },
+  {
+    "name": "Speech Successes",
+    "category": "general"
+  },
+  {
+    "name": "Powers Learned",
+    "category": "general"
+  },
+  {
+    "name": "People Killed",
+    "category": "combat"
+  },
+  {
+    "name": "Creatures Killed",
+    "category": "combat"
+  },
+  {
+    "name": "Robots Killed",
+    "category": "combat"
+  },
+  {
+    "name": "Turrets Killed",
+    "category": "combat"
+  },
+  {
+    "name": "Critical Strikes",
+    "category": "combat"
+  },
+  {
+    "name": "Legendary Enemies Killed",
+    "category": "combat"
+  },
+  {
+    "name": "Jet Packs Exploded",
+    "category": "combat"
+  },
+  {
+    "name": "Sneak Attacks",
+    "category": "combat"
+  },
+  {
+    "name": "Powers Used",
+    "category": "combat"
+  },
+  {
+    "name": "Zero G Kills",
+    "category": "combat"
+  },
+  {
+    "name": "Locations Discovered",
+    "category": "exploration"
+  },
+  {
+    "name": "Locations Explored",
+    "category": "exploration"
+  },
+  {
+    "name": "Systems Visited",
+    "category": "exploration"
+  },
+  {
+    "name": "Planets Scanned",
+    "category": "exploration"
+  },
+  {
+    "name": "Planets Fully Surveyed",
+    "category": "exploration"
+  },
+  {
+    "name": "Planets Landed On",
+    "category": "exploration"
+  },
+  {
+    "name": "Flora Fully Scanned",
+    "category": "exploration"
+  },
+  {
+    "name": "Fauna Fully Scanned",
+    "category": "exploration"
+  },
+  {
+    "name": "Unique Creatures Scanned",
+    "category": "exploration"
+  },
+  {
+    "name": "Temples Found",
+    "category": "exploration"
+  },
+  {
+    "name": "Food Cooked",
+    "category": "crafting"
+  },
+  {
+    "name": "Drugs Crafted",
+    "category": "crafting"
+  },
+  {
+    "name": "Items Scrapped",
+    "category": "crafting"
+  },
+  {
+    "name": "Items Manufactured",
+    "category": "crafting"
+  },
+  {
+    "name": "Objects Built",
+    "category": "crafting"
+  },
+  {
+    "name": "Outposts Built",
+    "category": "crafting"
+  },
+  {
+    "name": "Cargo Links Established",
+    "category": "crafting"
+  },
+  {
+    "name": "Workshops Unlocked",
+    "category": "crafting"
+  },
+  {
+    "name": "Quests Completed",
+    "category": "quests"
+  },
+  {
+    "name": "Activities Completed",
+    "category": "quests"
+  },
+  {
+    "name": "Main Quests Completed",
+    "category": "quests"
+  },
+  {
+    "name": "Side Quests Completed",
+    "category": "quests"
+  },
+  {
+    "name": "Freestar Collective Quests Completed",
+    "category": "quests"
+  },
+  {
+    "name": "Crimson Fleet Quests Completed",
+    "category": "quests"
+  },
+  {
+    "name": "United Colonies Quests Completed",
+    "category": "quests"
+  },
+  {
+    "name": "Ryujin Industries Quests Completed",
+    "category": "quests"
+  },
+  {
+    "name": "Grav Jumps",
+    "category": "ship"
+  },
+  {
+    "name": "Ships Sold",
+    "category": "ship"
+  },
+  {
+    "name": "Ships Painted",
+    "category": "ship"
+  },
+  {
+    "name": "Ship Modules Built",
+    "category": "ship"
+  },
+  {
+    "name": "Ships Docked With",
+    "category": "ship"
+  },
+  {
+    "name": "Stations Docked With",
+    "category": "ship"
+  },
+  {
+    "name": "Ships Customized",
+    "category": "ship"
+  },
+  {
+    "name": "Ship Builder Credits Spent",
+    "category": "ship"
+  },
+  {
+    "name": "Largest Crew Size",
+    "category": "ship"
+  },
+  {
+    "name": "Max Ships Owned",
+    "category": "ship"
+  },
+  {
+    "name": "Times Arrested",
+    "category": "crime"
+  },
+  {
+    "name": "Trespasses",
+    "category": "crime"
+  },
+  {
+    "name": "Times Caught With Contraband",
+    "category": "crime"
+  },
+  {
+    "name": "Total Lifetime Bounty",
+    "category": "crime"
+  },
+  {
+    "name": "Largest Bounty",
+    "category": "crime"
+  },
+  {
+    "name": "Acts of Piracy",
+    "category": "crime"
+  },
+  {
+    "name": "Pockets Picked",
+    "category": "crime"
+  },
+  {
+    "name": "Locks Picked",
+    "category": "crime"
+  },
+  {
+    "name": "Items Stolen",
+    "category": "crime"
+  }
+]

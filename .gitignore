@@ -1,0 +1,13 @@
+build/
+.xmake/
+staged/
+dist/
+__pycache__/
+*.pyc
+*.pdb
+*.obj
+*.ilk
+*.log
+*.zip
+.vs/
+.vscode/

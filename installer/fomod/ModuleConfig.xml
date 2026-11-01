@@ -1,0 +1,1200 @@
+<?xml version='1.0' encoding='utf-8'?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+  <moduleName>Transit Report</moduleName>
+  <requiredInstallFiles>
+    <folder source="Core" destination="" priority="0" />
+  </requiredInstallFiles>
+  <installSteps order="Explicit">
+    <installStep name="Settings location">
+      <optionalFileGroups order="Explicit">
+        <group name="Choose one settings menu" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="OSF Settings">
+              <description>Configure Transit Report in OSF Settings. Requires OSF Settings. Preserves existing OSF preferences and installs no game settings/menu replacements. Recommended for the existing collection.</description>
+              <files>
+                <folder source="Options/OSF" destination="" priority="10" />
+              </files>
+              <conditionFlags>
+                <flag name="tr_backend">menu</flag>
+              </conditionFlags>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Gameplay Options (standalone)">
+              <description>Configure Transit Report directly inside Gameplay Options. Does not require OSF Settings or OSF UI. Installs MainMenu, PauseMenu and SettingsPanel replacements; other replacements of those files may conflict. Initial testing build: standalone controls and persistence need in-game verification.</description>
+              <files>
+                <folder source="Options/Gameplay" destination="" priority="10" />
+              </files>
+              <conditionFlags>
+                <flag name="tr_backend">menu</flag>
+              </conditionFlags>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Neither — configure in installer">
+              <description>Choose all Transit Report settings on the following installer pages. Adds no OSF Settings entry and no Gameplay Options controls. Reinstall with Replace to change choices or switch settings backends. Previous menu preferences are ignored in this mode.</description>
+              <files>
+                <folder source="Options/Installer" destination="" priority="10" />
+              </files>
+              <conditionFlags>
+                <flag name="tr_backend">installer</flag>
+              </conditionFlags>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+    <installStep name="Appearance">
+      <visible>
+        <flagDependency flag="tr_backend" value="installer" />
+      </visible>
+      <optionalFileGroups order="Explicit">
+        <group name="Character badge" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Original">
+              <description>Choose the original rank badge, the Orbiting Star emblem, or hide it.</description>
+              <files>
+                <file source="Choices/badge/0.ini" destination="SFSE/Plugins/TransitReport/Installer/badge.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Orbiting Star">
+              <description>Choose the original rank badge, the Orbiting Star emblem, or hide it.</description>
+              <files>
+                <file source="Choices/badge/1.ini" destination="SFSE/Plugins/TransitReport/Installer/badge.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Hidden">
+              <description>Choose the original rank badge, the Orbiting Star emblem, or hide it.</description>
+              <files>
+                <file source="Choices/badge/2.ini" destination="SFSE/Plugins/TransitReport/Installer/badge.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+        <group name="Loading indicator" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Original">
+              <description>Choose the original spinner, the Orbiting Star emblem, or hide it.</description>
+              <files>
+                <file source="Choices/spinner/0.ini" destination="SFSE/Plugins/TransitReport/Installer/spinner.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Orbiting Star">
+              <description>Choose the original spinner, the Orbiting Star emblem, or hide it.</description>
+              <files>
+                <file source="Choices/spinner/1.ini" destination="SFSE/Plugins/TransitReport/Installer/spinner.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Hidden">
+              <description>Choose the original spinner, the Orbiting Star emblem, or hide it.</description>
+              <files>
+                <file source="Choices/spinner/2.ini" destination="SFSE/Plugins/TransitReport/Installer/spinner.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+        <group name="Loading background" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Game images">
+              <description>Animated orbital chart, artifact-inspired cosmic rings, grav-jump star streaks, or original game images. Full loading screens only.</description>
+              <files>
+                <file source="Choices/background/0.ini" destination="SFSE/Plugins/TransitReport/Installer/background.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Orbital chart">
+              <description>Animated orbital chart, artifact-inspired cosmic rings, grav-jump star streaks, or original game images. Full loading screens only.</description>
+              <files>
+                <file source="Choices/background/1.ini" destination="SFSE/Plugins/TransitReport/Installer/background.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Artifact starfield">
+              <description>Animated orbital chart, artifact-inspired cosmic rings, grav-jump star streaks, or original game images. Full loading screens only.</description>
+              <files>
+                <file source="Choices/background/2.ini" destination="SFSE/Plugins/TransitReport/Installer/background.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Grav-jump tunnel">
+              <description>Animated orbital chart, artifact-inspired cosmic rings, grav-jump star streaks, or original game images. Full loading screens only.</description>
+              <files>
+                <file source="Choices/background/3.ini" destination="SFSE/Plugins/TransitReport/Installer/background.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+    <installStep name="Display and pages">
+      <visible>
+        <flagDependency flag="tr_backend" value="installer" />
+      </visible>
+      <optionalFileGroups order="Explicit">
+        <group name="Character" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Off">
+              <description>Name and level.</description>
+              <files>
+                <file source="Choices/character/0.ini" destination="SFSE/Plugins/TransitReport/Installer/character.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="On">
+              <description>Name and level.</description>
+              <files>
+                <file source="Choices/character/1.ini" destination="SFSE/Plugins/TransitReport/Installer/character.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+        <group name="Progress" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Off">
+              <description>XP bar and XP numbers.</description>
+              <files>
+                <file source="Choices/progress/0.ini" destination="SFSE/Plugins/TransitReport/Installer/progress.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="On">
+              <description>XP bar and XP numbers.</description>
+              <files>
+                <file source="Choices/progress/1.ini" destination="SFSE/Plugins/TransitReport/Installer/progress.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+        <group name="Loading tips" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Off">
+              <description>Show loading tips on loading screens.</description>
+              <files>
+                <file source="Choices/tips/0.ini" destination="SFSE/Plugins/TransitReport/Installer/tips.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="On">
+              <description>Show loading tips on loading screens.</description>
+              <files>
+                <file source="Choices/tips/1.ini" destination="SFSE/Plugins/TransitReport/Installer/tips.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+        <group name="Local PC time" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Hidden">
+              <description>Your computer clock in its local time zone. Updates during loading.</description>
+              <files>
+                <file source="Choices/clock/0.ini" destination="SFSE/Plugins/TransitReport/Installer/clock.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="12-hour">
+              <description>Your computer clock in its local time zone. Updates during loading.</description>
+              <files>
+                <file source="Choices/clock/1.ini" destination="SFSE/Plugins/TransitReport/Installer/clock.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="24-hour">
+              <description>Your computer clock in its local time zone. Updates during loading.</description>
+              <files>
+                <file source="Choices/clock/2.ini" destination="SFSE/Plugins/TransitReport/Installer/clock.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+        <group name="Number of stat pages" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="1 page">
+              <description>Maximum 1–5 pages per full load, with four larger lifetime readings per page. Default: two pages.</description>
+              <files>
+                <file source="Choices/page_count/1.ini" destination="SFSE/Plugins/TransitReport/Installer/page_count.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="2 pages">
+              <description>Maximum 1–5 pages per full load, with four larger lifetime readings per page. Default: two pages.</description>
+              <files>
+                <file source="Choices/page_count/2.ini" destination="SFSE/Plugins/TransitReport/Installer/page_count.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="3 pages">
+              <description>Maximum 1–5 pages per full load, with four larger lifetime readings per page. Default: two pages.</description>
+              <files>
+                <file source="Choices/page_count/3.ini" destination="SFSE/Plugins/TransitReport/Installer/page_count.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="4 pages">
+              <description>Maximum 1–5 pages per full load, with four larger lifetime readings per page. Default: two pages.</description>
+              <files>
+                <file source="Choices/page_count/4.ini" destination="SFSE/Plugins/TransitReport/Installer/page_count.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="5 pages">
+              <description>Maximum 1–5 pages per full load, with four larger lifetime readings per page. Default: two pages.</description>
+              <files>
+                <file source="Choices/page_count/5.ini" destination="SFSE/Plugins/TransitReport/Installer/page_count.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+        <group name="On-screen testing diagnostics" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Off">
+              <description>Show on-screen testing diagnostics on loading screens.</description>
+              <files>
+                <file source="Choices/diagnostics/0.ini" destination="SFSE/Plugins/TransitReport/Installer/diagnostics.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="On">
+              <description>Show on-screen testing diagnostics on loading screens.</description>
+              <files>
+                <file source="Choices/diagnostics/1.ini" destination="SFSE/Plugins/TransitReport/Installer/diagnostics.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+        <group name="Lifetime display" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Chosen categories">
+              <description>Chosen categories, or random lifetime counters from enabled categories. Up to the selected page count.</description>
+              <files>
+                <file source="Choices/lifetime_mode/0.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_mode.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Random each load">
+              <description>Chosen categories, or random lifetime counters from enabled categories. Up to the selected page count.</description>
+              <files>
+                <file source="Choices/lifetime_mode/1.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_mode.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+    <installStep name="Lifetime categories — general and combat">
+      <visible>
+        <flagDependency flag="tr_backend" value="installer" />
+      </visible>
+      <optionalFileGroups order="Explicit">
+        <group name="General" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Hidden">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/0.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="All stats">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/1.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Random selection">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/2.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Hours Slept">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/100.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Hours Waiting">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/101.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Days Passed">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/102.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Credits Found">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/103.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Most Credits Carried">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/104.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Chests Looted">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/105.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Food Eaten">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/106.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Chems Taken">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/107.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Data Slates Read">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/108.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Magazines Found">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/109.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Speech Successes">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/110.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Powers Learned">
+              <description>Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned</description>
+              <files>
+                <file source="Choices/lifetime_general/111.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_general.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+        <group name="Combat" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Hidden">
+              <description>People Killed, Creatures Killed, Robots Killed, Turrets Killed, Critical Strikes, Legendary Enemies Killed, Jet Packs Exploded, Sneak Attacks, Powers Used, Zero G Kills</description>
+              <files>
+                <file source="Choices/lifetime_combat/0.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_combat.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="All stats">
+              <description>People Killed, Creatures Killed, Robots Killed, Turrets Killed, Critical Strikes, Legendary Enemies Killed, Jet Packs Exploded, Sneak Attacks, Powers Used, Zero G Kills</description>
+              <files>
+                <file source="Choices/lifetime_combat/1.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_combat.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Random selection">
+              <description>People Killed, Creatures Killed, Robots Killed, Turrets Killed, Critical Strikes, Legendary Enemies Killed, Jet Packs Exploded, Sneak Attacks, Powers Used, Zero G Kills</description>
+              <files>
+                <file source="Choices/lifetime_combat/2.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_combat.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="People Killed">
+              <description>People Killed, Creatures Killed, Robots Killed, Turrets Killed, Critical Strikes, Legendary Enemies Killed, Jet Packs Exploded, Sneak Attacks, Powers Used, Zero G Kills</description>
+              <files>
+                <file source="Choices/lifetime_combat/112.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_combat.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Creatures Killed">
+              <description>People Killed, Creatures Killed, Robots Killed, Turrets Killed, Critical Strikes, Legendary Enemies Killed, Jet Packs Exploded, Sneak Attacks, Powers Used, Zero G Kills</description>
+              <files>
+                <file source="Choices/lifetime_combat/113.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_combat.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Robots Killed">
+              <description>People Killed, Creatures Killed, Robots Killed, Turrets Killed, Critical Strikes, Legendary Enemies Killed, Jet Packs Exploded, Sneak Attacks, Powers Used, Zero G Kills</description>
+              <files>
+                <file source="Choices/lifetime_combat/114.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_combat.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Turrets Killed">
+              <description>People Killed, Creatures Killed, Robots Killed, Turrets Killed, Critical Strikes, Legendary Enemies Killed, Jet Packs Exploded, Sneak Attacks, Powers Used, Zero G Kills</description>
+              <files>
+                <file source="Choices/lifetime_combat/115.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_combat.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Critical Strikes">
+              <description>People Killed, Creatures Killed, Robots Killed, Turrets Killed, Critical Strikes, Legendary Enemies Killed, Jet Packs Exploded, Sneak Attacks, Powers Used, Zero G Kills</description>
+              <files>
+                <file source="Choices/lifetime_combat/116.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_combat.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Legendary Enemies Killed">
+              <description>People Killed, Creatures Killed, Robots Killed, Turrets Killed, Critical Strikes, Legendary Enemies Killed, Jet Packs Exploded, Sneak Attacks, Powers Used, Zero G Kills</description>
+              <files>
+                <file source="Choices/lifetime_combat/117.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_combat.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Jet Packs Exploded">
+              <description>People Killed, Creatures Killed, Robots Killed, Turrets Killed, Critical Strikes, Legendary Enemies Killed, Jet Packs Exploded, Sneak Attacks, Powers Used, Zero G Kills</description>
+              <files>
+                <file source="Choices/lifetime_combat/118.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_combat.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Sneak Attacks">
+              <description>People Killed, Creatures Killed, Robots Killed, Turrets Killed, Critical Strikes, Legendary Enemies Killed, Jet Packs Exploded, Sneak Attacks, Powers Used, Zero G Kills</description>
+              <files>
+                <file source="Choices/lifetime_combat/119.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_combat.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Powers Used">
+              <description>People Killed, Creatures Killed, Robots Killed, Turrets Killed, Critical Strikes, Legendary Enemies Killed, Jet Packs Exploded, Sneak Attacks, Powers Used, Zero G Kills</description>
+              <files>
+                <file source="Choices/lifetime_combat/120.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_combat.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Zero G Kills">
+              <description>People Killed, Creatures Killed, Robots Killed, Turrets Killed, Critical Strikes, Legendary Enemies Killed, Jet Packs Exploded, Sneak Attacks, Powers Used, Zero G Kills</description>
+              <files>
+                <file source="Choices/lifetime_combat/121.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_combat.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+    <installStep name="Lifetime categories — exploration and crafting">
+      <visible>
+        <flagDependency flag="tr_backend" value="installer" />
+      </visible>
+      <optionalFileGroups order="Explicit">
+        <group name="Exploration" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Hidden">
+              <description>Locations Discovered, Locations Explored, Systems Visited, Planets Scanned, Planets Fully Surveyed, Planets Landed On, Flora Fully Scanned, Fauna Fully Scanned, Unique Creatures Scanned, Temples Found</description>
+              <files>
+                <file source="Choices/lifetime_exploration/0.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_exploration.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="All stats">
+              <description>Locations Discovered, Locations Explored, Systems Visited, Planets Scanned, Planets Fully Surveyed, Planets Landed On, Flora Fully Scanned, Fauna Fully Scanned, Unique Creatures Scanned, Temples Found</description>
+              <files>
+                <file source="Choices/lifetime_exploration/1.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_exploration.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Random selection">
+              <description>Locations Discovered, Locations Explored, Systems Visited, Planets Scanned, Planets Fully Surveyed, Planets Landed On, Flora Fully Scanned, Fauna Fully Scanned, Unique Creatures Scanned, Temples Found</description>
+              <files>
+                <file source="Choices/lifetime_exploration/2.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_exploration.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Locations Discovered">
+              <description>Locations Discovered, Locations Explored, Systems Visited, Planets Scanned, Planets Fully Surveyed, Planets Landed On, Flora Fully Scanned, Fauna Fully Scanned, Unique Creatures Scanned, Temples Found</description>
+              <files>
+                <file source="Choices/lifetime_exploration/122.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_exploration.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Locations Explored">
+              <description>Locations Discovered, Locations Explored, Systems Visited, Planets Scanned, Planets Fully Surveyed, Planets Landed On, Flora Fully Scanned, Fauna Fully Scanned, Unique Creatures Scanned, Temples Found</description>
+              <files>
+                <file source="Choices/lifetime_exploration/123.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_exploration.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Systems Visited">
+              <description>Locations Discovered, Locations Explored, Systems Visited, Planets Scanned, Planets Fully Surveyed, Planets Landed On, Flora Fully Scanned, Fauna Fully Scanned, Unique Creatures Scanned, Temples Found</description>
+              <files>
+                <file source="Choices/lifetime_exploration/124.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_exploration.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Planets Scanned">
+              <description>Locations Discovered, Locations Explored, Systems Visited, Planets Scanned, Planets Fully Surveyed, Planets Landed On, Flora Fully Scanned, Fauna Fully Scanned, Unique Creatures Scanned, Temples Found</description>
+              <files>
+                <file source="Choices/lifetime_exploration/125.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_exploration.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Planets Fully Surveyed">
+              <description>Locations Discovered, Locations Explored, Systems Visited, Planets Scanned, Planets Fully Surveyed, Planets Landed On, Flora Fully Scanned, Fauna Fully Scanned, Unique Creatures Scanned, Temples Found</description>
+              <files>
+                <file source="Choices/lifetime_exploration/126.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_exploration.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Planets Landed On">
+              <description>Locations Discovered, Locations Explored, Systems Visited, Planets Scanned, Planets Fully Surveyed, Planets Landed On, Flora Fully Scanned, Fauna Fully Scanned, Unique Creatures Scanned, Temples Found</description>
+              <files>
+                <file source="Choices/lifetime_exploration/127.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_exploration.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Flora Fully Scanned">
+              <description>Locations Discovered, Locations Explored, Systems Visited, Planets Scanned, Planets Fully Surveyed, Planets Landed On, Flora Fully Scanned, Fauna Fully Scanned, Unique Creatures Scanned, Temples Found</description>
+              <files>
+                <file source="Choices/lifetime_exploration/128.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_exploration.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Fauna Fully Scanned">
+              <description>Locations Discovered, Locations Explored, Systems Visited, Planets Scanned, Planets Fully Surveyed, Planets Landed On, Flora Fully Scanned, Fauna Fully Scanned, Unique Creatures Scanned, Temples Found</description>
+              <files>
+                <file source="Choices/lifetime_exploration/129.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_exploration.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Unique Creatures Scanned">
+              <description>Locations Discovered, Locations Explored, Systems Visited, Planets Scanned, Planets Fully Surveyed, Planets Landed On, Flora Fully Scanned, Fauna Fully Scanned, Unique Creatures Scanned, Temples Found</description>
+              <files>
+                <file source="Choices/lifetime_exploration/130.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_exploration.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Temples Found">
+              <description>Locations Discovered, Locations Explored, Systems Visited, Planets Scanned, Planets Fully Surveyed, Planets Landed On, Flora Fully Scanned, Fauna Fully Scanned, Unique Creatures Scanned, Temples Found</description>
+              <files>
+                <file source="Choices/lifetime_exploration/131.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_exploration.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+        <group name="Crafting &amp; outposts" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Hidden">
+              <description>Food Cooked, Drugs Crafted, Items Scrapped, Items Manufactured, Objects Built, Outposts Built, Cargo Links Established, Workshops Unlocked</description>
+              <files>
+                <file source="Choices/lifetime_crafting/0.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crafting.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="All stats">
+              <description>Food Cooked, Drugs Crafted, Items Scrapped, Items Manufactured, Objects Built, Outposts Built, Cargo Links Established, Workshops Unlocked</description>
+              <files>
+                <file source="Choices/lifetime_crafting/1.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crafting.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Random selection">
+              <description>Food Cooked, Drugs Crafted, Items Scrapped, Items Manufactured, Objects Built, Outposts Built, Cargo Links Established, Workshops Unlocked</description>
+              <files>
+                <file source="Choices/lifetime_crafting/2.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crafting.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Food Cooked">
+              <description>Food Cooked, Drugs Crafted, Items Scrapped, Items Manufactured, Objects Built, Outposts Built, Cargo Links Established, Workshops Unlocked</description>
+              <files>
+                <file source="Choices/lifetime_crafting/132.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crafting.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Drugs Crafted">
+              <description>Food Cooked, Drugs Crafted, Items Scrapped, Items Manufactured, Objects Built, Outposts Built, Cargo Links Established, Workshops Unlocked</description>
+              <files>
+                <file source="Choices/lifetime_crafting/133.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crafting.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Items Scrapped">
+              <description>Food Cooked, Drugs Crafted, Items Scrapped, Items Manufactured, Objects Built, Outposts Built, Cargo Links Established, Workshops Unlocked</description>
+              <files>
+                <file source="Choices/lifetime_crafting/134.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crafting.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Items Manufactured">
+              <description>Food Cooked, Drugs Crafted, Items Scrapped, Items Manufactured, Objects Built, Outposts Built, Cargo Links Established, Workshops Unlocked</description>
+              <files>
+                <file source="Choices/lifetime_crafting/135.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crafting.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Objects Built">
+              <description>Food Cooked, Drugs Crafted, Items Scrapped, Items Manufactured, Objects Built, Outposts Built, Cargo Links Established, Workshops Unlocked</description>
+              <files>
+                <file source="Choices/lifetime_crafting/136.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crafting.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Outposts Built">
+              <description>Food Cooked, Drugs Crafted, Items Scrapped, Items Manufactured, Objects Built, Outposts Built, Cargo Links Established, Workshops Unlocked</description>
+              <files>
+                <file source="Choices/lifetime_crafting/137.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crafting.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Cargo Links Established">
+              <description>Food Cooked, Drugs Crafted, Items Scrapped, Items Manufactured, Objects Built, Outposts Built, Cargo Links Established, Workshops Unlocked</description>
+              <files>
+                <file source="Choices/lifetime_crafting/138.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crafting.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Workshops Unlocked">
+              <description>Food Cooked, Drugs Crafted, Items Scrapped, Items Manufactured, Objects Built, Outposts Built, Cargo Links Established, Workshops Unlocked</description>
+              <files>
+                <file source="Choices/lifetime_crafting/139.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crafting.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+    <installStep name="Lifetime categories — quests, ships and crime">
+      <visible>
+        <flagDependency flag="tr_backend" value="installer" />
+      </visible>
+      <optionalFileGroups order="Explicit">
+        <group name="Quests" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Hidden">
+              <description>Quests Completed, Activities Completed, Main Quests Completed, Side Quests Completed, Freestar Collective Quests Completed, Crimson Fleet Quests Completed, United Colonies Quests Completed, Ryujin Industries Quests Completed</description>
+              <files>
+                <file source="Choices/lifetime_quests/0.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_quests.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="All stats">
+              <description>Quests Completed, Activities Completed, Main Quests Completed, Side Quests Completed, Freestar Collective Quests Completed, Crimson Fleet Quests Completed, United Colonies Quests Completed, Ryujin Industries Quests Completed</description>
+              <files>
+                <file source="Choices/lifetime_quests/1.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_quests.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Random selection">
+              <description>Quests Completed, Activities Completed, Main Quests Completed, Side Quests Completed, Freestar Collective Quests Completed, Crimson Fleet Quests Completed, United Colonies Quests Completed, Ryujin Industries Quests Completed</description>
+              <files>
+                <file source="Choices/lifetime_quests/2.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_quests.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Quests Completed">
+              <description>Quests Completed, Activities Completed, Main Quests Completed, Side Quests Completed, Freestar Collective Quests Completed, Crimson Fleet Quests Completed, United Colonies Quests Completed, Ryujin Industries Quests Completed</description>
+              <files>
+                <file source="Choices/lifetime_quests/140.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_quests.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Activities Completed">
+              <description>Quests Completed, Activities Completed, Main Quests Completed, Side Quests Completed, Freestar Collective Quests Completed, Crimson Fleet Quests Completed, United Colonies Quests Completed, Ryujin Industries Quests Completed</description>
+              <files>
+                <file source="Choices/lifetime_quests/141.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_quests.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Main Quests Completed">
+              <description>Quests Completed, Activities Completed, Main Quests Completed, Side Quests Completed, Freestar Collective Quests Completed, Crimson Fleet Quests Completed, United Colonies Quests Completed, Ryujin Industries Quests Completed</description>
+              <files>
+                <file source="Choices/lifetime_quests/142.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_quests.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Side Quests Completed">
+              <description>Quests Completed, Activities Completed, Main Quests Completed, Side Quests Completed, Freestar Collective Quests Completed, Crimson Fleet Quests Completed, United Colonies Quests Completed, Ryujin Industries Quests Completed</description>
+              <files>
+                <file source="Choices/lifetime_quests/143.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_quests.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Freestar Collective Quests Completed">
+              <description>Quests Completed, Activities Completed, Main Quests Completed, Side Quests Completed, Freestar Collective Quests Completed, Crimson Fleet Quests Completed, United Colonies Quests Completed, Ryujin Industries Quests Completed</description>
+              <files>
+                <file source="Choices/lifetime_quests/144.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_quests.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Crimson Fleet Quests Completed">
+              <description>Quests Completed, Activities Completed, Main Quests Completed, Side Quests Completed, Freestar Collective Quests Completed, Crimson Fleet Quests Completed, United Colonies Quests Completed, Ryujin Industries Quests Completed</description>
+              <files>
+                <file source="Choices/lifetime_quests/145.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_quests.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="United Colonies Quests Completed">
+              <description>Quests Completed, Activities Completed, Main Quests Completed, Side Quests Completed, Freestar Collective Quests Completed, Crimson Fleet Quests Completed, United Colonies Quests Completed, Ryujin Industries Quests Completed</description>
+              <files>
+                <file source="Choices/lifetime_quests/146.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_quests.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Ryujin Industries Quests Completed">
+              <description>Quests Completed, Activities Completed, Main Quests Completed, Side Quests Completed, Freestar Collective Quests Completed, Crimson Fleet Quests Completed, United Colonies Quests Completed, Ryujin Industries Quests Completed</description>
+              <files>
+                <file source="Choices/lifetime_quests/147.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_quests.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+        <group name="Ships" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Hidden">
+              <description>Grav Jumps, Ships Sold, Ships Painted, Ship Modules Built, Ships Docked With, Stations Docked With, Ships Customized, Ship Builder Credits Spent, Largest Crew Size, Max Ships Owned</description>
+              <files>
+                <file source="Choices/lifetime_ship/0.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_ship.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="All stats">
+              <description>Grav Jumps, Ships Sold, Ships Painted, Ship Modules Built, Ships Docked With, Stations Docked With, Ships Customized, Ship Builder Credits Spent, Largest Crew Size, Max Ships Owned</description>
+              <files>
+                <file source="Choices/lifetime_ship/1.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_ship.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Random selection">
+              <description>Grav Jumps, Ships Sold, Ships Painted, Ship Modules Built, Ships Docked With, Stations Docked With, Ships Customized, Ship Builder Credits Spent, Largest Crew Size, Max Ships Owned</description>
+              <files>
+                <file source="Choices/lifetime_ship/2.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_ship.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Grav Jumps">
+              <description>Grav Jumps, Ships Sold, Ships Painted, Ship Modules Built, Ships Docked With, Stations Docked With, Ships Customized, Ship Builder Credits Spent, Largest Crew Size, Max Ships Owned</description>
+              <files>
+                <file source="Choices/lifetime_ship/148.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_ship.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Ships Sold">
+              <description>Grav Jumps, Ships Sold, Ships Painted, Ship Modules Built, Ships Docked With, Stations Docked With, Ships Customized, Ship Builder Credits Spent, Largest Crew Size, Max Ships Owned</description>
+              <files>
+                <file source="Choices/lifetime_ship/149.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_ship.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Ships Painted">
+              <description>Grav Jumps, Ships Sold, Ships Painted, Ship Modules Built, Ships Docked With, Stations Docked With, Ships Customized, Ship Builder Credits Spent, Largest Crew Size, Max Ships Owned</description>
+              <files>
+                <file source="Choices/lifetime_ship/150.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_ship.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Ship Modules Built">
+              <description>Grav Jumps, Ships Sold, Ships Painted, Ship Modules Built, Ships Docked With, Stations Docked With, Ships Customized, Ship Builder Credits Spent, Largest Crew Size, Max Ships Owned</description>
+              <files>
+                <file source="Choices/lifetime_ship/151.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_ship.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Ships Docked With">
+              <description>Grav Jumps, Ships Sold, Ships Painted, Ship Modules Built, Ships Docked With, Stations Docked With, Ships Customized, Ship Builder Credits Spent, Largest Crew Size, Max Ships Owned</description>
+              <files>
+                <file source="Choices/lifetime_ship/152.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_ship.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Stations Docked With">
+              <description>Grav Jumps, Ships Sold, Ships Painted, Ship Modules Built, Ships Docked With, Stations Docked With, Ships Customized, Ship Builder Credits Spent, Largest Crew Size, Max Ships Owned</description>
+              <files>
+                <file source="Choices/lifetime_ship/153.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_ship.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Ships Customized">
+              <description>Grav Jumps, Ships Sold, Ships Painted, Ship Modules Built, Ships Docked With, Stations Docked With, Ships Customized, Ship Builder Credits Spent, Largest Crew Size, Max Ships Owned</description>
+              <files>
+                <file source="Choices/lifetime_ship/154.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_ship.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Ship Builder Credits Spent">
+              <description>Grav Jumps, Ships Sold, Ships Painted, Ship Modules Built, Ships Docked With, Stations Docked With, Ships Customized, Ship Builder Credits Spent, Largest Crew Size, Max Ships Owned</description>
+              <files>
+                <file source="Choices/lifetime_ship/155.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_ship.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Largest Crew Size">
+              <description>Grav Jumps, Ships Sold, Ships Painted, Ship Modules Built, Ships Docked With, Stations Docked With, Ships Customized, Ship Builder Credits Spent, Largest Crew Size, Max Ships Owned</description>
+              <files>
+                <file source="Choices/lifetime_ship/156.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_ship.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Max Ships Owned">
+              <description>Grav Jumps, Ships Sold, Ships Painted, Ship Modules Built, Ships Docked With, Stations Docked With, Ships Customized, Ship Builder Credits Spent, Largest Crew Size, Max Ships Owned</description>
+              <files>
+                <file source="Choices/lifetime_ship/157.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_ship.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+        <group name="Crime" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Hidden">
+              <description>Times Arrested, Trespasses, Times Caught With Contraband, Total Lifetime Bounty, Largest Bounty, Acts of Piracy, Pockets Picked, Locks Picked, Items Stolen</description>
+              <files>
+                <file source="Choices/lifetime_crime/0.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crime.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="All stats">
+              <description>Times Arrested, Trespasses, Times Caught With Contraband, Total Lifetime Bounty, Largest Bounty, Acts of Piracy, Pockets Picked, Locks Picked, Items Stolen</description>
+              <files>
+                <file source="Choices/lifetime_crime/1.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crime.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Recommended" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Random selection">
+              <description>Times Arrested, Trespasses, Times Caught With Contraband, Total Lifetime Bounty, Largest Bounty, Acts of Piracy, Pockets Picked, Locks Picked, Items Stolen</description>
+              <files>
+                <file source="Choices/lifetime_crime/2.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crime.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Times Arrested">
+              <description>Times Arrested, Trespasses, Times Caught With Contraband, Total Lifetime Bounty, Largest Bounty, Acts of Piracy, Pockets Picked, Locks Picked, Items Stolen</description>
+              <files>
+                <file source="Choices/lifetime_crime/158.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crime.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Trespasses">
+              <description>Times Arrested, Trespasses, Times Caught With Contraband, Total Lifetime Bounty, Largest Bounty, Acts of Piracy, Pockets Picked, Locks Picked, Items Stolen</description>
+              <files>
+                <file source="Choices/lifetime_crime/159.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crime.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Times Caught With Contraband">
+              <description>Times Arrested, Trespasses, Times Caught With Contraband, Total Lifetime Bounty, Largest Bounty, Acts of Piracy, Pockets Picked, Locks Picked, Items Stolen</description>
+              <files>
+                <file source="Choices/lifetime_crime/160.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crime.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Total Lifetime Bounty">
+              <description>Times Arrested, Trespasses, Times Caught With Contraband, Total Lifetime Bounty, Largest Bounty, Acts of Piracy, Pockets Picked, Locks Picked, Items Stolen</description>
+              <files>
+                <file source="Choices/lifetime_crime/161.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crime.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Largest Bounty">
+              <description>Times Arrested, Trespasses, Times Caught With Contraband, Total Lifetime Bounty, Largest Bounty, Acts of Piracy, Pockets Picked, Locks Picked, Items Stolen</description>
+              <files>
+                <file source="Choices/lifetime_crime/162.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crime.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Acts of Piracy">
+              <description>Times Arrested, Trespasses, Times Caught With Contraband, Total Lifetime Bounty, Largest Bounty, Acts of Piracy, Pockets Picked, Locks Picked, Items Stolen</description>
+              <files>
+                <file source="Choices/lifetime_crime/163.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crime.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Pockets Picked">
+              <description>Times Arrested, Trespasses, Times Caught With Contraband, Total Lifetime Bounty, Largest Bounty, Acts of Piracy, Pockets Picked, Locks Picked, Items Stolen</description>
+              <files>
+                <file source="Choices/lifetime_crime/164.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crime.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Locks Picked">
+              <description>Times Arrested, Trespasses, Times Caught With Contraband, Total Lifetime Bounty, Largest Bounty, Acts of Piracy, Pockets Picked, Locks Picked, Items Stolen</description>
+              <files>
+                <file source="Choices/lifetime_crime/165.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crime.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="Items Stolen">
+              <description>Times Arrested, Trespasses, Times Caught With Contraband, Total Lifetime Bounty, Largest Bounty, Acts of Piracy, Pockets Picked, Locks Picked, Items Stolen</description>
+              <files>
+                <file source="Choices/lifetime_crime/166.ini" destination="SFSE/Plugins/TransitReport/Installer/lifetime_crime.ini" priority="20" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+          </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+  </installSteps>
+</config>

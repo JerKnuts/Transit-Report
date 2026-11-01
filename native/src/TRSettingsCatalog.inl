@@ -1,0 +1,20 @@
+struct TRSettingDefinition {const char* key;int initial;std::vector<int> values;};
+const std::vector<TRSettingDefinition> g_trDefinitions={
+{"badge",1,{0,1,2}},
+{"spinner",2,{0,1,2}},
+{"background",1,{0,1,2,3}},
+{"character",1,{0,1}},
+{"progress",1,{0,1}},
+{"tips",1,{0,1}},
+{"page_count",2,{1,2,3,4,5}},
+{"diagnostics",0,{0,1}},
+{"clock",1,{0,1,2}},
+{"lifetime_mode",1,{0,1}},
+{"lifetime_general",1,{0,1,2,100,101,102,103,104,105,106,107,108,109,110,111}},
+{"lifetime_combat",1,{0,1,2,112,113,114,115,116,117,118,119,120,121}},
+{"lifetime_exploration",1,{0,1,2,122,123,124,125,126,127,128,129,130,131}},
+{"lifetime_crafting",1,{0,1,2,132,133,134,135,136,137,138,139}},
+{"lifetime_quests",1,{0,1,2,140,141,142,143,144,145,146,147}},
+{"lifetime_ship",1,{0,1,2,148,149,150,151,152,153,154,155,156,157}},
+{"lifetime_crime",1,{0,1,2,158,159,160,161,162,163,164,165,166}},
+};
