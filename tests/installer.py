@@ -3,6 +3,9 @@ import configparser,json,sys
 import xml.etree.ElementTree as ET
 
 root=Path(__file__).resolve().parents[1]
+for xml in (root/'installer/fomod').glob('*.xml'):
+    xml.read_bytes().decode('utf-8',errors='strict')
+    ET.parse(xml)
 sys.path.insert(0,str(root/'scripts'))
 from configure_installer import configure
 import re,tempfile,shutil
