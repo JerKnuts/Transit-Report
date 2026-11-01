@@ -1,6 +1,6 @@
 from pathlib import Path
 import shutil,zipfile
-r=Path(__file__).resolve().parents[1];v=(r/'VERSION').read_text().strip();out=r/'dist';out.mkdir(exist_ok=True)
+r=Path(__file__).resolve().parents[1];v=(r/'VERSION').read_text(encoding="utf-8").strip();out=r/'dist';out.mkdir(exist_ok=True)
 # Temporary staging lives only inside this repository's ignored build folder.
 p=r/'build/package';p.mkdir(parents=True,exist_ok=True)
 def copy(a,b):
@@ -13,7 +13,7 @@ for f in (r/'build/ui/gameplay').glob('*.swf'):copy(f.relative_to(r),Path('Optio
 assert len(list((p/'Options/Gameplay/Interface').glob('*.swf')))==6
 copy('src/osf/loading-screen-configurator.json','Options/OSF/SFSE/Plugins/OSF/Settings/schemas/loading-screen-configurator.json')
 for name,value in [('OSF','osf'),('Gameplay','gameplay')]:
- f=p/'Options'/name/'SFSE/Plugins/TransitReportBackend.ini';f.parent.mkdir(parents=True,exist_ok=True);f.write_text('[Settings]\nBackend='+value+'\n')
+ f=p/'Options'/name/'SFSE/Plugins/TransitReportBackend.ini';f.parent.mkdir(parents=True,exist_ok=True);f.write_text('[Settings]\nBackend='+value+'\n', encoding="utf-8")
 for f in ['README.md','LICENSE','EXCEPTIONS','THIRD_PARTY_NOTICES.md']:copy(f,Path('Core/Docs/Transit Report')/f)
 shutil.copytree(r/'docs/licenses',p/'Core/Docs/Transit Report/Licenses',dirs_exist_ok=True)
 from configure_installer import configure

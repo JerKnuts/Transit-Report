@@ -1,42 +1,59 @@
 # Transit Report
 
-Loading screen customization for Starfield. Current WIP version: **0.9.5**. Version **1.0** is reserved for the first public Nexus and GitHub release.
+Loading screen customization for Starfield: lifetime character statistics, animated backgrounds, badges and a local clock.
+
+**Download:** [Nexus Mods](https://www.nexusmods.com/starfield/mods/18687) Â· Current version: **0.9.5a** (public beta ahead of 1.0)
 
 ## Features
 
-- Four larger lifetime statistics per page, with one to five pages.
-- Category selection or randomized counters on each load.
-- A/D and controller D-pad page navigation.
-- Animated Orbital Chart, Artifact Starfield and Grav-jump backgrounds, or game images.
-- Badge and indicator selection, local PC clock and loading tips.
-- FOMOD choice of OSF Settings, standalone Gameplay Options or installer-only configuration.
+- 67 lifetime counters across seven categories: pick categories, individual counters, or randomize each load.
+- Four stats per page, one to five pages; change pages with A/D or the controller D-pad.
+- Animated Orbital Chart, Artifact Starfield and Grav-jump Tunnel backgrounds, or the original game images with a dark backing for readability.
+- Independent character badge and loading indicator options (Original, Orbiting Star or hidden).
+- Optional local PC clock, character name/level/XP and loading tips.
+- Three ways to configure, chosen in the FOMOD installer:
+  - **OSF Settings:** a Transit Report page in OSF Settings.
+  - **Gameplay Options:** a TRANSIT REPORT section in the game's own Settings > Gameplay Options (no OSF needed).
+  - **Neither (configure in installer):** pick all 17 settings during installation; no in-game settings entry.
 
-## Requirements and install
+## Requirements
 
-Starfield **1.16.244.0**, matching SFSE and Address Library for SFSE Plugins. The OSF option additionally requires OSF Settings and its requirements. The standalone option does not require OSF Settings or OSF UI.
+- Starfield **1.16.244.0**
+- [Starfield Script Extender (SFSE)](https://www.nexusmods.com/starfield/mods/106) matching your game version
+- [Address Library for SFSE Plugins](https://www.nexusmods.com/starfield/mods/3256)
+- [OSF Settings](https://www.nexusmods.com/starfield/mods/18326) (only for the OSF Settings option)
 
-Install the release ZIP in MO2, choose one backend and name the mod Transit Report. Use Replace when changing backend. Disable previous Loading / Loading Screen Configurator installations. Gameplay Options replaces six game menu files and can conflict with other menu replacers. OSF integration does not replace framework menus.
+## Install
 
-Defaults match the tester screenshot: Orbiting Star badge, hidden indicator, Orbital Chart, character/progress/tips enabled, two pages, diagnostics off, 12-hour clock, Random Each Load and All Stats in every category. Saved preferences are preserved.
+Install the archive with a FOMOD-capable manager (MO2 or Vortex), choose a settings method and launch through SFSE. Use **Replace** (not Merge) when updating or switching methods, and keep only one copy enabled. See [docs/INSTALL.md](docs/INSTALL.md) for details.
 
-See [installation details](docs/INSTALL.md), [build instructions](docs/BUILD.md), [changelog](CHANGELOG.md), [validation](RELEASE_VALIDATION.md) and [third-party notices](THIRD_PARTY_NOTICES.md).
+## Compatibility
 
-## Source layout
+- **Gameplay Options** replaces the MainMenu, PauseMenu and SettingsPanel SWFs (including large-interface variants) and can conflict with other menu replacers. The OSF Settings and installer-only options don't touch those menus.
+- Mods that replace `loadingmenu.swf` or `fadermenu.swf` conflict with all options.
+- No ESM/ESP; safe to add to an existing save.
 
-- `native/`: SFSE plugin and vendored CommonLibSF dependencies.
-- `src/`: loading screen and Gameplay Options ActionScript, OSF schema and settings catalog.
-- `assets/templates/`: SWF templates needed to preserve game symbols and layout during compilation.
-- `scripts/`: portable UI build and FOMOD packaging helpers.
-- `tests/`: settings mapping checks.
-- `installer/`: FOMOD definitions.
-- `docs/`: install, build, statistics and license documentation.
+## Known limitations
 
-## Testing status
+- Stats are snapshots captured a few seconds after a save loads, so the first load of a session shows only character info. Play a few seconds, then trigger another full load.
+- Short transitions (elevators, doors) show only the loading indicator.
+- Gameplay Options persistence and the installer-only method still need broader in-game testing.
+- A FaceCustomization renderer crash seen during testing also happens with Transit Report disabled; it is not caused by this mod.
 
-Native and edited UI scripts compile; settings mapping and package checks pass. Standalone Gameplay Options persistence and compatibility require in-game verification. Short transitions intentionally show no statistics. Confirmation is removed. Counters are captured once after entering a save; initial loading omits missing readings.
+## Building from source
+
+See [docs/BUILD.md](docs/BUILD.md). Layout:
+
+- `native/`: SFSE plugin (`LSCNativeBridge.dll`) and vendored CommonLibSF.
+- `src/`: loading screen and Gameplay Options ActionScript, OSF schema and shared settings catalog.
+- `assets/templates/`: SWF templates the ActionScript is compiled into.
+- `installer/`, `scripts/`: FOMOD definitions and packaging helpers.
+- `tests/`: installer and settings-mapping checks.
+
+The DLL and OSF settings ID keep their original `LSCNativeBridge` / `loading-screen-configurator` names so saved preferences carry over from earlier builds.
 
 ## License
 
-Authored code is GPL-3.0-or-later with the included linking/modding exceptions. Third-party libraries and game-derived UI templates retain their respective terms; see THIRD_PARTY_NOTICES.md. No game executable, save, personal configuration or build cache is included.
+Authored code is GPL-3.0-or-later with the included modding exceptions ([LICENSE](LICENSE), [EXCEPTIONS](EXCEPTIONS)). Third-party libraries and game-derived UI templates keep their own terms; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-Installer-only backend: select **Neither — configure in installer** for all 17 FOMOD choices with no OSF schema or Gameplay menu patches. Values come from Data/SFSE/Plugins/TransitReport/Installer/*.ini; saved menu preferences are ignored. Reinstall with Replace to change options.
+Thanks to the developers of SFSE, Address Library, OSF Settings, CommonLibSF and JPEXS FFDec, and to everyone testing Transit Report.

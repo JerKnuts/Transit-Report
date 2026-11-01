@@ -5,12 +5,18 @@ import xml.etree.ElementTree as ET
 root=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(root/'scripts'))
 from configure_installer import configure
-import tempfile,shutil
+import re,tempfile,shutil
 (root/'build').mkdir(exist_ok=True)
 with tempfile.TemporaryDirectory(dir=root/'build') as temp:
     installer=Path(temp)
     shutil.copytree(root/'installer/fomod',installer/'fomod')
     configure(installer,root/'src/settings-catalog.json')
+    # Vortex removes encoding="..." (double quotes only) and re-parses the script as UTF-16.
+    script=(installer/'fomod/ModuleConfig.xml').read_text(encoding='utf-8')
+    assert re.match(r'<\?xml[^>]*encoding="[^"]+"',script),'ModuleConfig declaration must use double quotes for Vortex'
+    ET.fromstring(re.sub(r'^([^>]*)encoding="[^"]+"',r'\1',script))
+    (installer/'fomod/info.xml').read_bytes().decode('utf-8')
+    ET.parse(installer/'fomod/info.xml')
     xml=ET.parse(installer/'fomod/ModuleConfig.xml').getroot()
     steps=xml.find('installSteps');backends=steps[0].findall('.//plugin')
     assert len(backends)==3

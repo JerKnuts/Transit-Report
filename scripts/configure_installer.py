@@ -4,7 +4,7 @@ import json
 import xml.etree.ElementTree as ET
 
 def configure(installer: Path, catalog: Path):
-    definitions=json.loads(catalog.read_text())
+    definitions=json.loads(catalog.read_text(encoding='utf-8'))
     config=installer/'fomod/ModuleConfig.xml'
     tree=ET.parse(config);root=tree.getroot();steps=root.find('installSteps')
     # Idempotent: generated steps are rebuilt from the shared settings catalog.
@@ -23,7 +23,7 @@ def configure(installer: Path, catalog: Path):
     flags=ET.SubElement(plugin,'conditionFlags');ET.SubElement(flags,'flag',name='tr_backend').text='installer'
     ET.SubElement(ET.SubElement(plugin,'typeDescriptor'),'type',name='Optional')
     marker=installer/'Options/Installer/SFSE/Plugins/TransitReportBackend.ini'
-    marker.parent.mkdir(parents=True,exist_ok=True);marker.write_text('[Settings]\nBackend=installer\n')
+    marker.parent.mkdir(parents=True,exist_ok=True);marker.write_text('[Settings]\nBackend=installer\n', encoding="utf-8")
     groups=[('Appearance',['badge','spinner','background']),
             ('Display and pages',['character','progress','tips','clock','page_count','diagnostics','lifetime_mode']),
             ('Lifetime categories — general and combat',['lifetime_general','lifetime_combat']),
@@ -40,10 +40,13 @@ def configure(installer: Path, catalog: Path):
                 option=ET.SubElement(ps,'plugin',name=label)
                 ET.SubElement(option,'description').text=d['hint']
                 relative=f'Choices/{key}/{value}.ini'
-                file=installer/relative;file.parent.mkdir(parents=True,exist_ok=True);file.write_text(f'[Settings]\n{key}={value}\n')
+                file=installer/relative;file.parent.mkdir(parents=True,exist_ok=True);file.write_text(f'[Settings]\n{key}={value}\n', encoding="utf-8")
                 fs=ET.SubElement(option,'files');ET.SubElement(fs,'file',source=relative,destination=f'SFSE/Plugins/TransitReport/Installer/{key}.ini',priority='20')
                 ET.SubElement(ET.SubElement(option,'typeDescriptor'),'type',name='Recommended' if value==d['default'] else 'Optional')
-    ET.indent(root);tree.write(config,encoding='utf-8',xml_declaration=True)
+    # Vortex strips only a double-quoted encoding attribute before re-reading the script as UTF-16;
+    # ElementTree's single-quoted declaration survives that and breaks parsing at line 1, column 39.
+    ET.indent(root)
+    config.write_text('<?xml version="1.0" encoding="UTF-8"?>\n'+ET.tostring(root,encoding='unicode')+'\n',encoding='utf-8',newline='\n')
 
 if __name__=='__main__':
     import sys
