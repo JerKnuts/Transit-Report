@@ -30,7 +30,7 @@
   {
     "key": "badge",
     "label": "Character badge",
-    "hint": "Theme uses the selected faction artwork (or Orbiting Star/Orbital Chart with Individual selections). All other choices apply independently. Choose a built-in design or Custom. Custom randomly selects a PNG/JPG/JPEG from Documents/My Games/Starfield/Transit Report/Artwork/Badges each load. Any filenames; up to 64 images. Restart after changes.",
+    "hint": "Theme uses the selected faction artwork (or Orbiting Star/Orbital Chart with Individual selections). All other choices apply independently. Choose a built-in design or Custom. Custom randomly selects a PNG/JPG/JPEG/GIF from Documents/My Games/Starfield/Transit Report/Artwork/Badges each load. Any filenames; up to 64 images. Restart after changes.",
     "values": [
       0,
       1,
@@ -56,7 +56,7 @@
   {
     "key": "spinner",
     "label": "Loading indicator",
-    "hint": "Theme uses the selected faction artwork (or Orbiting Star/Orbital Chart with Individual selections). All other choices apply independently. Choose a built-in design or Custom. Custom randomly selects a PNG/JPG/JPEG from Documents/My Games/Starfield/Transit Report/Artwork/Indicators each load. Any filenames; up to 64 images. Restart after changes.",
+    "hint": "Theme uses the selected faction artwork (or Orbiting Star/Orbital Chart with Individual selections). All other choices apply independently. Choose a built-in design or Custom. Custom randomly selects a PNG/JPG/JPEG/GIF from Documents/My Games/Starfield/Transit Report/Artwork/Indicators each load. Any filenames; up to 64 images. Restart after changes.",
     "values": [
       0,
       1,
@@ -82,7 +82,7 @@
   {
     "key": "background",
     "label": "Loading background",
-    "hint": "Theme uses the selected faction artwork (or Orbiting Star/Orbital Chart with Individual selections). All other choices apply independently. Choose a built-in design or Custom. Custom randomly selects a PNG/JPG/JPEG from Documents/My Games/Starfield/Transit Report/Artwork/Backgrounds each load. Any filenames; up to 64 images. Restart after changes.",
+    "hint": "Theme uses the selected faction artwork (or Orbiting Star/Orbital Chart with Individual selections). All other choices apply independently. Choose a built-in design or Custom. Custom randomly selects a PNG/JPG/JPEG/GIF from Documents/My Games/Starfield/Transit Report/Artwork/Backgrounds each load. Any filenames; up to 64 images. Restart after changes.",
     "values": [
       0,
       1,

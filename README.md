@@ -2,7 +2,7 @@
 
 Loading screen customization for Starfield: lifetime character statistics, animated backgrounds, badges and a local clock.
 
-**Download:** [Nexus Mods](https://www.nexusmods.com/starfield/mods/18687) - Build version: **0.9.7** (release candidate; final in-game checks pending)
+**Download:** [Nexus Mods](https://www.nexusmods.com/starfield/mods/18687) - Build version: **0.9.8**
 
 ## Faction themes
 
@@ -10,7 +10,7 @@ Constellation, Crimson Fleet, Freestar Collective, House Va'ruun, Ryujin Industr
 
 ## Custom artwork
 
-Choose **Custom** for Character badge, Loading indicator or Loading background in OSF Settings, Gameplay Options or the FOMOD installer. Place one or more PNG, JPG or JPEG images with **any filenames** in each matching folder:
+Choose **Custom** for Character badge, Loading indicator or Loading background in OSF Settings, Gameplay Options or the FOMOD installer. Place one or more PNG, JPG, JPEG or GIF images with **any filenames** in each matching folder:
 
 ```text
 Documents/My Games/Starfield/Transit Report/Artwork/
@@ -21,7 +21,7 @@ Documents/My Games/Starfield/Transit Report/Artwork/
 
 These folders are created on startup. Restart Starfield after adding or replacing images. The plugin automatically prepares compatible cached files; no importer, Python, separate program or manual SWF conversion is needed. Originals stay in Documents; generated files live under Data/Interface/TransitReport/Cache (MO2 may redirect them to Overwrite). Keep your personal images out of the generated Cache folder.
 
-Transparent PNG is recommended for badges and indicators. The badge is still and the indicator rotates. Wallpapers fill the screen without stretching and have a dark lower gradient for readable stats. This version supports still images; GIF/APNG animation import is not included; Custom image folders support random selection.
+Transparent PNG is recommended for badges and indicators. Still badges remain still and still indicators rotate; animated GIF badges and indicators play their own animation. Wallpapers fill the screen without stretching and have a dark lower gradient for readable stats. Animated GIFs are composited and loop with their frame timing (quantized to 30fps); APNG import is not included. Custom folders support random selection.
 
 Use one or more supported images per folder. Empty folders or invalid images fall back to Orbiting Star for badge/indicator and Orbital Chart for wallpaper. Text files are ignored. Images are limited to 16 megapixels and 64 MB; images larger than 2560 pixels on their longest side are reduced automatically. Included individual badge/indicator designs are Orbiting Star, Jump Gate and Signal Star. Included animated backgrounds are Orbital Chart, Grav-jump Tunnel and Survey Sweep. Existing settings and defaults remain unchanged.
 
@@ -83,11 +83,11 @@ Thanks to the developers of SFSE, Address Library, OSF Settings, CommonLibSF and
 
 Select **Transit Emblem** for the included animated badge or indicator, and **Orbital Horizon** for the included animated planet wallpaper. These are dedicated built-in selections, independent of personal image files. **Custom** uses only your Documents images. Existing Orbiting Star and procedural background choices remain unchanged.
 
-User PNG/JPG images remain still (the UI rotates a user indicator). GIF/APNG decoding is not included. No former collection test logo is part of the release.
+Animated GIF importing and playback are supported. User PNG/JPG images remain still (the UI rotates a still-image indicator). APNG animation import is not included. No former collection test logo is part of the release.
 
 ## Random Custom images
 
-Put up to 64 PNG/JPG/JPEG images of any names in each Artwork folder. Custom chooses one valid image per loading screen and keeps it steady for that screen. Named built-in designs are separate selections and ignore personal files. New/changed images are prepared at startup, while unchanged cached assets are reused. Invalid files are skipped; an empty valid pool falls back to Orbiting Star or Orbital Chart. Restart after adding/removing/changing files.
+Put up to 64 PNG/JPG/JPEG/GIF images of any names in each Artwork folder. Custom chooses one valid image per loading screen and keeps it steady for that screen. Named built-in designs are separate selections and ignore personal files. New/changed images are prepared at startup, while unchanged cached assets are reused. Invalid files are skipped; an empty valid pool falls back to Orbiting Star or Orbital Chart. Restart after adding/removing/changing files.
 
 
 0.9.6 test follow-up: user confirmed the previous test checklist passed except custom indicator overlap. Custom now appears last in each artwork selector; testing controls removed; Local PC time moved to Full loading screen. Custom indicator suppresses fallback artwork during subsequent refreshes. This follow-up needs an in-game overlap recheck.
@@ -105,4 +105,7 @@ Post-load follow-up: user log measured 2413 ms total counter-read work and 27.6 
 Short-transition indicator follow-up: enforce Custom/built-in replacement exclusivity at EXIT_FRAME and RENDER, after timeline advancement can restore original symbol visibility. Previous user log confirms lifetime scan reduced from 2413 ms total work to 0.151–0.163 ms, peak slice 0.011 ms; user reports freeze appears resolved. Short-transition visual fix still needs in-game confirmation.
 
 
-0.9.7: Each artwork selector now includes Theme. Only slots set to Theme use the chosen faction. Original, Hidden, built-in and Custom choices work independently with any faction selected. Existing saved slot values are respected; select Theme explicitly to use faction artwork. Theme with no faction selected falls back to Orbiting Star/Orbital Chart. Runtime verification pending.
+0.9.7: Each artwork selector now includes Theme. Only slots set to Theme use the chosen faction. Original, Hidden, built-in and Custom choices work independently with any faction selected. Existing saved slot values are respected; select Theme explicitly to use faction artwork. Theme with no faction selected falls back to Orbiting Star/Orbital Chart.
+
+
+Animated GIF limits: up to 240 frames, 60 seconds, 2048px source canvas and 16 megapixels across all decoded frames. Animations are resized to at most 512px. Very short frame delays are limited by 30fps playback. Restart Starfield after adding files. Custom animated badge playback was verified in-game by the user.

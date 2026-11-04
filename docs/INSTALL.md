@@ -7,7 +7,7 @@ Select exactly one settings method:
 - Gameplay Options: use Settings > Gameplay Options > TRANSIT REPORT. Replaces six menu files and may conflict with other menu replacers.
 - Neither — configure in installer: choose all settings on the conditional FOMOD pages. Adds no in-game settings entry. Reinstall with Replace to change choices.
 
-All three methods offer Custom for Character badge, Loading indicator and Loading background. Add one or more PNG/JPG/JPEG images of any filenames to the matching folder under Documents/My Games/Starfield/Transit Report/Artwork: Badges, Indicators or Backgrounds. The game creates these folders on startup. Select Custom and restart Starfield after changing an image. PNG transparency is supported; indicators rotate; badges remain still. Animated GIF/APNG import is not included.
+All three methods offer Custom for Character badge, Loading indicator and Loading background. Add one or more PNG/JPG/JPEG/GIF images of any filenames to the matching folder under Documents/My Games/Starfield/Transit Report/Artwork: Badges, Indicators or Backgrounds. The game creates these folders on startup. Select Custom and restart Starfield after changing an image. PNG transparency is supported. Animated GIFs now play automatically, including custom badges. Still indicators rotate; animated indicators use their own animation. APNG animation import is not included.
 
 No converter or separate application is required. The plugin generates cache SWFs under Data/Interface/TransitReport/Cache. MO2 may put these in Overwrite. Do not put source images in Cache. Keep custom images in Documents when updating/uninstalling the mod.
 
@@ -23,8 +23,8 @@ Disable Transit Report to uninstall. Personal Documents artwork/settings remain.
 
 Select **Transit Emblem** for the included animated badge or indicator, and **Orbital Horizon** for the included animated planet wallpaper. These are dedicated built-in selections, independent of personal image files. **Custom** uses only your Documents images. Existing Orbiting Star and procedural background choices remain unchanged.
 
-User PNG/JPG images remain still (the UI rotates a user indicator). GIF/APNG decoding is not included. No former collection test logo is part of the release.
+Animated GIF importing and playback are supported. User PNG/JPG images remain still (the UI rotates a still-image indicator). APNG animation import is not included. No former collection test logo is part of the release.
 
 ## Random Custom images
 
-Put up to 64 PNG/JPG/JPEG images of any names in each Artwork folder. Custom chooses one valid image per loading screen and keeps it steady for that screen. Named built-in designs are separate selections and ignore personal files. New/changed images are prepared at startup, while unchanged cached assets are reused. Invalid files are skipped; an empty valid pool falls back to Orbiting Star or Orbital Chart. Restart after adding/removing/changing files.
+Put up to 64 PNG/JPG/JPEG/GIF images of any names in each Artwork folder. Custom chooses one valid image per loading screen and keeps it steady for that screen. Named built-in designs are separate selections and ignore personal files. New/changed images are prepared at startup, while unchanged cached assets are reused. Invalid files are skipped; an empty valid pool falls back to Orbiting Star or Orbital Chart. Restart after adding/removing/changing files.

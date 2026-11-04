@@ -1273,7 +1273,7 @@ package
             if(currentChild != host)currentChild.visible = false;
          }
          host.visible = true;
-         if(index == 1 && !Boolean(this.TRArtUsingDefaults[index]))
+         if(index == 1 && !Boolean(this.TRArtUsingDefaults[index]) && (!(this.TRArtContents[index] is MovieClip) || MovieClip(this.TRArtContents[index]).totalFrames <= 1))
          {
             var w:Number = Number(this.TRArtWidths[index]);var h:Number = Number(this.TRArtHeights[index]);
             var spin:Matrix = new Matrix();spin.translate(-w/2,-h/2);spin.rotate(getTimer()/1000*0.9);spin.translate(w/2,h/2);

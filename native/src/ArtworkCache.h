@@ -1,5 +1,5 @@
 // GPL-3.0-or-later with the project's linking/modding exceptions.
-// Converts user-owned still images into script-free SWF bitmap containers.
+// Converts still images and composited GIF animations into script-free SWF timelines.
 #pragma once
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -114,6 +114,74 @@ namespace TransitArtwork
         check(converter->Initialize(source.Get(),GUID_WICPixelFormat32bppRGBA,WICBitmapDitherTypeNone,nullptr,0,WICBitmapPaletteTypeCustom));
         Bytes rgba(std::size_t(w)*h*4);check(converter->CopyPixels(nullptr,w*4,static_cast<UINT>(rgba.size()),rgba.data()));return rgba;
     }
+
+    inline unsigned metadata(IWICMetadataQueryReader* reader,const wchar_t* key,unsigned fallback=0)
+    {
+        PROPVARIANT value{};unsigned result=fallback;
+        if(reader && SUCCEEDED(reader->GetMetadataByName(key,&value))) {
+            if(value.vt==VT_UI1)result=value.bVal;
+            else if(value.vt==VT_UI2)result=value.uiVal;
+            else if(value.vt==VT_UI4)result=value.ulVal;
+        }
+        PropVariantClear(&value);return result;
+    }
+    inline Bytes animatedGif(const std::filesystem::path& path,unsigned& w,unsigned& h)
+    {
+        using Microsoft::WRL::ComPtr;
+        ComPtr<IWICImagingFactory> factory;check(CoCreateInstance(CLSID_WICImagingFactory,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&factory)));
+        ComPtr<IWICBitmapDecoder> decoder;check(factory->CreateDecoderFromFilename(path.c_str(),nullptr,GENERIC_READ,WICDecodeMetadataCacheOnDemand,&decoder));
+        UINT count{};check(decoder->GetFrameCount(&count));
+        if(!count||count>240)throw std::runtime_error("GIF limit: 240 source frames");
+        ComPtr<IWICMetadataQueryReader> global;check(decoder->GetMetadataQueryReader(&global));
+        w=metadata(global.Get(),L"/logscrdesc/Width");h=metadata(global.Get(),L"/logscrdesc/Height");
+        if(!w||!h||w>2048||h>2048||std::uint64_t(w)*h*count>16777216)throw std::runtime_error("GIF decoded pixel limit exceeded (16 megapixels total; 2048px canvas)");
+        // Composite source rectangles before scaling; transparent pixels leave prior content intact.
+        // Disposal 2 clears the previous rectangle; disposal 3 restores its previous canvas.
+        Bytes canvas(std::size_t(w)*h*4,0),restore;
+
+        const double scale=std::min(1.0,512.0/std::max(w,h));
+        const unsigned targetW=std::max(1u,static_cast<unsigned>(std::lround(w*scale))),targetH=std::max(1u,static_cast<unsigned>(std::lround(h*scale)));
+
+        Bytes records;tag(records,69,Bytes{8,0,0,0});unsigned ticks=0,centiseconds=0;
+        for(unsigned i=0;i<count;++i) {
+            ComPtr<IWICBitmapFrameDecode> frame;check(decoder->GetFrame(i,&frame));UINT fw{},fh{};check(frame->GetSize(&fw,&fh));
+            ComPtr<IWICMetadataQueryReader> query;check(frame->GetMetadataQueryReader(&query));
+            const unsigned left=metadata(query.Get(),L"/imgdesc/Left"),top=metadata(query.Get(),L"/imgdesc/Top");
+            const unsigned delay=std::max(2u,metadata(query.Get(),L"/grctlext/Delay",10)),disposal=metadata(query.Get(),L"/grctlext/Disposal");
+            if(!fw||!fh||left>w||top>h||fw>w-left||fh>h-top)throw std::runtime_error("GIF frame outside canvas");
+            if(centiseconds+delay>6000)throw std::runtime_error("GIF duration limit: 60 seconds");
+            if(disposal==3)restore=canvas;
+            ComPtr<IWICFormatConverter> converter;check(factory->CreateFormatConverter(&converter));
+            check(converter->Initialize(frame.Get(),GUID_WICPixelFormat32bppRGBA,WICBitmapDitherTypeNone,nullptr,0,WICBitmapPaletteTypeCustom));
+            Bytes pixels(std::size_t(fw)*fh*4);check(converter->CopyPixels(nullptr,fw*4,static_cast<UINT>(pixels.size()),pixels.data()));
+            for(unsigned y=0;y<fh;++y)for(unsigned x=0;x<fw;++x){const auto from=(std::size_t(y)*fw+x)*4,to=(std::size_t(y+top)*w+x+left)*4;if(pixels[from+3])std::copy_n(pixels.data()+from,4,canvas.data()+to);}
+            Bytes rgba;
+            if(targetW==w&&targetH==h)rgba=canvas;
+            else {
+                ComPtr<IWICBitmap> bitmap;check(factory->CreateBitmapFromMemory(w,h,GUID_WICPixelFormat32bppRGBA,w*4,static_cast<UINT>(canvas.size()),canvas.data(),&bitmap));
+                ComPtr<IWICBitmapScaler> scaler;check(factory->CreateBitmapScaler(&scaler));check(scaler->Initialize(bitmap.Get(),targetW,targetH,WICBitmapInterpolationModeFant));
+                rgba.resize(std::size_t(targetW)*targetH*4);check(scaler->CopyPixels(nullptr,targetW*4,static_cast<UINT>(rgba.size()),rgba.data()));
+            }
+            // Reuse the still-image writer's premultiplied bitmap and shape tags.
+            const auto single=swf(targetW,targetH,std::move(rgba));
+            const auto rectLength=(5+4*(single[8]>>3)+7)/8;
+            std::size_t at=8+rectLength+4;
+            while(at<single.size()) {
+                unsigned head=single[at]|(single[at+1]<<8);at+=2;const unsigned type=head>>6;unsigned length=head&63;
+                if(length==63){length=single[at]|(single[at+1]<<8)|(single[at+2]<<16)|(single[at+3]<<24);at+=4;}
+                Bytes body(single.begin()+at,single.begin()+at+length);at+=length;
+                if(type==36){body[0]=(i*2+1)&255;body[1]=(i*2+1)>>8;tag(records,36,body);}
+                if(type==32){body[0]=(i*2+2)&255;body[1]=(i*2+2)>>8;const auto n=(5+4*(body[2]>>3)+7)/8;body[2+n+2]=(i*2+1)&255;body[2+n+3]=(i*2+1)>>8;tag(records,32,body);}
+            }
+            Bytes place{static_cast<std::uint8_t>(i?7:6)};u16(place,1);u16(place,i*2+2);append(place,matrix(1));tag(records,26,place);
+            centiseconds+=delay;const unsigned endTick=std::max(ticks+1,static_cast<unsigned>(std::lround(centiseconds*0.30)));
+            for(;ticks<endTick;++ticks)tag(records,1,{});
+            if(disposal==2)for(unsigned y=top;y<top+fh;++y)std::fill_n(canvas.data()+(std::size_t(y)*w+left)*4,fw*4,0);
+            else if(disposal==3)canvas=restore;
+        }
+        tag(records,0,{});w=targetW;h=targetH;Bytes body=rect(w*20,h*20);u16(body,30*256);u16(body,ticks);append(body,records);
+        Bytes result{'F','W','S',10};u32(result,static_cast<std::uint32_t>(body.size()+8));append(result,body);return result;
+    }
     struct Result{std::string kind,status;};
     inline std::string fingerprint(const std::filesystem::path& input)
     {
@@ -122,7 +190,7 @@ namespace TransitArtwork
         while(file.read(block,sizeof(block))||file.gcount())
             for(std::streamsize i=0;i<file.gcount();++i){hash^=static_cast<unsigned char>(block[i]);hash*=1099511628211ull;}
         if(!file.eof())throw std::runtime_error("Artwork fingerprint read failed");
-        return "bitmap-cache-v1:"+std::to_string(hash);
+        return "bitmap-cache-v2:"+std::to_string(hash);
     }
     inline std::array<std::vector<std::string>,3> artworkFiles;
     inline std::string manifest(unsigned index)
@@ -143,7 +211,7 @@ namespace TransitArtwork
             const unsigned index=entry.second=="badge"?0:entry.second=="indicator"?1:2;
             auto& prepared=artworkFiles[index];
             const auto cache=data/L"Interface"/L"TransitReport"/L"Cache";
-            const auto prefix=entry.second+"-v1-";
+            const auto prefix=entry.second+"-v2-";
             try
             {
                 const auto folder=artwork.empty()?data/L"Interface"/L"TransitReport"/entry.first:artwork/entry.first;
@@ -153,7 +221,7 @@ namespace TransitArtwork
                 {
                     if(!item.is_regular_file())continue;
                     auto ext=item.path().extension().wstring();std::transform(ext.begin(),ext.end(),ext.begin(),[](wchar_t c){return std::towlower(c);});
-                    if(ext==L".png"||ext==L".jpg"||ext==L".jpeg")images.push_back(item.path());
+                    if(ext==L".png"||ext==L".jpg"||ext==L".jpeg"||ext==L".gif")images.push_back(item.path());
                 }
                 std::sort(images.begin(),images.end());
                 if(images.size()>64){images.resize(64);results.push_back({entry.second,"folder limited to first 64 supported images"});}
@@ -174,7 +242,8 @@ namespace TransitArtwork
                             valid=file&&header[0]=='F'&&header[1]=='W'&&header[2]=='S'&&length==std::filesystem::file_size(output);
                         }
                         if(valid){prepared.push_back(name);results.push_back({entry.second,"cached artwork reused"});continue;}
-                        unsigned w{},h{};auto rgba=decode(input,w,h);auto bytes=swf(w,h,std::move(rgba));
+                        unsigned w{},h{};auto ext=input.extension().wstring();std::transform(ext.begin(),ext.end(),ext.begin(),[](wchar_t c){return std::towlower(c);});
+                        Bytes bytes;if(ext==L".gif")bytes=animatedGif(input,w,h);else {auto rgba=decode(input,w,h);bytes=swf(w,h,std::move(rgba));}
                         std::filesystem::create_directories(cache);auto temp=output;temp+=L".tmp";
                         {std::ofstream file(temp,std::ios::binary|std::ios::trunc);file.write(reinterpret_cast<const char*>(bytes.data()),bytes.size());if(!file)throw std::runtime_error("Cannot write artwork cache");}
                         if(!MoveFileExW(temp.c_str(),output.c_str(),MOVEFILE_REPLACE_EXISTING|MOVEFILE_WRITE_THROUGH))throw std::runtime_error("Cannot finalize artwork cache");
@@ -186,7 +255,7 @@ namespace TransitArtwork
                 if(std::filesystem::is_directory(cache))for(const auto& file:std::filesystem::directory_iterator(cache))
                 {
                     const auto name=file.path().filename().string();
-                    const bool old=name==entry.second+".swf"||name==entry.second+".fingerprint";
+                    const bool old=name==entry.second+".swf"||name==entry.second+".fingerprint"||(name.starts_with(entry.second+"-v1-")&&file.path().extension()==L".swf");
                     const bool stale=name.starts_with(prefix)&&file.path().extension()==L".swf"&&std::find(prepared.begin(),prepared.end(),name)==prepared.end();
                     if(file.is_regular_file()&&(old||stale)){std::error_code error;std::filesystem::remove(file.path(),error);}
                 }

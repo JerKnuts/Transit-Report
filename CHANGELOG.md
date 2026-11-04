@@ -1,6 +1,18 @@
 # Changelog
 
+## 0.9.8
+
+- Added animated GIF support for Custom artwork, including character badges. Custom animated badge playback was verified in-game by the user.
+- Preserves frame timing, transparency and GIF frame disposal, with looping playback. Timing is quantized to 30fps.
+- Animated indicators play their own animation without an extra automatic spin.
+- Refreshed generated artwork caches and retained random selection across supported files.
+- Updated README, installation instructions and artwork-folder help for GIF support and limits.
+
+GIF limits: 240 source frames, 60 seconds, 2048px source canvas and 16 megapixels across all decoded frames. Runtime animations are resized to a maximum 512px dimension. APNG animation import remains unsupported.
+
+
 ## 0.9.7 - Release candidate
+
 
 - 0.9.7: Each artwork selector now includes Theme. Only slots set to Theme use the chosen faction. Original, Hidden, built-in and Custom choices work independently with any faction selected. Existing saved slot values are respected; select Theme explicitly to use faction artwork. Theme with no faction selected falls back to Orbiting Star/Orbital Chart. Runtime verification pending.
 

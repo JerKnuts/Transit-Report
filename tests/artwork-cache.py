@@ -34,13 +34,13 @@ with tempfile.TemporaryDirectory(dir=root/'build') as temp:
     Image.new('RGBA',(2,2),(90,20,10,255)).save(badge);os.utime(badge,(1000000000,1000000000))
     text=run();assert 'badge: prepared 2x2' in text;assert pixels(cache/selected(text,0)[0])[2]==bytes([255,90,20,10])*4
     extra=art/'Badges/second.png';Image.new('RGBA',(1,1)).save(extra)
-    text=run();assert len(selected(text,0))==2;assert len(list(cache.glob('badge-v1-*.swf')))==2
+    text=run();assert len(selected(text,0))==2;assert len(list(cache.glob('badge-v2-*.swf')))==2
     badge.write_bytes(b'not a PNG');text=run();assert 'decoder error' in text;assert len(selected(text,0))==1
-    badge.unlink();extra.unlink();text=run();assert not selected(text,0);assert not list(cache.glob('badge-v1-*.swf'))
+    badge.unlink();extra.unlink();text=run();assert not selected(text,0);assert not list(cache.glob('badge-v2-*.swf'))
     Image.new('RGB',(3000,1000),(20,30,40)).save(wall)
     text=run();assert 'prepared 2560x853' in text;assert pixels(cache/selected(text,2)[0])[:2]==(2560,853)
     wall.unlink()
     for i in range(10):Image.new('RGB',(16,9),(i*20,30,80)).save(art/'Backgrounds'/f'Wallpaper {i}.png')
-    text=run();assert len(selected(text,2))==10;assert len(list(cache.glob('wallpaper-v1-*.swf')))==10
+    text=run();assert len(selected(text,2))==10;assert len(list(cache.glob('wallpaper-v2-*.swf')))==10
     text=run();assert text.count('wallpaper: cached artwork reused')==10
 print('Passed: Documents folders, arbitrary names/case, PNG alpha/JPG, cache refresh, multiple-image pools, invalid/empty cleanup, 10-wallpaper reuse, size limits.')

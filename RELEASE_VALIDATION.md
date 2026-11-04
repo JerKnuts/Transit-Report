@@ -1,4 +1,4 @@
-# 0.9.7 release validation
+# 0.9.8 release validation
 
 ## Completed
 
@@ -22,3 +22,7 @@ No new version bump, GitHub push or Nexus upload is part of this staging cleanup
 
 
 0.9.7: Each artwork selector now includes Theme. Only slots set to Theme use the chosen faction. Original, Hidden, built-in and Custom choices work independently with any faction selected. Existing saved slot values are respected; select Theme explicitly to use faction artwork. Theme with no faction selected falls back to Orbiting Star/Orbital Chart. Runtime verification pending.
+
+GIF test build: native decoder tested against independent Pillow composition for disposal modes 1/2/3, optimized rectangles, transparency and variable timing; static-image/cache tests pass. User verified custom animated badge playback in-game. Microsoft WIC metadata reference: https://learn.microsoft.com/en-us/windows/win32/wic/-wic-native-image-format-metadata-queries
+
+0.9.8: user confirmed the Neon Comet Reactor GIF works as a Custom badge. Automated disposal/transparency/timing, cache and static importer regression checks passed. This does not establish all GIF files or all runtime scenarios are verified.
