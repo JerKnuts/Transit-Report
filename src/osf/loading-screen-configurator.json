@@ -5,40 +5,67 @@
   "groups": {
     "Appearance": [
       {
+        "key": "theme",
+        "label": "Theme",
+        "hint": "Choose the faction used by artwork controls set to Theme. Other artwork choices remain independent.",
+        "type": "enum",
+        "default": "individual",
+        "options": {
+          "individual": "Individual selections",
+          "constellation": "Constellation",
+          "crimson-fleet": "Crimson Fleet",
+          "freestar-collective": "Freestar Collective",
+          "house-varuun": "House Va'ruun",
+          "ryujin-industries": "Ryujin Industries",
+          "trackers-alliance": "Trackers Alliance",
+          "united-colonies": "United Colonies"
+        }
+      },
+      {
         "key": "badge",
         "label": "Character badge",
-        "hint": "Choose the original rank badge, the Orbiting Star emblem, or hide it.",
+        "hint": "Theme uses the selected faction artwork (or Orbiting Star/Orbital Chart with Individual selections). All other choices apply independently. Choose a built-in design or Custom. Custom randomly selects a PNG/JPG/JPEG from Documents/My Games/Starfield/Transit Report/Artwork/Badges each load. Any filenames; up to 64 images. Restart after changes.",
         "type": "enum",
         "default": "custom",
         "options": {
           "original": "Original",
           "custom": "Orbiting Star",
-          "hidden": "Hidden"
+          "hidden": "Hidden",
+          "jump-gate": "Jump Gate",
+          "signal-star": "Signal Star",
+          "theme": "Theme",
+          "folder": "Custom"
         }
       },
       {
         "key": "spinner",
         "label": "Loading indicator",
-        "hint": "Choose the original spinner, the Orbiting Star emblem, or hide it.",
+        "hint": "Theme uses the selected faction artwork (or Orbiting Star/Orbital Chart with Individual selections). All other choices apply independently. Choose a built-in design or Custom. Custom randomly selects a PNG/JPG/JPEG from Documents/My Games/Starfield/Transit Report/Artwork/Indicators each load. Any filenames; up to 64 images. Restart after changes.",
         "type": "enum",
         "default": "hidden",
         "options": {
           "original": "Original",
           "custom": "Orbiting Star",
-          "hidden": "Hidden"
+          "hidden": "Hidden",
+          "jump-gate": "Jump Gate",
+          "signal-star": "Signal Star",
+          "theme": "Theme",
+          "folder": "Custom"
         }
       },
       {
         "key": "background",
         "label": "Loading background",
-        "hint": "Animated orbital chart, artifact-inspired cosmic rings, grav-jump star streaks, or original game images. Full loading screens only.",
+        "hint": "Theme uses the selected faction artwork (or Orbiting Star/Orbital Chart with Individual selections). All other choices apply independently. Choose a built-in design or Custom. Custom randomly selects a PNG/JPG/JPEG from Documents/My Games/Starfield/Transit Report/Artwork/Backgrounds each load. Any filenames; up to 64 images. Restart after changes.",
         "type": "enum",
         "default": "orbital",
         "options": {
           "original": "Game images",
           "orbital": "Orbital chart",
-          "artifact": "Artifact starfield",
-          "grav": "Grav-jump tunnel"
+          "grav": "Grav-jump tunnel",
+          "survey-sweep": "Survey Sweep",
+          "theme": "Theme",
+          "custom": "Custom"
         }
       }
     ],
@@ -63,6 +90,18 @@
         "hint": "Show loading tips on loading screens.",
         "type": "bool",
         "default": true
+      },
+      {
+        "key": "clock",
+        "label": "Local PC time",
+        "hint": "Your computer clock in its local time zone. Updates during loading.",
+        "type": "enum",
+        "default": "12h",
+        "options": {
+          "off": "Hidden",
+          "12h": "12-hour",
+          "24h": "24-hour"
+        }
       }
     ],
     "Stat pages": [
@@ -81,28 +120,7 @@
         }
       }
     ],
-    "Testing": [
-      {
-        "key": "diagnostics",
-        "label": "On-screen testing diagnostics",
-        "hint": "Show on-screen testing diagnostics on loading screens.",
-        "type": "bool",
-        "default": false
-      }
-    ],
     "Lifetime stats": [
-      {
-        "key": "clock",
-        "label": "Local PC time",
-        "hint": "Your computer clock in its local time zone. Updates during loading.",
-        "type": "enum",
-        "default": "12h",
-        "options": {
-          "off": "Hidden",
-          "12h": "12-hour",
-          "24h": "24-hour"
-        }
-      },
       {
         "key": "lifetime_mode",
         "label": "Lifetime display",

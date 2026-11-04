@@ -1,0 +1,11 @@
+{
+  "frames": 180,
+  "fps": 30,
+  "seconds": 6,
+  "assets": [
+    "badge.swf",
+    "indicator.swf",
+    "wallpaper.swf"
+  ],
+  "contains_scripts": false
+}

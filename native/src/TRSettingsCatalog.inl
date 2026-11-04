@@ -1,8 +1,9 @@
 struct TRSettingDefinition {const char* key;int initial;std::vector<int> values;};
 const std::vector<TRSettingDefinition> g_trDefinitions={
-{"badge",1,{0,1,2}},
-{"spinner",2,{0,1,2}},
-{"background",1,{0,1,2,3}},
+{"theme",0,{0,1,2,3,4,5,6,7}},
+{"badge",1,{0,1,2,6,9,10,3}},
+{"spinner",2,{0,1,2,6,9,10,3}},
+{"background",1,{0,1,3,8,10,4}},
 {"character",1,{0,1}},
 {"progress",1,{0,1}},
 {"tips",1,{0,1}},

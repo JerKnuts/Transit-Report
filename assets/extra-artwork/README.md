@@ -1,0 +1,1 @@
+Original Transit Report artwork options. Five six-second 30fps animated badges (used for both badge and indicator) and five quiet animated backgrounds. All SWFs are script-free and reuse bitmap layers. Backgrounds reserve the lower screen for readable statistics.

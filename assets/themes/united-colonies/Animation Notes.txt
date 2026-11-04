@@ -1,0 +1,1 @@
+Approved three-second 30fps loop: faster and stronger tilt with prominent glint. Same animation for badge and indicator. Filtered 192px runtime texture; detailed PNG preserved. In-game verification pending.

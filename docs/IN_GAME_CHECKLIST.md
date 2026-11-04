@@ -1,14 +1,18 @@
-# Transit Report in-game checklist
+# Transit Report 0.9.7 - Final in-game checklist
 
-- Vortex: the FOMOD opens and installs each method. MO2: same.
-- Installer offers exactly one of OSF Settings / Gameplay Options / Neither.
-- OSF install: Transit Report page appears; prior OSF preferences remain; no wait or preview controls.
-- Gameplay install: no OSF dependency; Main Menu > Settings > Gameplay Options and Pause > Settings > Gameplay Options show TRANSIT REPORT.
-- Verify all 17 controls, keyboard/controller edits, long enum labels and that ordinary game settings still work.
-- Change a setting, back out, trigger a full load, restart and confirm the standalone choice persists.
-- Inspect MO2 conflicts for the six Gameplay menu patches, especially with existing main-menu/UI replacements.
-- Check four-stat category/random pages, 1–5 page limit, long labels and A/D + D-pad.
-- Initial load: compact information panel, no empty STATUS area. Short transitions: indicator only.
-- Confirmation is absent and loading ends automatically. No OSF framework files are replaced.
+- Install the complete archive with Replace; disable older test overlays.
+- Test OSF Settings, Gameplay Options and Neither separately; confirm settings persist.
+- Check all seven faction themes and return to Individual selections.
+- Check smoother coin edges, faster three-second tilt and prominent glint at actual display size.
+- Confirm the Lodge and new Key wallpapers are present and stats remain readable.
+- Full loads: four lifetime stats per page, 1-5 pages, random selection and category controls.
+- Change pages with A/D and controller D-pad.
+- Initial save load: unavailable stats stay hidden.
+- Short transitions: indicator only, no duplicated artwork or stats.
+- Verify clock, character/progress and loading-tip toggles.
+- Custom: arbitrary PNG/JPG/JPEG filenames in each Documents artwork folder; restart after changes.
+- Test one image, multiple images, invalid files and empty folders for each Custom slot.
+- Check performance for several seconds after regaining control.
+- Confirm no test banners, diagnostics controls, confirmation prompt or retired designs.
 
-- Neither install: conditional choices appear, settings apply, and neither menu has Transit Report controls. Try non-default choices and switch backends using Replace.
+Record results before publishing; automated checks alone do not establish runtime stability.

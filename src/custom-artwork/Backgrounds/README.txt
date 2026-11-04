@@ -1,0 +1,1 @@
+Add PNG, JPG or JPEG images with any filenames here (up to 64). Custom chooses one randomly for each load. New or changed images are prepared at startup; restart after changes. Transparent PNG is recommended for badges/indicators. Still-image import only; indicators rotate. Built-in Transit Emblem and Orbital Horizon are separate selections.

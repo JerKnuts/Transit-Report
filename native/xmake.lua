@@ -1,5 +1,5 @@
 set_project("LSCNativeBridge")
-set_version("0.9.5")
+set_version("0.9.7")
 set_arch("x64")
 set_languages("c++23")
 add_rules("mode.debug", "mode.release", "mode.releasedbg")
@@ -22,5 +22,5 @@ target("LSCNativeBridge")
     if has_config("diagnostic_no_gameplay_reads") then
         add_defines("LSC_DIAGNOSTIC_NO_GAMEPLAY_READS")
     end
-    add_syslinks("user32","shell32","ole32")
+    add_syslinks("user32","shell32","ole32","windowscodecs")
     set_installdir("staged")

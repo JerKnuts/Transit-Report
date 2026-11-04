@@ -1,17 +1,53 @@
 [
   {
-    "key": "badge",
-    "label": "Character badge",
-    "hint": "Choose the original rank badge, the Orbiting Star emblem, or hide it.",
+    "key": "theme",
+    "label": "Theme",
+    "hint": "Choose the faction used by artwork controls set to Theme. Other artwork choices remain independent.",
     "values": [
       0,
       1,
-      2
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "labels": [
+      "Individual selections",
+      "Constellation",
+      "Crimson Fleet",
+      "Freestar Collective",
+      "House Va'ruun",
+      "Ryujin Industries",
+      "Trackers Alliance",
+      "United Colonies"
+    ],
+    "default": 0,
+    "kind": "enum",
+    "group": "Appearance"
+  },
+  {
+    "key": "badge",
+    "label": "Character badge",
+    "hint": "Theme uses the selected faction artwork (or Orbiting Star/Orbital Chart with Individual selections). All other choices apply independently. Choose a built-in design or Custom. Custom randomly selects a PNG/JPG/JPEG from Documents/My Games/Starfield/Transit Report/Artwork/Badges each load. Any filenames; up to 64 images. Restart after changes.",
+    "values": [
+      0,
+      1,
+      2,
+      6,
+      9,
+      10,
+      3
     ],
     "labels": [
       "Original",
       "Orbiting Star",
-      "Hidden"
+      "Hidden",
+      "Jump Gate",
+      "Signal Star",
+      "Theme",
+      "Custom"
     ],
     "default": 1,
     "kind": "enum",
@@ -20,16 +56,24 @@
   {
     "key": "spinner",
     "label": "Loading indicator",
-    "hint": "Choose the original spinner, the Orbiting Star emblem, or hide it.",
+    "hint": "Theme uses the selected faction artwork (or Orbiting Star/Orbital Chart with Individual selections). All other choices apply independently. Choose a built-in design or Custom. Custom randomly selects a PNG/JPG/JPEG from Documents/My Games/Starfield/Transit Report/Artwork/Indicators each load. Any filenames; up to 64 images. Restart after changes.",
     "values": [
       0,
       1,
-      2
+      2,
+      6,
+      9,
+      10,
+      3
     ],
     "labels": [
       "Original",
       "Orbiting Star",
-      "Hidden"
+      "Hidden",
+      "Jump Gate",
+      "Signal Star",
+      "Theme",
+      "Custom"
     ],
     "default": 2,
     "kind": "enum",
@@ -38,18 +82,22 @@
   {
     "key": "background",
     "label": "Loading background",
-    "hint": "Animated orbital chart, artifact-inspired cosmic rings, grav-jump star streaks, or original game images. Full loading screens only.",
+    "hint": "Theme uses the selected faction artwork (or Orbiting Star/Orbital Chart with Individual selections). All other choices apply independently. Choose a built-in design or Custom. Custom randomly selects a PNG/JPG/JPEG from Documents/My Games/Starfield/Transit Report/Artwork/Backgrounds each load. Any filenames; up to 64 images. Restart after changes.",
     "values": [
       0,
       1,
-      2,
-      3
+      3,
+      8,
+      10,
+      4
     ],
     "labels": [
       "Game images",
       "Orbital chart",
-      "Artifact starfield",
-      "Grav-jump tunnel"
+      "Grav-jump tunnel",
+      "Survey Sweep",
+      "Theme",
+      "Custom"
     ],
     "default": 1,
     "kind": "enum",
@@ -104,6 +152,24 @@
     "group": "Full loading screen"
   },
   {
+    "key": "clock",
+    "label": "Local PC time",
+    "hint": "Your computer clock in its local time zone. Updates during loading.",
+    "values": [
+      0,
+      1,
+      2
+    ],
+    "labels": [
+      "Hidden",
+      "12-hour",
+      "24-hour"
+    ],
+    "default": 1,
+    "kind": "enum",
+    "group": "Full loading screen"
+  },
+  {
     "key": "page_count",
     "label": "Number of stat pages",
     "hint": "Maximum 1\u20135 pages per full load, with four larger lifetime readings per page. Default: two pages.",
@@ -124,40 +190,6 @@
     "default": 2,
     "kind": "enum",
     "group": "Stat pages"
-  },
-  {
-    "key": "diagnostics",
-    "label": "On-screen testing diagnostics",
-    "hint": "Show on-screen testing diagnostics on loading screens.",
-    "values": [
-      0,
-      1
-    ],
-    "labels": [
-      "Off",
-      "On"
-    ],
-    "default": 0,
-    "kind": "bool",
-    "group": "Testing"
-  },
-  {
-    "key": "clock",
-    "label": "Local PC time",
-    "hint": "Your computer clock in its local time zone. Updates during loading.",
-    "values": [
-      0,
-      1,
-      2
-    ],
-    "labels": [
-      "Hidden",
-      "12-hour",
-      "24-hour"
-    ],
-    "default": 1,
-    "kind": "enum",
-    "group": "Lifetime stats"
   },
   {
     "key": "lifetime_mode",

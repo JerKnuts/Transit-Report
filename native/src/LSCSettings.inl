@@ -3,7 +3,7 @@ constexpr const char* kModId="loading-screen-configurator";
 OSFSettings::API::Client g_osf;
 OSFSettings::API::Subscription g_osfSubscription{};
 std::mutex g_settingsMutex;
-std::map<std::string,int> g_displaySettings={{"badge",1},{"spinner",2},{"background",1},{"character",1},{"progress",1},{"credits",1},{"location",1},{"clock",1},{"tips",1},{"vitals",1},{"carry_weight",1},{"resistances",1},{"condition_capacity",1},{"lifetime_test",1},{"lifetime_mode",1},{"lifetime_general",1},{"lifetime_combat",1},{"lifetime_exploration",1},{"lifetime_crafting",1},{"lifetime_quests",1},{"lifetime_ship",1},{"lifetime_crime",1},{"details",0},{"diagnostics",0},{"name",1},{"level",1},{"xp_bar",1},{"xp_numbers",1},{"health",1},{"oxygen",1},{"co2",1},{"power",1},{"physical_resist",1},{"energy_resist",1},{"em_resist",1},{"experience_raw",0},{"cell",0},{"coordinates",0},{"short",0},{"density",0},{"page_count",2},{"wait_continue",0}};
+std::map<std::string,int> g_displaySettings={{"theme",0},{"badge",1},{"spinner",2},{"background",1},{"character",1},{"progress",1},{"credits",1},{"location",1},{"clock",1},{"tips",1},{"vitals",1},{"carry_weight",1},{"resistances",1},{"condition_capacity",1},{"lifetime_test",1},{"lifetime_mode",1},{"lifetime_general",1},{"lifetime_combat",1},{"lifetime_exploration",1},{"lifetime_crafting",1},{"lifetime_quests",1},{"lifetime_ship",1},{"lifetime_crime",1},{"details",0},{"diagnostics",0},{"name",1},{"level",1},{"xp_bar",1},{"xp_numbers",1},{"health",1},{"oxygen",1},{"co2",1},{"power",1},{"physical_resist",1},{"energy_resist",1},{"em_resist",1},{"experience_raw",0},{"cell",0},{"coordinates",0},{"short",0},{"density",0},{"page_count",2},{"wait_continue",0}};
 bool g_settingsReady{false};
 void RefreshOSF() noexcept
 {
@@ -13,21 +13,41 @@ void RefreshOSF() noexcept
         std::map<std::string,int> next;
         unsigned readCount=0;
         {std::scoped_lock lock(g_settingsMutex);next=g_displaySettings;}
+    {std::string value; if(g_osf.GetEnum(kModId,"theme",value)==OSFSettings::API::Status::Ok){++readCount;
+        if(value=="individual")next["theme"]=0;
+        else if(value=="constellation")next["theme"]=1;
+        else if(value=="crimson-fleet")next["theme"]=2;
+        else if(value=="freestar-collective")next["theme"]=3;
+        else if(value=="house-varuun")next["theme"]=4;
+        else if(value=="ryujin-industries")next["theme"]=5;
+        else if(value=="trackers-alliance")next["theme"]=6;
+        else if(value=="united-colonies")next["theme"]=7;
+    }}
     {std::string value; if(g_osf.GetEnum(kModId,"badge",value)==OSFSettings::API::Status::Ok){++readCount;
-        if(value=="original")next["badge"]=0;
+        if(value=="theme")next["badge"]=10;
+        else if(value=="original")next["badge"]=0;
         else if(value=="custom")next["badge"]=1;
         else if(value=="hidden")next["badge"]=2;
+        else if(value=="folder")next["badge"]=3;
+        else if(value=="jump-gate")next["badge"]=6;
+        else if(value=="signal-star")next["badge"]=9;
     }}
     {std::string value; if(g_osf.GetEnum(kModId,"spinner",value)==OSFSettings::API::Status::Ok){++readCount;
-        if(value=="original")next["spinner"]=0;
+        if(value=="theme")next["spinner"]=10;
+        else if(value=="original")next["spinner"]=0;
         else if(value=="custom")next["spinner"]=1;
         else if(value=="hidden")next["spinner"]=2;
+        else if(value=="folder")next["spinner"]=3;
+        else if(value=="jump-gate")next["spinner"]=6;
+        else if(value=="signal-star")next["spinner"]=9;
     }}
     {std::string value; if(g_osf.GetEnum(kModId,"background",value)==OSFSettings::API::Status::Ok){++readCount;
-        if(value=="original")next["background"]=0;
+        if(value=="theme")next["background"]=10;
+        else if(value=="original")next["background"]=0;
         else if(value=="orbital")next["background"]=1;
-        else if(value=="artifact")next["background"]=2;
         else if(value=="grav")next["background"]=3;
+        else if(value=="custom")next["background"]=4;
+        else if(value=="survey-sweep")next["background"]=8;
     }}
     {bool value; if(g_osf.GetBool(kModId,"character",&value)==OSFSettings::API::Status::Ok){next["character"] = value?1:0;++readCount;}}
     {bool value; if(g_osf.GetBool(kModId,"progress",&value)==OSFSettings::API::Status::Ok){next["progress"] = value?1:0;++readCount;}}
@@ -37,7 +57,7 @@ void RefreshOSF() noexcept
         else if(value=="24h")next["clock"]=2;
     }}
     {bool value; if(g_osf.GetBool(kModId,"tips",&value)==OSFSettings::API::Status::Ok){next["tips"] = value?1:0;++readCount;}}
-    {bool value; if(g_osf.GetBool(kModId,"diagnostics",&value)==OSFSettings::API::Status::Ok){next["diagnostics"] = value?1:0;++readCount;}}
+    next["diagnostics"]=0;
     next["name"]=next["character"];
     next["level"]=next["character"];
     next["xp_bar"]=next["progress"];

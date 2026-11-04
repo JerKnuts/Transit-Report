@@ -11,3 +11,7 @@ Use Windows x64, Visual Studio 2022 C++ tools, xmake 3+, Java and JPEXS FFDec 26
 Settings defaults live in src/settings-catalog.json, src/osf/loading-screen-configurator.json, the embedded TRDefinitions in src/gameplay, native/src/TRSettingsCatalog.inl and native/src/LSCSettings.inl. Update them together; the loading script also has fallback display defaults.
 
 The DLL name and internal OSF ID intentionally stay LSCNativeBridge / loading-screen-configurator to preserve settings compatibility. Do not rename them when changing the product title.
+
+Artwork caching uses Windows WIC and links windowscodecs; no image converter dependency is shipped. To build the standalone checker from a Visual Studio developer prompt: `cl /std:c++latest /EHsc /I native/src tests/artwork-cache.cpp /Fe:build/artwork-cache.exe /link ole32.lib windowscodecs.lib`, then `python tests/artwork-cache.py build/artwork-cache.exe` (Pillow required for test fixtures only).
+
+Included default animations: run `python scripts/build-default-artwork.py` (Pillow) before packaging. Sources and prompts are in assets/custom-defaults; runtime SWFs use script-free timelines with one shared bitmap per design and moving overlay shapes, rather than loading 180 full-resolution bitmaps.

@@ -1,9 +1,24 @@
-# 0.9.5 validation
+# 0.9.7 release validation
 
-Completed: MSVC/xmake native compilation; six Gameplay Options SWF compilations; loading SWF compilation; 17 setting choice/default mapping checks; matching OSF/standalone defaults; FOMOD structure and ZIP integrity checks.
+## Completed
 
-Pending: in-game standalone root-menu binding, persistence after restart, defaults reset, keyboard/controller operation and compatibility with other menu mods. Prior runtime testing confirmed loading backgrounds, lifetime counter display and keyboard/controller page navigation; this does not establish the new standalone backend is fully tested.
+- Native plugin and eight UI files built successfully after the seven-theme integration.
+- Theme paths, settings mappings and three FOMOD backends passed automated checks.
+- All seven faction coins contain filtered 192px textures and 90 frames at 30fps.
+- All faction wallpapers are packaged as static artwork.
+- User confirmed Crimson Fleet texture filtering improved in-game appearance.
+- User approved the faster tilt/glint comparison and all faction artwork.
 
-The tester reproduced the FaceCustomization renderer crash with this mod disabled. This version does not claim to fix that separate crash.
+## Final in-game verification required
 
-Installer-only update: native compilation and FOMOD XSD pass. Automated tests cover all 17 default and non-default choices, conditional pages, destination INIs, and absence of installer-only menu/schema files. Runtime confirmation of this new backend remains pending.
+- Install the current complete archive with Replace and test each settings backend.
+- Check all seven themes on full loading screens and indicators on short transitions.
+- Verify the latest three-second animation, glint, readability and lack of overlapping indicators.
+- Check keyboard/controller stat navigation, Custom pools, initial save load and post-load performance.
+
+Compilation and automated checks do not establish in-game stability. The earlier FaceCustomization crash also occurred with Transit Report disabled; its root cause remains unresolved.
+
+No new version bump, GitHub push or Nexus upload is part of this staging cleanup.
+
+
+0.9.7: Each artwork selector now includes Theme. Only slots set to Theme use the chosen faction. Original, Hidden, built-in and Custom choices work independently with any faction selected. Existing saved slot values are respected; select Theme explicitly to use faction artwork. Theme with no faction selected falls back to Orbiting Star/Orbital Chart. Runtime verification pending.

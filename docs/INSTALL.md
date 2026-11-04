@@ -1,33 +1,30 @@
-# Installing Transit Report
+# Transit Report 0.9.6 installation
 
-Requires Starfield **1.16.244.0**, matching SFSE and Address Library for SFSE Plugins. No ESM and no image importer.
+Install Transit Report 0.9.6.zip with MO2/Vortex. Disable ALL earlier artwork-test overlays before installing this complete package. Replace the old Transit Report installation rather than merging it, especially when switching backends.
 
-## Install
+Select exactly one settings method:
+- OSF Settings: choose Transit Report in OSF Settings. Requires OSF Settings and its requirements.
+- Gameplay Options: use Settings > Gameplay Options > TRANSIT REPORT. Replaces six menu files and may conflict with other menu replacers.
+- Neither — configure in installer: choose all settings on the conditional FOMOD pages. Adds no in-game settings entry. Reinstall with Replace to change choices.
 
-1. Install `Transit Report <version>.zip` with MO2 or Vortex. In MO2, name the mod **Transit Report**.
-2. Choose one settings method in the FOMOD (below).
-3. Launch through SFSE.
+All three methods offer Custom for Character badge, Loading indicator and Loading background. Add one or more PNG/JPG/JPEG images of any filenames to the matching folder under Documents/My Games/Starfield/Transit Report/Artwork: Badges, Indicators or Backgrounds. The game creates these folders on startup. Select Custom and restart Starfield after changing an image. PNG transparency is supported; indicators rotate; badges remain still. Animated GIF/APNG import is not included.
 
-When updating or changing methods, use **Replace**, not Merge, so old menu, schema and choice files are removed. If you tested an earlier "Loading" / "Loading Screen Configurator" build, disable it; keep only one copy enabled.
+No converter or separate application is required. The plugin generates cache SWFs under Data/Interface/TransitReport/Cache. MO2 may put these in Overwrite. Do not put source images in Cache. Keep custom images in Documents when updating/uninstalling the mod.
 
-## Settings methods
+Empty or invalid-image folders use Orbiting Star for badge/indicator and Orbital Chart for wallpaper. Custom selects randomly from valid images; random choices may repeat. Images are limited to 16 megapixels / 64 MB; the longest output side is at most 2560 pixels.
 
-- **OSF Settings:** a Transit Report page in OSF Settings. Requires OSF Settings and its requirements. Installs no MainMenu, PauseMenu or SettingsPanel patches. Keeps the earlier internal settings ID, so existing OSF preferences carry over.
-- **Gameplay Options (standalone):** a TRANSIT REPORT section in Settings > Gameplay Options, from both the main menu and the pause menu. Doesn't need OSF Settings or OSF UI. Preferences are saved to `Documents/My Games/Starfield/Transit Report/Settings.ini`, immediately on change; back out of settings to play. Replaces the MainMenu, PauseMenu and SettingsPanel SWFs (including large-interface variants), so check MO2 conflicts with other menu or UI overhauls.
-- **Neither (configure in installer):** choose all 17 settings on the following FOMOD pages. Installs no OSF schema and no menu patches. Choices are written to `Data/SFSE/Plugins/TransitReport/Installer/`; reinstall with Replace to change them. Preferences saved by the other methods are ignored.
+Existing defaults are preserved: Orbiting Star badge, hidden indicator, Orbital Chart, two pages, 12-hour clock, Random Each Load and all categories enabled. No settings-menu framework files are overridden.
 
-Preferences aren't shared between methods; switching doesn't convert them. None of the methods modifies OSF framework files.
+Requirements: Starfield 1.16.244.0, matching SFSE and Address Library. OSF Settings is required only for its integration option. Launch through SFSE.
 
-## Defaults
+Disable Transit Report to uninstall. Personal Documents artwork/settings remain. Generated cache files may be removed separately. No save plugin or ESM is installed.
 
-Orbiting Star badge, hidden loading indicator, Orbital Chart background, character info, progress and tips on, two pages, diagnostics off, 12-hour clock, Random Each Load, and all seven categories set to All Stats. Existing saved preferences are kept on update.
+## Included animated designs
 
-## Using it
+Select **Transit Emblem** for the included animated badge or indicator, and **Orbital Horizon** for the included animated planet wallpaper. These are dedicated built-in selections, independent of personal image files. **Custom** uses only your Documents images. Existing Orbiting Star and procedural background choices remain unchanged.
 
-- Change pages during full loading screens with A/D or left/right on the D-pad.
-- Stats are captured once, about three seconds after a save loads; no Status menu visit is needed. The first load of a session shows only character info, so allow a few seconds of gameplay before the next full load.
-- Short transitions show only the selected loading indicator.
+User PNG/JPG images remain still (the UI rotates a user indicator). GIF/APNG decoding is not included. No former collection test logo is part of the release.
 
-## Troubleshooting
+## Random Custom images
 
-`Documents/My Games/Starfield/SFSE/Logs/LSCNativeBridge.log` records the selected method and settings binding. Include it, your game version and your settings method in bug reports.
+Put up to 64 PNG/JPG/JPEG images of any names in each Artwork folder. Custom chooses one valid image per loading screen and keeps it steady for that screen. Named built-in designs are separate selections and ignore personal files. New/changed images are prepared at startup, while unchanged cached assets are reused. Invalid files are skipped; an empty valid pool falls back to Orbiting Star or Orbital Chart. Restart after adding/removing/changing files.

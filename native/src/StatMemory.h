@@ -13,15 +13,9 @@ inline bool CopyStatBytes(void* output,const void* input,std::size_t size) noexc
 {
     const auto address=reinterpret_cast<std::uintptr_t>(input);
     if(address<0x10000||size==0||size>0x20000||address+size<address)return false;
-    auto cursor=address;
-    while(cursor<address+size)
-    {
-        MEMORY_BASIC_INFORMATION region{};
-        if(!VirtualQuery(reinterpret_cast<void*>(cursor),&region,sizeof(region))||region.State!=MEM_COMMIT||(region.Protect&(PAGE_NOACCESS|PAGE_GUARD)))return false;
-        const auto end=reinterpret_cast<std::uintptr_t>(region.BaseAddress)+region.RegionSize;
-        if(end<=cursor)return false;
-        cursor=end;
-    }
+    // These are bounded, read-only copies from runtime-gated game data.
+    // Probe by copying under SEH: do not issue VirtualQuery for every entry/string.
+    // A preflight query cannot guarantee that memory stays valid until memcpy anyway.
     __try {std::memcpy(output,input,size);return true;}
     __except(EXCEPTION_EXECUTE_HANDLER){return false;}
 }

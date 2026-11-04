@@ -28,6 +28,8 @@
 #include "OSFSettings.h"
 #include "NavigationState.h"
 #include "StatMemory.h"
+#include "ArtworkCache.h"
+#include "ArtworkTheme.h"
 
 
 
@@ -76,21 +78,32 @@ namespace
     Clock::time_point g_counterReadySince{};
     bool g_counterAttempted{false};
     std::map<std::string,std::string> g_counterValues;
+    struct CounterScan
+    {
+        bool active{false};
+        std::uintptr_t table{0};
+        std::uint32_t count{0}, cursor{0}, slices{0};
+        std::map<std::string,std::string> pending;
+        Clock::time_point started{};
+        double workMs{0}, peakMs{0};
+    };
+    CounterScan g_counterScan;
     void CaptureSingleCounter()
     {
         bool enabled=false;
         {std::scoped_lock lock(g_settingsMutex);enabled=g_displaySettings.at("lifetime_test")!=0;}
-        if(!enabled){g_counterReadySince={};return;}
+        if(!enabled){g_counterReadySince={};g_counterScan={};return;}
         if(g_counterAttempted)return;
         if(g_counterReadySince==Clock::time_point{}){g_counterReadySince=Clock::now();return;}
         if(Clock::now()-g_counterReadySince<std::chrono::seconds(3))return;
-        g_counterAttempted=true;
-        REX::INFO("LSC lifetime test: one bounded capture begins; no repeat this load.");
+        // Never traverse the entire table in one game-thread task.
+        // Keep game-owned reads on the game thread and publish only a completed scan.
         static REL::Relocation<std::uint32_t*> countAddress{RE::ID::MiscStatManager::EntryCount};
         static REL::Relocation<std::uintptr_t*> tableAddress{RE::ID::MiscStatManager::TableBase};
         std::uint32_t count{};std::uintptr_t table{};
         using namespace LSCStatMemory;
-        if(!CopyStatBytes(&count,countAddress.get(),sizeof(count))||count==0||count>512||!CopyStatBytes(&table,tableAddress.get(),sizeof(table)))return;
+        if(!CopyStatBytes(&count,countAddress.get(),sizeof(count))||count==0||count>512||!CopyStatBytes(&table,tableAddress.get(),sizeof(table)))
+        {g_counterScan={};g_counterAttempted=true;return;}
         struct CounterName {const char* name;const char* group;};
         static constexpr CounterName catalog[]={
             {"Hours Slept","general"},
@@ -161,19 +174,44 @@ namespace
             {"Locks Picked","crime"},
             {"Items Stolen","crime"},
         };
-        std::map<std::string,std::string> found;
-        for(std::uint32_t i=0;i<count;i++)
+        static const auto lookup=[] {
+            std::map<std::string,std::size_t> result;
+            for(std::size_t i=0;i<std::size(catalog);++i)result.emplace(NormalizeStatName(catalog[i].name),i);
+            return result;
+        }();
+        if(!g_counterScan.active)
+        {
+            g_counterScan={};g_counterScan.active=true;
+            g_counterScan.table=table;g_counterScan.count=count;g_counterScan.started=Clock::now();
+        }
+        // A replaced table must not be combined with entries from the previous table.
+        if(table!=g_counterScan.table||count!=g_counterScan.count)
+        {g_counterScan={};g_counterReadySince=Clock::now();return;}
+        const auto sliceStart=Clock::now();
+        unsigned processed=0;
+        while(g_counterScan.cursor<count && processed<4)
         {
             RE::MiscStatManager::Entry entry{};
-            if(!CopyStatBytes(&entry,reinterpret_cast<void*>(table+i*sizeof(entry)),sizeof(entry)))return;
-            if(entry.value<0)continue;
-            auto name=NormalizeStatName(StatPoolString(entry.name));
-            for(std::size_t index=0;index<std::size(catalog);++index)
-                if(name==NormalizeStatName(catalog[index].name))
-                {found["counter_"+std::to_string(index)]=std::to_string(entry.value);break;}
+            const auto offset=g_counterScan.cursor++;
+            if(!CopyStatBytes(&entry,reinterpret_cast<void*>(table+offset*sizeof(entry)),sizeof(entry)))
+            {g_counterScan={};g_counterAttempted=true;return;}
+            if(entry.value>=0)
+            {
+                const auto name=NormalizeStatName(StatPoolString(entry.name));
+                if(const auto found=lookup.find(name);found!=lookup.end())
+                    g_counterScan.pending["counter_"+std::to_string(found->second)]=std::to_string(entry.value);
+            }
+            ++processed;
+            if(Clock::now()-sliceStart>=std::chrono::microseconds(250))break;
         }
-        g_counterValues=std::move(found);
-        REX::INFO("LSC lifetime capture completed: {} of {} supported counters. No further reads this load.",g_counterValues.size(),std::size(catalog));
+        const double elapsed=std::chrono::duration<double,std::milli>(Clock::now()-sliceStart).count();
+        g_counterScan.workMs+=elapsed;g_counterScan.peakMs=std::max(g_counterScan.peakMs,elapsed);++g_counterScan.slices;
+        if(g_counterScan.cursor<count)return;
+        g_counterValues=std::move(g_counterScan.pending);g_counterAttempted=true;
+        REX::INFO("TR lifetime capture: {} counters, {} slices, {:.3f} ms work, {:.3f} ms peak slice, {:.1f} ms elapsed.",
+            g_counterValues.size(),g_counterScan.slices,g_counterScan.workMs,g_counterScan.peakMs,
+            std::chrono::duration<double,std::milli>(Clock::now()-g_counterScan.started).count());
+        g_counterScan.active=false;
     }
 
     void ClearSnapshotLocked(std::string status)
@@ -184,7 +222,7 @@ namespace
         g_snapshot.generation=generation;
         g_snapshot.status=std::move(status);
         g_uiStats=UIStats{};
-        g_fullPanelActive=false;g_counterReadySince={};g_counterAttempted=false;g_counterValues.clear();
+        g_fullPanelActive=false;g_counterReadySince={};g_counterAttempted=false;g_counterValues.clear();g_counterScan={};
     }
 
     void ClearSnapshot(std::string status)
@@ -201,8 +239,17 @@ namespace
         std::unique_lock captureLock(g_captureMutex,std::try_to_lock);
         if(!captureLock.owns_lock())return;
         const auto now=Clock::now();
-        if(now-g_lastAttempt<std::chrono::milliseconds(500))return;
+        if(now-g_lastAttempt<(g_counterScan.active?std::chrono::milliseconds(16):std::chrono::milliseconds(500)))return;
         g_lastAttempt=now;
+        struct SampleTiming
+        {
+            Clock::time_point start{Clock::now()};
+            ~SampleTiming()
+            {
+                const auto ms=std::chrono::duration<double,std::milli>(Clock::now()-start).count();
+                if(ms>=5.0)REX::WARN("TR gameplay sample took {:.3f} ms (counter scan active: {}).",ms,g_counterScan.active);
+            }
+        } sampleTiming;
         auto* ui=RE::UI::GetSingleton();
         if(!ui)return;
         // Preserve a pre-transition snapshot; do not traverse live inventory
@@ -332,6 +379,9 @@ namespace
                 args.ret->SetMember(key,value);
             };
             for(const auto& [key,text]:copy.extra)setString(("stat_"+key).c_str(),text);
+            setString("artworkBadgeFiles",TransitArtwork::manifest(0));
+            setString("artworkIndicatorFiles",TransitArtwork::manifest(1));
+            setString("artworkWallpaperFiles",TransitArtwork::manifest(2));
             // Read the OS clock at each UI request, even before gameplay is ready.
             SYSTEMTIME local{};
             GetLocalTime(&local);
@@ -341,7 +391,8 @@ namespace
             root->CreateObject(&display);
             {
                 std::scoped_lock lock(g_settingsMutex);
-                for(const auto& [key,value]:g_displaySettings)display.SetMember(key.c_str(),Value(value));
+                const auto themed=TransitTheme::ForDisplay(g_displaySettings);
+                for(const auto& [key,value]:themed)display.SetMember(key.c_str(),Value(value));
                 args.ret->SetMember("settingsReady",Value(g_settingsReady));
             }
             args.ret->SetMember("settings",display);
@@ -361,7 +412,7 @@ namespace
             setString("location",copy.location);
             setString("status",copy.status);
             setString("counterStatus",!copy.ready ? "WAITING FOR GAMEPLAY" : copy.extra.contains("counter_12") ? "CAPTURED" : "WAITING / NO CAPTURE");
-            setString("version","0.9.5");
+            setString("version","0.9.7");
         }
     };
 
@@ -418,15 +469,15 @@ namespace
         if(message->type!=SFSE::MessagingInterface::kPostPostLoad||g_started)return;
         g_started=true;
 #ifdef LSC_DIAGNOSTIC_NO_GAMEPLAY_READS
-        REX::WARN("LSC 0.9.5 DIAGNOSTIC: all gameplay and lifetime-counter sampling disabled.");
+        REX::WARN("LSC 0.9.7 DIAGNOSTIC: all gameplay and lifetime-counter sampling disabled.");
 #else
-        REX::INFO("LSC 0.9.5: normal lifetime capture; confirmation removed; settings backend selected by installer.");
+        REX::INFO("LSC 0.9.7: normal lifetime capture; confirmation removed; settings backend selected by installer.");
 #endif
         InitializeSettingsBackend();
 
         if(auto* source=RE::TESLoadGameEvent::GetEventSource())source->RegisterSink(&g_loadSink);
         SFSE::GetTaskInterface()->AddPermanentTask(CaptureGameplaySnapshot);
-        REX::INFO("LSC read-only snapshot sampler registered (500 ms). No save or inventory writes are performed.");
+        REX::INFO("TR snapshot sampler: 500 ms idle; incremental lifetime scan, max four entries / 250 us target per task. No save or inventory writes.");
     }
 }
 
@@ -434,6 +485,10 @@ SFSE_PLUGIN_LOAD(const SFSE::LoadInterface* sfse)
 {
     if(!sfse||sfse->RuntimeVersion()!=kRuntime)return false;
     SFSE::Init(sfse,{.logName="LSCNativeBridge"});
+    const auto preferences=TRPreferencePath();
+    const auto artwork=preferences.empty()?std::filesystem::path{}:preferences.parent_path()/L"Artwork";
+    for(const auto& result:TransitArtwork::prepare(TRGameDirectory()/L"Data",artwork))
+        REX::INFO("Transit Report artwork {}: {}",result.kind,result.status);
     auto* menu=SFSE::GetMenuInterface();
     auto* tasks=SFSE::GetTaskInterface();
     auto* messaging=SFSE::GetMessagingInterface();

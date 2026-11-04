@@ -1,0 +1,7 @@
+Tool: built-in image_gen.
+
+Wallpaper: Original cinematic hard-science-fiction space wallpaper; quiet dark left/bottom for stats; blue-gray planet on right, cyan atmosphere, small gold sun, sparse stars and subtle orbital lines; no text, cockpit or ships.
+
+Badge: Original transparent circular orbital-navigation emblem; navy medallion, small blue planet, ivory three-pronged route needle, cyan/gold rings and tick marks; crisp at small sizes; no words, initials or existing game logos.
+
+Animation is authored in scripts/build-default-artwork.py as script-free SWF timelines using the generated images and vector overlays.
