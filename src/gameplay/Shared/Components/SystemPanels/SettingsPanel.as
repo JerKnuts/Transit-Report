@@ -57,6 +57,13 @@ package Shared.Components.SystemPanels
       public var TRConfig:Function;
       private var TRVanillaRows:Array = [];
 
+      private function TRBridgeFrame(event:Event) : void
+      {
+         if(!this.visible || this.TRConfig == null || this.TRVanillaRows.length == 0)return;
+         this.TRRefreshSettings();
+         this.removeEventListener(Event.ENTER_FRAME,this.TRBridgeFrame);
+      }
+
       public function TRRefreshSettings() : void
       {
          if(this.TRVanillaRows.length == 0)return;
@@ -151,6 +158,7 @@ package Shared.Components.SystemPanels
          this.DefaultsButtonData = new ButtonBaseData("$DEFAULTS",new UserEventData("YButton",this.onResetToDefaults));
          this.BackButtonData = new ButtonBaseData("$BACK",new UserEventData("Cancel",this.onCancel));
          super();
+         this.addEventListener(Event.ENTER_FRAME,this.TRBridgeFrame,false,0,true);
          this.ActiveList = null;
          this.CurrentState = this.SPS_NONE;
          this.CurrentCategory = this.PEO_CATEGORY;

@@ -122,28 +122,20 @@ void BindGameplayBridge(RE::IMenu* menu)
     if(!menu||!menu->uiMovie||!menu->uiMovie->asMovieRoot)return;
     auto* handler=new TRSettingsBridge();RE::Scaleform::GFx::Value function;
     menu->uiMovie->asMovieRoot->CreateFunction(&function,handler);handler->Release();
-    const auto bindPanel=[&](RE::Scaleform::GFx::Value& object)
+    // Queue directly on the movie. Do not resolve panel members or invoke ActionScript
+    // during SFSE's creation callback: the panel's AS3 VM may still be initializing.
+    auto* root=menu->uiMovie->asMovieRoot.get();
+    std::vector<std::string> paths;
+    const auto addPath=[&](const char* prefix)
     {
-        if(!object.IsObject())return false;
-        RE::Scaleform::GFx::Value slot;
-        if(!object.GetMember("TRConfig",&slot)||!object.SetMember("TRConfig",function))return false;
-        object.Invoke("TRRefreshSettings",nullptr,nullptr,0);
-        return true;
+        if(!prefix||!*prefix)return;
+        const std::string path=std::string(prefix)+".SettingsPanel_mc.TRConfig";
+        if(std::find(paths.begin(),paths.end(),path)==paths.end())paths.push_back(path);
     };
-    const auto bindRoot=[&](RE::Scaleform::GFx::Value& root)
+    addPath(menu->GetRootPath());addPath("root");addPath("_root");
+    for(const auto& path:paths)
     {
-        if(!root.IsObject())return false;
-        RE::Scaleform::GFx::Value panel;
-        return root.GetMember("SettingsPanel_mc",&panel)&&bindPanel(panel);
-    };
-    if(bindRoot(menu->menuObj)){REX::INFO("Transit Report: panel-only Gameplay bridge bound in {}.",menu->GetName());return;}
-    for(const char* path:{menu->GetRootPath(),"root","_root"})
-    {
-        if(!path||!*path)continue;
-        RE::Scaleform::GFx::Value object;
-        if(menu->uiMovie->asMovieRoot->GetVariable(&object,path)&&bindRoot(object))
-        {REX::INFO("Transit Report: panel-only Gameplay bridge bound at {}.SettingsPanel_mc in {}.",path,menu->GetName());return;}
+        const bool available=root->SetVariable(path.c_str(),function,RE::Scaleform::GFx::Movie::SetVarType::kPermanent);
+        REX::INFO("Transit Report: deferred panel bridge {} at {} in {}.",available?"assigned":"queued",path,menu->GetName());
     }
-    REX::WARN("Transit Report: panel-only Gameplay bridge not found in {}. SettingsPanel_mc may not be loaded yet, or a conflicting settings panel is active.",menu->GetName());
 }
-

@@ -2,6 +2,8 @@
 
 ## 0.9.8
 
+- Panel Bridge Test 2: replaced immediate construction-time panel lookup/refresh with queued connection and panel-owned frame refresh after repeated immediate-Esc crashes. Runtime verification pending.
+
 - Test branch: moved the Gameplay Options connection into settings panels and excluded main-menu/pause-menu replacements. In-game verification pending.
 
 - Removed OSF section heading text, retaining untitled divider groups and the Transit Report page title.

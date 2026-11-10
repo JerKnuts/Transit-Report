@@ -129,3 +129,5 @@ Lifetime stats can be switched On or Off under Full loading screen (On by defaul
 OSF Settings sections use untitled divider groups; the Transit Report page title and setting labels remain visible. No OSF framework files are replaced.
 
 Panel-only Gameplay Options experiment (test/gameplay-panel-bridge): native settings binding moved to SettingsPanel_mc. The Gameplay option ships only mainmenu_settingspanel.swf, settingspanel.swf and settingspanel_lrg.swf. Mainmenu.swf, pausemenu.swf and pausemenu_lrg.swf are excluded. Install with Replace and fully restart. Test settings from both main and pause menus and check persistence. Panel availability at the menu-creation callback needs in-game verification; missing binding logs a warning and leaves vanilla options.
+
+Panel Bridge Test 2: targeted immediate-Esc crash mitigation. Native creation-time panel lookups and row-refresh invocation removed; queued permanent assignment connects the panel, and its own visible-frame callback refreshes ready rows. Immediate/delayed Esc, initial main-menu binding and stability need in-game verification. Details: docs/PANEL_BRIDGE_TEST.md.

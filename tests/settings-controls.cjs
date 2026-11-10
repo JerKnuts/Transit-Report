@@ -34,3 +34,14 @@ const refresh=new Function(source.slice(begin+1,finish-1).replace(/var (\w+):\w+
 panel.TRConfig=api;panel.TRVanillaRows=original;panel.PEOList_mc.selectedIndex=3;refresh.call(panel);assert.equal(panel.PEOList_mc.selectedIndex,3);assert.equal(panel.PEOList_mc.rows.length,definitions.length+2);
 panel.TRVanillaRows=[];panel.PEOList_mc.InitializeEntries=()=>{throw Error('Do not refresh before engine data exists');};refresh.call(panel);
 console.log('Passed: panel-owned connection and late-binding refresh preserve selection; missing data is left alone.');
+
+const poll=get('TRBridgeFrame');let refreshCalls=0,removed=false;
+const polling={visible:true,TRConfig:null,TRVanillaRows:[{}],TRRefreshSettings(){refreshCalls++;},removeEventListener(){removed=true;}};
+// The adapter's event parameter is unused; expose the Event constant used for cleanup.
+global.Event={ENTER_FRAME:'enterFrame'};
+poll.call(polling);assert.equal(refreshCalls,0);
+polling.TRConfig=api;polling.visible=false;poll.call(polling);assert.equal(refreshCalls,0);
+polling.visible=true;poll.call(polling);assert.equal(refreshCalls,1);assert(removed);
+const native=fs.readFileSync('native/src/GameplaySettings.inl','utf8').split('void BindGameplayBridge')[1];
+assert(native.includes('SetVarType::kPermanent'));assert(!native.includes('.Invoke('));assert(!native.includes('.GetMember('));assert(!native.includes('GetVariable('));
+console.log('Passed: readiness refresh waits for visible panel and native connection; constructor binding performs no panel lookup or AS invocation.');
