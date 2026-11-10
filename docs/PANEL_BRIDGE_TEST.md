@@ -18,3 +18,9 @@ Install the Panel Bridge Test ZIP with **Replace**, choosing **Gameplay Options*
 Native logs report `panel-only Gameplay bridge bound` on success. A missing-panel warning means the settings panel was unavailable at the creation callback or a conflicting panel is active. Record whether options were missing from the main menu or pause menu. Do not interpret compilation as proof of runtime binding or stability.
 
 OSF Settings and installer-only remain available in the FOMOD. The previous Polish Test archive remains the fallback.
+
+## Runtime report: November 9-10, 2026
+
+The user reported one crash after loading a save and pressing Esc. Crash log `2026-11-09-23-53-02.log` contains Scaleform frames followed by LSCNativeBridge.dll offsets 0x156C2, 0x16546 and 0x1C162, under the SFSE menu-creation callback. This implicates the test binding path but does not isolate whether member lookup, assignment, or immediate row refresh triggered it.
+
+After restarting, the user repeated the test successfully, changed settings, and confirmed their effect during loading. Functional operation is confirmed for that repeat; intermittent stability is not established. A later runtime log also reported the MainMenu panel unavailable at binding time. Do not merge or call the first crash fixed based on the successful repeat. The delivered test ZIP has not been changed during investigation.
