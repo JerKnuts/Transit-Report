@@ -3,11 +3,11 @@
   "title": "Transit Report",
   "description": "Grouped controls for full loading screens. Short transitions show the indicator only.",
   "groups": {
-    "Appearance": [
+    " ": [
       {
         "key": "theme",
         "label": "Theme",
-        "hint": "Choose the faction used by artwork controls set to Theme. Other artwork choices remain independent.",
+        "hint": "Choose a faction, or Random Each Load to pick one faction per loading screen. Artwork slots set to Theme share that choice. Other artwork choices stay independent.",
         "type": "enum",
         "default": "individual",
         "options": {
@@ -18,7 +18,8 @@
           "house-varuun": "House Va'ruun",
           "ryujin-industries": "Ryujin Industries",
           "trackers-alliance": "Trackers Alliance",
-          "united-colonies": "United Colonies"
+          "united-colonies": "United Colonies",
+          "random": "Random Each Load"
         }
       },
       {
@@ -67,9 +68,37 @@
           "theme": "Theme",
           "custom": "Custom"
         }
+      },
+      {
+        "key": "badge_size",
+        "label": "Character badge size",
+        "hint": "Scale independently from the enlarged baseline. Normal (100%) equals the previous 150% size.",
+        "type": "enum",
+        "default": "normal",
+        "options": {
+          "extra-small": "Extra Small (50%)",
+          "small": "Small (75%)",
+          "normal": "Normal (100%)",
+          "large": "Large (125%)",
+          "extra-large": "Extra Large (150%)"
+        }
+      },
+      {
+        "key": "indicator_size",
+        "label": "Loading indicator size",
+        "hint": "Scale independently from the enlarged baseline. Normal (100%) equals the previous 150% size.",
+        "type": "enum",
+        "default": "normal",
+        "options": {
+          "extra-small": "Extra Small (50%)",
+          "small": "Small (75%)",
+          "normal": "Normal (100%)",
+          "large": "Large (125%)",
+          "extra-large": "Extra Large (150%)"
+        }
       }
     ],
-    "Full loading screen": [
+    "  ": [
       {
         "key": "character",
         "label": "Character",
@@ -81,6 +110,13 @@
         "key": "progress",
         "label": "Progress",
         "hint": "XP bar and XP numbers.",
+        "type": "bool",
+        "default": true
+      },
+      {
+        "key": "lifetime_enabled",
+        "label": "Lifetime stats",
+        "hint": "Show randomized lifetime statistics on full loading screens.",
         "type": "bool",
         "default": true
       },
@@ -104,7 +140,7 @@
         }
       }
     ],
-    "Stat pages": [
+    "   ": [
       {
         "key": "page_count",
         "label": "Number of stat pages",
@@ -120,168 +156,13 @@
         }
       }
     ],
-    "Lifetime stats": [
+    "    ": [
       {
-        "key": "lifetime_mode",
-        "label": "Lifetime display",
-        "hint": "Chosen categories, or random lifetime counters from enabled categories. Up to the selected page count.",
-        "type": "enum",
-        "default": "random",
-        "options": {
-          "categories": "Chosen categories",
-          "random": "Random each load"
-        }
-      },
-      {
-        "key": "lifetime_general",
-        "label": "General",
-        "hint": "Hours Slept, Hours Waiting, Days Passed, Credits Found, Most Credits Carried, Chests Looted, Food Eaten, Chems Taken, Data Slates Read, Magazines Found, Speech Successes, Powers Learned",
-        "type": "enum",
-        "default": "all",
-        "options": {
-          "off": "Hidden",
-          "all": "All stats",
-          "random": "Random selection",
-          "counter_0": "Hours Slept",
-          "counter_1": "Hours Waiting",
-          "counter_2": "Days Passed",
-          "counter_3": "Credits Found",
-          "counter_4": "Most Credits Carried",
-          "counter_5": "Chests Looted",
-          "counter_6": "Food Eaten",
-          "counter_7": "Chems Taken",
-          "counter_8": "Data Slates Read",
-          "counter_9": "Magazines Found",
-          "counter_10": "Speech Successes",
-          "counter_11": "Powers Learned"
-        }
-      },
-      {
-        "key": "lifetime_combat",
-        "label": "Combat",
-        "hint": "People Killed, Creatures Killed, Robots Killed, Turrets Killed, Critical Strikes, Legendary Enemies Killed, Jet Packs Exploded, Sneak Attacks, Powers Used, Zero G Kills",
-        "type": "enum",
-        "default": "all",
-        "options": {
-          "off": "Hidden",
-          "all": "All stats",
-          "random": "Random selection",
-          "counter_12": "People Killed",
-          "counter_13": "Creatures Killed",
-          "counter_14": "Robots Killed",
-          "counter_15": "Turrets Killed",
-          "counter_16": "Critical Strikes",
-          "counter_17": "Legendary Enemies Killed",
-          "counter_18": "Jet Packs Exploded",
-          "counter_19": "Sneak Attacks",
-          "counter_20": "Powers Used",
-          "counter_21": "Zero G Kills"
-        }
-      },
-      {
-        "key": "lifetime_exploration",
-        "label": "Exploration",
-        "hint": "Locations Discovered, Locations Explored, Systems Visited, Planets Scanned, Planets Fully Surveyed, Planets Landed On, Flora Fully Scanned, Fauna Fully Scanned, Unique Creatures Scanned, Temples Found",
-        "type": "enum",
-        "default": "all",
-        "options": {
-          "off": "Hidden",
-          "all": "All stats",
-          "random": "Random selection",
-          "counter_22": "Locations Discovered",
-          "counter_23": "Locations Explored",
-          "counter_24": "Systems Visited",
-          "counter_25": "Planets Scanned",
-          "counter_26": "Planets Fully Surveyed",
-          "counter_27": "Planets Landed On",
-          "counter_28": "Flora Fully Scanned",
-          "counter_29": "Fauna Fully Scanned",
-          "counter_30": "Unique Creatures Scanned",
-          "counter_31": "Temples Found"
-        }
-      },
-      {
-        "key": "lifetime_crafting",
-        "label": "Crafting & outposts",
-        "hint": "Food Cooked, Drugs Crafted, Items Scrapped, Items Manufactured, Objects Built, Outposts Built, Cargo Links Established, Workshops Unlocked",
-        "type": "enum",
-        "default": "all",
-        "options": {
-          "off": "Hidden",
-          "all": "All stats",
-          "random": "Random selection",
-          "counter_32": "Food Cooked",
-          "counter_33": "Drugs Crafted",
-          "counter_34": "Items Scrapped",
-          "counter_35": "Items Manufactured",
-          "counter_36": "Objects Built",
-          "counter_37": "Outposts Built",
-          "counter_38": "Cargo Links Established",
-          "counter_39": "Workshops Unlocked"
-        }
-      },
-      {
-        "key": "lifetime_quests",
-        "label": "Quests",
-        "hint": "Quests Completed, Activities Completed, Main Quests Completed, Side Quests Completed, Freestar Collective Quests Completed, Crimson Fleet Quests Completed, United Colonies Quests Completed, Ryujin Industries Quests Completed",
-        "type": "enum",
-        "default": "all",
-        "options": {
-          "off": "Hidden",
-          "all": "All stats",
-          "random": "Random selection",
-          "counter_40": "Quests Completed",
-          "counter_41": "Activities Completed",
-          "counter_42": "Main Quests Completed",
-          "counter_43": "Side Quests Completed",
-          "counter_44": "Freestar Collective Quests Completed",
-          "counter_45": "Crimson Fleet Quests Completed",
-          "counter_46": "United Colonies Quests Completed",
-          "counter_47": "Ryujin Industries Quests Completed"
-        }
-      },
-      {
-        "key": "lifetime_ship",
-        "label": "Ships",
-        "hint": "Grav Jumps, Ships Sold, Ships Painted, Ship Modules Built, Ships Docked With, Stations Docked With, Ships Customized, Ship Builder Credits Spent, Largest Crew Size, Max Ships Owned",
-        "type": "enum",
-        "default": "all",
-        "options": {
-          "off": "Hidden",
-          "all": "All stats",
-          "random": "Random selection",
-          "counter_48": "Grav Jumps",
-          "counter_49": "Ships Sold",
-          "counter_50": "Ships Painted",
-          "counter_51": "Ship Modules Built",
-          "counter_52": "Ships Docked With",
-          "counter_53": "Stations Docked With",
-          "counter_54": "Ships Customized",
-          "counter_55": "Ship Builder Credits Spent",
-          "counter_56": "Largest Crew Size",
-          "counter_57": "Max Ships Owned"
-        }
-      },
-      {
-        "key": "lifetime_crime",
-        "label": "Crime",
-        "hint": "Times Arrested, Trespasses, Times Caught With Contraband, Total Lifetime Bounty, Largest Bounty, Acts of Piracy, Pockets Picked, Locks Picked, Items Stolen",
-        "type": "enum",
-        "default": "all",
-        "options": {
-          "off": "Hidden",
-          "all": "All stats",
-          "random": "Random selection",
-          "counter_58": "Times Arrested",
-          "counter_59": "Trespasses",
-          "counter_60": "Times Caught With Contraband",
-          "counter_61": "Total Lifetime Bounty",
-          "counter_62": "Largest Bounty",
-          "counter_63": "Acts of Piracy",
-          "counter_64": "Pockets Picked",
-          "counter_65": "Locks Picked",
-          "counter_66": "Items Stolen"
-        }
+        "key": "hide_zero",
+        "label": "Hide zero-value stats",
+        "hint": "Omit numeric zero readings before building pages, including random highlights. Empty pages are not displayed.",
+        "type": "bool",
+        "default": false
       }
     ]
   }

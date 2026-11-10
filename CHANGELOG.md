@@ -2,6 +2,25 @@
 
 ## 0.9.8
 
+- Removed OSF section heading text, retaining untitled divider groups and the Transit Report page title.
+
+- Added Lifetime stats On/Off under Full loading screen in all three settings methods; defaults to On.
+- Softened faction coin glints to half opacity, doubled sweep duration and shortened travel while preserving tilt timing.
+
+- Simplified lifetime settings: removed category and display-mode selectors; all lifetime stats are always randomized. Retained hide-zero and page-count options.
+
+- Rebased Normal (100%) artwork size to the previous 150% size; retained 50-150% choices.
+- Preserved the nested glint timeline during coin tilt updates and brightened all seven faction coin highlights.
+
+- Badge and indicator sizes offer 50% to 150% in 25% steps around the enlarged Normal baseline.
+
+- Fixed corrupted dash characters in the FOMOD settings-method choice and category page titles.
+- Removed collection-specific recommendations and outdated initial-testing wording from installer descriptions.
+
+- Local polish test: added independent badge/indicator sizes, session-wide immediate-repeat prevention for random themes/Custom pools, and optional hide-zero lifetime stats. No version bump or publishing.
+
+- Local update: added Random Each Load to the Theme selector in OSF Settings, Gameplay Options and FOMOD. Theme artwork slots share one faction per load; independent slot choices are preserved. In-game test pending.
+
 - Added animated GIF support for Custom artwork, including character badges. Custom animated badge playback was verified in-game by the user.
 - Preserves frame timing, transparency and GIF frame disposal, with looping playback. Timing is quantized to 30fps.
 - Animated indicators play their own animation without an extra automatic spin.

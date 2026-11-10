@@ -10,7 +10,7 @@ inline std::map<std::string,int> ForDisplay(const std::map<std::string,int>& sto
     for(const char* key:{"badge","spinner","background"}) {
         const auto slot=stored.find(key);
         if(slot!=stored.end() && slot->second==10)
-            display[key]=faction>=1 && faction<=7 ? 99+faction : 1;
+            display[key]=faction==8 ? 107 : faction>=1 && faction<=7 ? 99+faction : 1;
     }
     return display;
 }

@@ -16,6 +16,40 @@
       private var TRArtSelected:Array = [null,null,null];
       private var TRArtManifestReady:Boolean = false;
       private var TRArtWasFullActive:Boolean = false;
+      private var TRArtRandomTheme:int = -1;
+      private var TRArtSizeBases:Array = [null,null];
+      private function TRArtResize(index:int,parent:DisplayObjectContainer) : void
+      {
+         if(parent == null)return;
+         var saved:Object = this.TRArtSizeBases[index];
+         if(saved == null || saved.parent != parent)
+         {
+            var custom:DisplayObjectContainer = this.TRArtFind(parent);
+            var bounds:Rectangle = custom != null ? custom.getBounds(parent) : parent.getBounds(parent);
+            saved = {parent:parent,matrix:parent.transform.matrix.clone(),cx:bounds.x+bounds.width/2,cy:bounds.y+bounds.height/2};
+            this.TRArtSizeBases[index] = saved;
+         }
+         var key:String = index == 0 ? "badge_size" : "indicator_size";
+         var size:int = this.LSCOptions.hasOwnProperty(key) ? int(this.LSCOptions[key]) : 100;
+         var factor:Number = 1.5*(size == 50 || size == 75 || size == 125 || size == 150 ? size/100 : 1);
+         var base:Matrix = saved.matrix as Matrix;
+         parent.transform.matrix = new Matrix(base.a*factor,base.b*factor,base.c*factor,base.d*factor,
+            base.tx+(1-factor)*(base.a*saved.cx+base.c*saved.cy),base.ty+(1-factor)*(base.b*saved.cx+base.d*saved.cy));
+      }
+
+      private function TRArtMode(index:int) : int
+      {
+         var mode:int = int(index == 0 ? this.LSCOptions.badge : index == 1 ? this.LSCOptions.spinner : this.LSCOptions.background);
+         if(mode != 107)return mode;
+         if(!this.TRArtWasFullActive)return -1;
+         if(this.TRArtRandomTheme < 100)
+         {
+            var picked:String = this.LSCNativePickArtwork != null ? String(this.LSCNativePickArtwork("theme","100|101|102|103|104|105|106")) : "";
+            this.TRArtRandomTheme = picked.length > 0 ? int(picked) : 100+int(Math.random()*7);
+         }
+         return this.TRArtRandomTheme;
+      }
+
 
       private function TRArtInit() : void
       {
@@ -40,14 +74,16 @@
          if(this.TRArtSelected[index] != null)return String(this.TRArtSelected[index]);
          var files:Array = this.TRArtFiles[index] as Array;
          if(files == null || files.length == 0)return "";
-         var selected:int = int(Math.random()*files.length);
+         var picked:String = this.LSCNativePickArtwork != null ? String(this.LSCNativePickArtwork("artwork"+index,files.join("|"))) : "";
+         var selected:int = picked.length > 0 ? files.indexOf(picked) : int(Math.random()*files.length);
+         if(selected < 0)selected = 0;
          this.TRArtSelected[index] = String(files[selected]);
          return String(this.TRArtSelected[index]);
       }
       private function TRArtLoad(index:int,useDefault:Boolean = false) : void
       {
          if(this.TRArtDisposed || this.TRArtStates[index] != 0)return;
-         if(!useDefault && !this.TRArtManifestReady)return;
+         if(!useDefault && (!this.TRArtManifestReady || !this.TRArtWasFullActive))return;
          this.TRArtStates[index] = 1;this.TRArtUsingDefaults[index] = useDefault;
          var loader:Loader = new Loader();this.TRArtLoaders[index] = loader;
          var failed:Function = function(event:Event):void
@@ -177,7 +213,7 @@
       private function TRArtBackground() : Boolean
       {
          if(!this.TRArtIsFullScreen())return false;
-         var mode:int = int(this.LSCOptions.background);
+         var mode:int = this.TRArtMode(2);
          this.TRArtChoose(2,mode);
          var active:Boolean = (mode == 4 || mode == 8 || mode == 100 || mode == 101 || mode == 102 || mode == 103 || mode == 104 || mode == 105 || mode == 106) && this.TRArtBackgroundVisible();
          var host:Sprite = this.TRArtHosts[2] as Sprite;
@@ -209,16 +245,29 @@
             var active:Boolean = this.TRArtBackgroundVisible();
             if(active && !this.TRArtWasFullActive)
             {
+               this.TRArtRandomTheme = -1;
                if(int(this.LSCOptions.badge) == 3)this.TRArtChoose(0,-1);
                if(int(this.LSCOptions.spinner) == 3)this.TRArtChoose(1,-1);
                if(int(this.LSCOptions.background) == 4)this.TRArtChoose(2,-1);
             }
             this.TRArtWasFullActive = active;
          }
+         else
+         {
+            var spinner:DisplayObject = this["SpinnerIcon_mc"] as DisplayObject;
+            active = spinner != null && spinner.visible && spinner.alpha > 0.01;
+            if(active && !this.TRArtWasFullActive)
+            {
+               this.TRArtRandomTheme = -1;
+               if(int(this.LSCOptions.spinner) == 3)this.TRArtChoose(1,-1);
+            }
+            this.TRArtWasFullActive = active;
+         }
          for(var index:int = 0;index < 2;index++)
          {
-            var mode:int = int(index == 0 ? this.LSCOptions.badge : this.LSCOptions.spinner);
+            var mode:int = this.TRArtMode(index);
             this.TRArtChoose(index,mode);
+            this.TRArtResize(index,this.TRArtTarget(index));
             if(mode != 3 && mode != 6 && mode != 9 && mode != 100 && mode != 101 && mode != 102 && mode != 103 && mode != 104 && mode != 105 && mode != 106){this.TRArtRestore(index);continue;}
             var parent:DisplayObjectContainer = this.TRArtTarget(index);
             if(parent == null)continue;
@@ -236,7 +285,7 @@
          {
             var host:Sprite = this.TRArtHosts[index] as Sprite;
             var parent:DisplayObjectContainer = this.TRArtParents[index] as DisplayObjectContainer;
-            var mode:int = int(index == 0 ? this.LSCOptions.badge : this.LSCOptions.spinner);
+            var mode:int = this.TRArtMode(index);
             if(host == null || parent == null || host.parent != parent || this.TRArtStates[index] != 2 || (mode != 3 && mode != 6 && mode != 9 && mode != 100 && mode != 101 && mode != 102 && mode != 103 && mode != 104 && mode != 105 && mode != 106))continue;
             for(var childIndex:int = 0;childIndex < parent.numChildren;childIndex++)
             {

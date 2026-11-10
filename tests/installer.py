@@ -23,6 +23,8 @@ with tempfile.TemporaryDirectory(dir=root/'build') as temp:
     xml=ET.parse(installer/'fomod/ModuleConfig.xml').getroot()
     steps=xml.find('installSteps');backends=steps[0].findall('.//plugin')
     assert len(backends)==3
+    assert backends[2].get('name')=='Neither - configure in installer'
+    assert all(ord(c)<128 for step in steps for c in step.get('name',''))
     definitions={d['key']:d for d in json.loads((root/'src/settings-catalog.json').read_text())}
     for backend in backends:
         flag=backend.find('./conditionFlags/flag').text
@@ -49,4 +51,4 @@ with tempfile.TemporaryDirectory(dir=root/'build') as temp:
     assert not list((installer/'Options/Installer').rglob('*.json'))
     ini=configparser.ConfigParser();ini.read(installer/'Options/Installer/SFSE/Plugins/TransitReportBackend.ini')
     assert ini['Settings']['Backend']=='installer'
-print('Passed: three backends; conditional steps; all 17 default and non-default INIs; installer-only has no schema/menu files.')
+print('Passed: three backends; conditional steps; all catalog default and non-default INIs; installer-only has no schema/menu files.')

@@ -70,6 +70,7 @@ package
       private var HideProgressBarTimer:Timer;
       
       public var LSCNativeGetSnapshot:Function;
+      public var LSCNativePickArtwork:Function;
       public var LSCCard_mc:MovieClip;
       private var LSCCompactTimer:Timer;
       private var LSCShortMode:Boolean = false;
@@ -474,39 +475,23 @@ package
       private function LSCDrawExtras(snapshot:Object) : void
       {
          var groups:Array = [];
-         if(snapshot != null && snapshot.ready && (this.LSCLastName == "" || String(snapshot.character) == this.LSCLastName))
+         if((!this.LSCOptions.hasOwnProperty("lifetime_enabled") || int(this.LSCOptions.lifetime_enabled) == 1) && snapshot != null && snapshot.ready && (this.LSCLastName == "" || String(snapshot.character) == this.LSCLastName))
          {
             var lifetimeCatalog:Array = [{"label": "Hours Slept", "group": "general", "key": "counter_0"}, {"label": "Hours Waiting", "group": "general", "key": "counter_1"}, {"label": "Days Passed", "group": "general", "key": "counter_2"}, {"label": "Credits Found", "group": "general", "key": "counter_3"}, {"label": "Most Credits Carried", "group": "general", "key": "counter_4"}, {"label": "Chests Looted", "group": "general", "key": "counter_5"}, {"label": "Food Eaten", "group": "general", "key": "counter_6"}, {"label": "Chems Taken", "group": "general", "key": "counter_7"}, {"label": "Data Slates Read", "group": "general", "key": "counter_8"}, {"label": "Magazines Found", "group": "general", "key": "counter_9"}, {"label": "Speech Successes", "group": "general", "key": "counter_10"}, {"label": "Powers Learned", "group": "general", "key": "counter_11"}, {"label": "People Killed", "group": "combat", "key": "counter_12"}, {"label": "Creatures Killed", "group": "combat", "key": "counter_13"}, {"label": "Robots Killed", "group": "combat", "key": "counter_14"}, {"label": "Turrets Killed", "group": "combat", "key": "counter_15"}, {"label": "Critical Strikes", "group": "combat", "key": "counter_16"}, {"label": "Legendary Enemies Killed", "group": "combat", "key": "counter_17"}, {"label": "Jet Packs Exploded", "group": "combat", "key": "counter_18"}, {"label": "Sneak Attacks", "group": "combat", "key": "counter_19"}, {"label": "Powers Used", "group": "combat", "key": "counter_20"}, {"label": "Zero G Kills", "group": "combat", "key": "counter_21"}, {"label": "Locations Discovered", "group": "exploration", "key": "counter_22"}, {"label": "Locations Explored", "group": "exploration", "key": "counter_23"}, {"label": "Systems Visited", "group": "exploration", "key": "counter_24"}, {"label": "Planets Scanned", "group": "exploration", "key": "counter_25"}, {"label": "Planets Fully Surveyed", "group": "exploration", "key": "counter_26"}, {"label": "Planets Landed On", "group": "exploration", "key": "counter_27"}, {"label": "Flora Fully Scanned", "group": "exploration", "key": "counter_28"}, {"label": "Fauna Fully Scanned", "group": "exploration", "key": "counter_29"}, {"label": "Unique Creatures Scanned", "group": "exploration", "key": "counter_30"}, {"label": "Temples Found", "group": "exploration", "key": "counter_31"}, {"label": "Food Cooked", "group": "crafting", "key": "counter_32"}, {"label": "Drugs Crafted", "group": "crafting", "key": "counter_33"}, {"label": "Items Scrapped", "group": "crafting", "key": "counter_34"}, {"label": "Items Manufactured", "group": "crafting", "key": "counter_35"}, {"label": "Objects Built", "group": "crafting", "key": "counter_36"}, {"label": "Outposts Built", "group": "crafting", "key": "counter_37"}, {"label": "Cargo Links Established", "group": "crafting", "key": "counter_38"}, {"label": "Workshops Unlocked", "group": "crafting", "key": "counter_39"}, {"label": "Quests Completed", "group": "quests", "key": "counter_40"}, {"label": "Activities Completed", "group": "quests", "key": "counter_41"}, {"label": "Main Quests Completed", "group": "quests", "key": "counter_42"}, {"label": "Side Quests Completed", "group": "quests", "key": "counter_43"}, {"label": "Freestar Collective Quests Completed", "group": "quests", "key": "counter_44"}, {"label": "Crimson Fleet Quests Completed", "group": "quests", "key": "counter_45"}, {"label": "United Colonies Quests Completed", "group": "quests", "key": "counter_46"}, {"label": "Ryujin Industries Quests Completed", "group": "quests", "key": "counter_47"}, {"label": "Grav Jumps", "group": "ship", "key": "counter_48"}, {"label": "Ships Sold", "group": "ship", "key": "counter_49"}, {"label": "Ships Painted", "group": "ship", "key": "counter_50"}, {"label": "Ship Modules Built", "group": "ship", "key": "counter_51"}, {"label": "Ships Docked With", "group": "ship", "key": "counter_52"}, {"label": "Stations Docked With", "group": "ship", "key": "counter_53"}, {"label": "Ships Customized", "group": "ship", "key": "counter_54"}, {"label": "Ship Builder Credits Spent", "group": "ship", "key": "counter_55"}, {"label": "Largest Crew Size", "group": "ship", "key": "counter_56"}, {"label": "Max Ships Owned", "group": "ship", "key": "counter_57"}, {"label": "Times Arrested", "group": "crime", "key": "counter_58"}, {"label": "Trespasses", "group": "crime", "key": "counter_59"}, {"label": "Times Caught With Contraband", "group": "crime", "key": "counter_60"}, {"label": "Total Lifetime Bounty", "group": "crime", "key": "counter_61"}, {"label": "Largest Bounty", "group": "crime", "key": "counter_62"}, {"label": "Acts of Piracy", "group": "crime", "key": "counter_63"}, {"label": "Pockets Picked", "group": "crime", "key": "counter_64"}, {"label": "Locks Picked", "group": "crime", "key": "counter_65"}, {"label": "Items Stolen", "group": "crime", "key": "counter_66"}];
             var lifetimeGroups:Array = [];
             var randomPool:Array = [];
-            var categoryKeys:Array = ["general", "combat", "exploration", "crafting", "quests", "ship", "crime"];
-            var categoryTitles:Array = ["GENERAL", "COMBAT", "EXPLORATION", "CRAFTING & OUTPOSTS", "QUESTS", "SHIPS", "CRIME"];
-            for(var categoryIndex:int = 0;categoryIndex < categoryKeys.length;categoryIndex++)
+            for(var counterIndex:int = 0;counterIndex < lifetimeCatalog.length;counterIndex++)
             {
-               var mode:int = int(this.LSCOptions["lifetime_"+categoryKeys[categoryIndex]]);
-               if(mode == 0)continue;
-               var readings:Array = [];
-               for(var counterIndex:int = 0;counterIndex < lifetimeCatalog.length;counterIndex++)
-               {
-                  var definition:Object = lifetimeCatalog[counterIndex];
-                  if(definition.group != categoryKeys[categoryIndex] || snapshot["stat_"+definition.key] == null)continue;
-                  if(mode >= 100 && definition.key != "counter_"+(mode-100).toString())continue;
-                  var reading:Object = {key:"lifetime",label:definition.label.toUpperCase(),value:String(snapshot["stat_"+definition.key]),rank:(Math.sin((counterIndex+1)*12.9898+this.LSCLifetimeSeed)*43758.5453)%1};
-                  readings.push(reading);randomPool.push(reading);
-               }
-               if(mode == 2){readings.sortOn("rank",Array.NUMERIC);readings = readings.slice(0,4);}
-               for(var first:int = 0;first < readings.length;first+=4)
-                  lifetimeGroups.push({title:categoryTitles[categoryIndex],items:readings.slice(first,first+4)});
+               var definition:Object = lifetimeCatalog[counterIndex];
+               if(snapshot["stat_"+definition.key] == null)continue;
+               if(int(this.LSCOptions.hide_zero) == 1 && this.LSCIsZeroStat(String(snapshot["stat_"+definition.key])))continue;
+               randomPool.push({key:"lifetime",label:definition.label.toUpperCase(),value:String(snapshot["stat_"+definition.key]),rank:(Math.sin((counterIndex+1)*12.9898+this.LSCLifetimeSeed)*43758.5453)%1});
             }
-            if(int(this.LSCOptions.lifetime_mode) == 1)
-            {
-               randomPool.sortOn("rank",Array.NUMERIC);
-               var randomPageLimit:int = this.LSCOptions.hasOwnProperty("page_count") ? Math.max(1,Math.min(5,int(this.LSCOptions.page_count))) : 2;
-               randomPool=randomPool.slice(0,randomPageLimit*4);
-               lifetimeGroups=[];groups=[];
-               for(var randomStart:int = 0;randomStart < randomPool.length;randomStart+=4)
-                  lifetimeGroups.push({title:"RANDOM HIGHLIGHTS",items:randomPool.slice(randomStart,randomStart+4)});
-            }
+            randomPool.sortOn("rank",Array.NUMERIC);
+            var randomPageLimit:int = this.LSCOptions.hasOwnProperty("page_count") ? Math.max(1,Math.min(5,int(this.LSCOptions.page_count))) : 2;
+            randomPool=randomPool.slice(0,randomPageLimit*4);
+            for(var randomStart:int = 0;randomStart < randomPool.length;randomStart+=4)
+               lifetimeGroups.push({title:"RANDOM HIGHLIGHTS",items:randomPool.slice(randomStart,randomStart+4)});
             groups = groups.concat(lifetimeGroups);
          }
          var pageLimit:int = this.LSCOptions.hasOwnProperty("page_count") ? Math.max(1,Math.min(5,int(this.LSCOptions.page_count))) : 2;
@@ -639,6 +624,13 @@ package
          }
       }
 
+      private function LSCIsZeroStat(value:String) : Boolean
+      {
+         var cleaned:String = value.replace(/,/g,"").replace(/^\s+|\s+$/g,"");
+         if(cleaned.length == 0)return false;
+         var number:Number = Number(cleaned);
+         return !isNaN(number) && number == 0;
+      }
       private var LSCLifetimeSeed:Number = Math.random()*10000;
 
       private var LSCReadabilityPanel:Sprite;
@@ -1122,6 +1114,40 @@ package
       private var TRArtSelected:Array = [null,null,null];
       private var TRArtManifestReady:Boolean = false;
       private var TRArtWasFullActive:Boolean = false;
+      private var TRArtRandomTheme:int = -1;
+      private var TRArtSizeBases:Array = [null,null];
+      private function TRArtResize(index:int,parent:DisplayObjectContainer) : void
+      {
+         if(parent == null)return;
+         var saved:Object = this.TRArtSizeBases[index];
+         if(saved == null || saved.parent != parent)
+         {
+            var custom:DisplayObjectContainer = this.TRArtFind(parent);
+            var bounds:Rectangle = custom != null ? custom.getBounds(parent) : parent.getBounds(parent);
+            saved = {parent:parent,matrix:parent.transform.matrix.clone(),cx:bounds.x+bounds.width/2,cy:bounds.y+bounds.height/2};
+            this.TRArtSizeBases[index] = saved;
+         }
+         var key:String = index == 0 ? "badge_size" : "indicator_size";
+         var size:int = this.LSCOptions.hasOwnProperty(key) ? int(this.LSCOptions[key]) : 100;
+         var factor:Number = 1.5*(size == 50 || size == 75 || size == 125 || size == 150 ? size/100 : 1);
+         var base:Matrix = saved.matrix as Matrix;
+         parent.transform.matrix = new Matrix(base.a*factor,base.b*factor,base.c*factor,base.d*factor,
+            base.tx+(1-factor)*(base.a*saved.cx+base.c*saved.cy),base.ty+(1-factor)*(base.b*saved.cx+base.d*saved.cy));
+      }
+
+      private function TRArtMode(index:int) : int
+      {
+         var mode:int = int(index == 0 ? this.LSCOptions.badge : index == 1 ? this.LSCOptions.spinner : this.LSCOptions.background);
+         if(mode != 107)return mode;
+         if(!this.TRArtWasFullActive)return -1;
+         if(this.TRArtRandomTheme < 100)
+         {
+            var picked:String = this.LSCNativePickArtwork != null ? String(this.LSCNativePickArtwork("theme","100|101|102|103|104|105|106")) : "";
+            this.TRArtRandomTheme = picked.length > 0 ? int(picked) : 100+int(Math.random()*7);
+         }
+         return this.TRArtRandomTheme;
+      }
+
 
       private function TRArtInit() : void
       {
@@ -1146,14 +1172,16 @@ package
          if(this.TRArtSelected[index] != null)return String(this.TRArtSelected[index]);
          var files:Array = this.TRArtFiles[index] as Array;
          if(files == null || files.length == 0)return "";
-         var selected:int = int(Math.random()*files.length);
+         var picked:String = this.LSCNativePickArtwork != null ? String(this.LSCNativePickArtwork("artwork"+index,files.join("|"))) : "";
+         var selected:int = picked.length > 0 ? files.indexOf(picked) : int(Math.random()*files.length);
+         if(selected < 0)selected = 0;
          this.TRArtSelected[index] = String(files[selected]);
          return String(this.TRArtSelected[index]);
       }
       private function TRArtLoad(index:int,useDefault:Boolean = false) : void
       {
          if(this.TRArtDisposed || this.TRArtStates[index] != 0)return;
-         if(!useDefault && !this.TRArtManifestReady)return;
+         if(!useDefault && (!this.TRArtManifestReady || !this.TRArtWasFullActive))return;
          this.TRArtStates[index] = 1;this.TRArtUsingDefaults[index] = useDefault;
          var loader:Loader = new Loader();this.TRArtLoaders[index] = loader;
          var failed:Function = function(event:Event):void
@@ -1283,7 +1311,7 @@ package
       private function TRArtBackground() : Boolean
       {
          if(!this.TRArtIsFullScreen())return false;
-         var mode:int = int(this.LSCOptions.background);
+         var mode:int = this.TRArtMode(2);
          this.TRArtChoose(2,mode);
          var active:Boolean = (mode == 4 || mode == 8 || mode == 100 || mode == 101 || mode == 102 || mode == 103 || mode == 104 || mode == 105 || mode == 106) && this.TRArtBackgroundVisible();
          var host:Sprite = this.TRArtHosts[2] as Sprite;
@@ -1315,16 +1343,29 @@ package
             var active:Boolean = this.TRArtBackgroundVisible();
             if(active && !this.TRArtWasFullActive)
             {
+               this.TRArtRandomTheme = -1;
                if(int(this.LSCOptions.badge) == 3)this.TRArtChoose(0,-1);
                if(int(this.LSCOptions.spinner) == 3)this.TRArtChoose(1,-1);
                if(int(this.LSCOptions.background) == 4)this.TRArtChoose(2,-1);
             }
             this.TRArtWasFullActive = active;
          }
+         else
+         {
+            var spinner:DisplayObject = this["SpinnerIcon_mc"] as DisplayObject;
+            active = spinner != null && spinner.visible && spinner.alpha > 0.01;
+            if(active && !this.TRArtWasFullActive)
+            {
+               this.TRArtRandomTheme = -1;
+               if(int(this.LSCOptions.spinner) == 3)this.TRArtChoose(1,-1);
+            }
+            this.TRArtWasFullActive = active;
+         }
          for(var index:int = 0;index < 2;index++)
          {
-            var mode:int = int(index == 0 ? this.LSCOptions.badge : this.LSCOptions.spinner);
+            var mode:int = this.TRArtMode(index);
             this.TRArtChoose(index,mode);
+            this.TRArtResize(index,this.TRArtTarget(index));
             if(mode != 3 && mode != 6 && mode != 9 && mode != 100 && mode != 101 && mode != 102 && mode != 103 && mode != 104 && mode != 105 && mode != 106){this.TRArtRestore(index);continue;}
             var parent:DisplayObjectContainer = this.TRArtTarget(index);
             if(parent == null)continue;
@@ -1342,7 +1383,7 @@ package
          {
             var host:Sprite = this.TRArtHosts[index] as Sprite;
             var parent:DisplayObjectContainer = this.TRArtParents[index] as DisplayObjectContainer;
-            var mode:int = int(index == 0 ? this.LSCOptions.badge : this.LSCOptions.spinner);
+            var mode:int = this.TRArtMode(index);
             if(host == null || parent == null || host.parent != parent || this.TRArtStates[index] != 2 || (mode != 3 && mode != 6 && mode != 9 && mode != 100 && mode != 101 && mode != 102 && mode != 103 && mode != 104 && mode != 105 && mode != 106))continue;
             for(var childIndex:int = 0;childIndex < parent.numChildren;childIndex++)
             {

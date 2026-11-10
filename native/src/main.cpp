@@ -30,6 +30,7 @@
 #include "StatMemory.h"
 #include "ArtworkCache.h"
 #include "ArtworkTheme.h"
+#include "ArtworkRandom.h"
 
 
 
@@ -312,6 +313,18 @@ namespace
 
 
 
+    TransitRandom::Picker g_artworkPicker;
+    class PickArtwork final:public RE::Scaleform::GFx::FunctionHandler {
+      void Call(const Params& args) override {
+        if(!args.ret||!args.movie||!args.movie->asMovieRoot||!args.args||args.argCount!=2||!args.args[0].IsString()||!args.args[1].IsString())return;
+        const std::string key=args.args[0].GetString(),text=args.args[1].GetString();
+        if((key!="theme"&&key!="artwork0"&&key!="artwork1"&&key!="artwork2")||text.size()>16384)return;
+        std::vector<std::string> pool;std::size_t start=0;
+        while(start<text.size()&&pool.size()<64){const auto end=text.find('|',start);auto value=text.substr(start,end==std::string::npos?end:end-start);if(!value.empty())pool.push_back(value);if(end==std::string::npos)break;start=end+1;}
+        const auto selected=g_artworkPicker.Pick(key,pool);
+        args.movie->asMovieRoot->CreateString(args.ret,selected.c_str());
+      }
+    };
     class ReadSnapshot final:public RE::Scaleform::GFx::FunctionHandler
     {
         LSCNavigation::State m_navigation;
@@ -439,6 +452,9 @@ namespace
             RE::Scaleform::GFx::Value slot;
             if(!object.GetMember("LSCNativeGetSnapshot",&slot))return false;
             const bool bound=object.SetMember("LSCNativeGetSnapshot",function);
+            auto* picker=new PickArtwork();RE::Scaleform::GFx::Value pickerFunction;
+            menu->uiMovie->asMovieRoot->CreateFunction(&pickerFunction,picker);picker->Release();
+            object.SetMember("LSCNativePickArtwork",pickerFunction);
             REX::INFO("LSC LoadingMenu binding at {}: {}",path,bound);
             return bound;
         };

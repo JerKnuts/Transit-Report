@@ -11,7 +11,7 @@ class Loader{constructor(){this.events={};this.contentLoaderInfo={addEventListen
 class URLRequest{constructor(url){this.url=url;}}
 const load=method('TRArtLoad',['index','useDefault','Loader','URLRequest','Event','IOErrorEvent','SecurityErrorEvent']);
 const randomFilename=method('TRArtRandomFilename',['index']);
-function model(){const m={TRArtDisposed:false,TRArtManifestReady:true,TRArtSelected:[null,null,null],TRArtFiles:[['badge-a.swf','badge-b.swf'],['indicator-a.swf','indicator-b.swf'],['wallpaper-a.swf','wallpaper-b.swf']],TRArtStates:[0,0,0],TRArtUsingDefaults:[false,false,false],TRArtLoaders:[null,null,null],TRArtContents:[null,null,null],TRArtWidths:[0,0,0],TRArtHeights:[0,0,0],TRArtRequested:[-1,-1,5],TRArtNames:['badge','indicator','wallpaper'],Math:{random:()=>.75,trunc:Math.trunc}};m.TRArtRandomFilename=function(i){return randomFilename.call(this,i)};return m;}
+function model(){const m={TRArtWasFullActive:true,TRArtDisposed:false,TRArtManifestReady:true,TRArtSelected:[null,null,null],TRArtFiles:[['badge-a.swf','badge-b.swf'],['indicator-a.swf','indicator-b.swf'],['wallpaper-a.swf','wallpaper-b.swf']],TRArtStates:[0,0,0],TRArtUsingDefaults:[false,false,false],TRArtLoaders:[null,null,null],TRArtContents:[null,null,null],TRArtWidths:[0,0,0],TRArtHeights:[0,0,0],TRArtRequested:[-1,-1,5],TRArtNames:['badge','indicator','wallpaper'],Math:{random:()=>.75,trunc:Math.trunc}};m.TRArtRandomFilename=function(i){return randomFilename.call(this,i)};return m;}
 function invoke(m,index,builtin){load.call(m,index,builtin,Loader,URLRequest,{COMPLETE:'complete'},{IO_ERROR:'error'},{SECURITY_ERROR:'security'});return created.at(-1);}
 for(const builtin of [false,true])for(let index=0;index<3;index++){
  const m=model(),loader=invoke(m,index,builtin);assert.equal(loader.url,`TransitReport/${builtin?'Defaults':'Cache'}/${m.TRArtNames[index]}${builtin?'':'-b'}.swf`);
@@ -59,3 +59,5 @@ for(const index of [0,1,2]){const m=model();m.TRArtRequested[index]=104;const lo
 for(const index of [0,1,2]){const m=model();m.TRArtRequested[index]=105;const loader=invoke(m,index,true);assert.equal(loader.url,"TransitReport/Defaults/"+(index<2?"trackers-alliance-coin.swf":"trackers-alliance-wallpaper.swf"));}
 
 for(const index of [0,1,2]){const m=model();m.TRArtRequested[index]=106;const loader=invoke(m,index,true);assert.equal(loader.url,"TransitReport/Defaults/"+(index<2?"united-colonies-coin.swf":"united-colonies-wallpaper.swf"));}
+
+const inactive=model();inactive.TRArtWasFullActive=false;const before=created.length;invoke(inactive,0,false);assert.equal(created.length,before,"Inactive menus must not consume a Custom random selection");

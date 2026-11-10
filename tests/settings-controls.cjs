@@ -24,4 +24,4 @@ for(let i=0;i<definitions.length;i++){
 }
 assert(!panel.error);assert.equal(new Set(rows.map(r=>r.uID)).size,rows.length);
 delete host.TRConfig;assert.deepEqual(panel.TRBuildRows(original),original,'Missing native bridge must leave vanilla UI alone');
-console.log('Passed: 17 Gameplay controls, native option preservation, default mapping, all choice encodings, unique row IDs and graceful missing-bridge behavior.');
+console.log('Passed: Gameplay controls, native option preservation, default mapping, all choice encodings, unique row IDs and graceful missing-bridge behavior.');

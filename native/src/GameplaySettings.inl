@@ -23,9 +23,9 @@ void TRAliases(std::map<std::string,int>& values)
     values["name"]=values["level"]=values["character"];
     values["xp_bar"]=values["xp_numbers"]=values["progress"];
     for(const char* key:{"short","credits","location","vitals","health","oxygen","co2","power","carry_weight","resistances","physical_resist","energy_resist","em_resist","condition_capacity","details","experience_raw","cell","coordinates","wait_continue","density"})values[key]=0;
-    values["lifetime_test"]=0;
+    values["lifetime_test"]=values["lifetime_enabled"];values["lifetime_mode"]=1;
     for(const char* category:{"general","combat","exploration","crafting","quests","ship","crime"})
-        values["lifetime_test"]|=values[std::string("lifetime_")+category]!=0;
+        values[std::string("lifetime_")+category]=1;
 }
 void RefreshStandalone() noexcept
 {

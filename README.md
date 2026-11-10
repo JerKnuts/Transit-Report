@@ -27,7 +27,7 @@ Use one or more supported images per folder. Empty folders or invalid images fal
 
 ## Features
 
-- 67 lifetime counters across seven categories: pick categories, individual counters, or randomize each load.
+- 67 lifetime counters automatically randomized from the full pool each load. Hide zero-value stats remains optional.
 - Four stats per page, one to five pages; change pages with A/D or the controller D-pad.
 - Animated Orbital Chart, Grav-jump Tunnel and Survey Sweep backgrounds, or the original game images with a dark backing for readability.
 - Independent character badge and loading indicator options (Original, Orbiting Star or hidden).
@@ -109,3 +109,21 @@ Short-transition indicator follow-up: enforce Custom/built-in replacement exclus
 
 
 Animated GIF limits: up to 240 frames, 60 seconds, 2048px source canvas and 16 megapixels across all decoded frames. Animations are resized to at most 512px. Very short frame delays are limited by 30fps playback. Restart Starfield after adding files. Custom animated badge playback was verified in-game by the user.
+
+
+Local 0.9.8 update: Theme now offers Random Each Load. It picks one of the seven faction themes per loading screen and holds that choice throughout the load. Slots set to Theme share the selection; other artwork options remain independent. Immediate repeats are avoided when alternatives exist. In-game verification pending.
+
+
+Local polish test: independent badge/indicator sizes (50%, 75%, 100%, 125%, 150%); no immediate random theme or Custom artwork repeats when alternatives exist (session-wide); optional hide-zero lifetime stats. Default size is Normal (100%), equal to the previous 150% and hide-zero is Off. In-game clearance and behavior testing pending.
+
+Installer text fix: the installer-only choice is labeled "Neither - configure in installer". Category page titles also use plain hyphens to avoid corrupted characters.
+
+FOMOD descriptions use general installation guidance; collection-specific recommendations and outdated initial-testing wording have been removed.
+
+Coin glint update: tilt frames now preserve the nested glint animation, with a brighter moving highlight on all seven faction coins. Both badge and indicator use the corrected asset. In-game verification pending.
+
+Lifetime stats are always random. Category and Lifetime display selectors have been removed from OSF Settings, Gameplay Options and the installer; previous category restrictions are ignored.
+
+Lifetime stats can be switched On or Off under Full loading screen (On by default). Enabled stats remain randomized; Hide zero-value stats and page count remain independent. Faction coin glints now use half the previous peak opacity and a slower six-second sweep with shorter travel; the three-second tilt is unchanged. In-game verification pending.
+
+OSF Settings sections use untitled divider groups; the Transit Report page title and setting labels remain visible. No OSF framework files are replaced.

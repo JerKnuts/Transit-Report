@@ -5,7 +5,7 @@ from artwork_swf import read_swf
 catalog=json.loads(Path('src/settings-catalog.json').read_text(encoding='utf-8'));schema=json.loads(Path('src/osf/loading-screen-configurator.json').read_text(encoding='utf-8'))
 native=Path('native/src/LSCSettings.inl').read_text(encoding='utf-8');defs=Path('native/src/TRSettingsCatalog.inl').read_text(encoding='utf-8')
 for key in ['badge','spinner','background']:
- d=next(d for d in catalog if d['key']==key);control=next(d for d in schema['groups']['Appearance'] if d['key']==key)
+ d=next(d for d in catalog if d['key']==key);control=next(d for d in [item for group in schema['groups'].values() for item in group] if d['key']==key)
  assert d['labels'][-1]=='Custom';assert list(control['options'].values())==d['labels']
  allowed=list(map(int,re.search(r'\{"'+key+r'",\d+,\{([^}]*)',defs).group(1).split(',')));assert allowed==d['values']
  for option,value in zip(control['options'],d['values']):assert f'if(value=="{option}")next["{key}"]={value};' in native

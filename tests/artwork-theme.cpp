@@ -14,6 +14,7 @@ int main(){
   }
  }
  stored["badge"]=stored["spinner"]=stored["background"]=10;
+ stored["theme"]=8;for(const char* key:{"badge","spinner","background"})assert(TransitTheme::ForDisplay(stored).at(key)==107);
  stored["theme"]=900;for(const char* key:{"badge","spinner","background"})assert(TransitTheme::ForDisplay(stored).at(key)==1);
  stored.erase("theme");assert(TransitTheme::ForDisplay(stored).at("badge")==1);
  std::cout<<"Passed: explicit Theme per slot; Original, Hidden and other choices preserved for all factions; fallback and saved values correct.\n";

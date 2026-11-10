@@ -17,18 +17,15 @@ def configure(installer: Path, catalog: Path):
         if flags is None:flags=ET.SubElement(plugin,'conditionFlags')
         flags.clear();ET.SubElement(flags,'flag',name='tr_backend').text='menu'
         plugin.remove(flags);plugin.insert(list(plugin).index(plugin.find('typeDescriptor')),flags)
-    plugin=ET.SubElement(plugins,'plugin',name='Neither â€” configure in installer')
+    plugin=ET.SubElement(plugins,'plugin',name='Neither - configure in installer')
     ET.SubElement(plugin,'description').text='Choose all Transit Report settings on the following installer pages. Adds no OSF Settings entry and no Gameplay Options controls. Reinstall with Replace to change choices or switch settings backends. Previous menu preferences are ignored in this mode.'
     files=ET.SubElement(plugin,'files');ET.SubElement(files,'folder',source='Options/Installer',destination='',priority='10')
     flags=ET.SubElement(plugin,'conditionFlags');ET.SubElement(flags,'flag',name='tr_backend').text='installer'
     ET.SubElement(ET.SubElement(plugin,'typeDescriptor'),'type',name='Optional')
     marker=installer/'Options/Installer/SFSE/Plugins/TransitReportBackend.ini'
     marker.parent.mkdir(parents=True,exist_ok=True);marker.write_text('[Settings]\nBackend=installer\n', encoding="utf-8")
-    groups=[('Appearance',['theme','badge','spinner','background']),
-            ('Display and pages',['character','progress','tips','clock','page_count','lifetime_mode']),
-            ('Lifetime categories â€” general and combat',['lifetime_general','lifetime_combat']),
-            ('Lifetime categories â€” exploration and crafting',['lifetime_exploration','lifetime_crafting']),
-            ('Lifetime categories â€” quests, ships and crime',['lifetime_quests','lifetime_ship','lifetime_crime'])]
+    groups=[('Appearance',['theme','badge','spinner','background','badge_size','indicator_size']),
+            ('Display and pages',['character','progress','lifetime_enabled','tips','clock','page_count','hide_zero'])]
     by_key={d['key']:d for d in definitions}
     for title,keys in groups:
         step=ET.SubElement(steps,'installStep',name=title)

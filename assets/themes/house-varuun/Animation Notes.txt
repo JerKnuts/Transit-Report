@@ -1,1 +1,1 @@
-Approved three-second 30fps loop: faster and stronger tilt with prominent glint. Same animation for badge and indicator. Filtered 192px runtime texture; detailed PNG preserved. In-game verification pending.
+Six-second glint sweep at half the previous peak opacity, with shorter travel inside the coin. Three-second tilt preserved; 30fps uninterrupted nested playback. Same animation for badge and indicator. Filtered 192px runtime texture; detailed PNG preserved. In-game verification pending.
