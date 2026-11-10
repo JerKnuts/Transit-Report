@@ -22,7 +22,7 @@
               </typeDescriptor>
             </plugin>
             <plugin name="Gameplay Options (standalone)">
-              <description>Configure Transit Report directly inside Gameplay Options. Does not require OSF Settings or OSF UI. Installs MainMenu, PauseMenu and SettingsPanel replacements; other replacements of those files may conflict.</description>
+              <description>Configure Transit Report directly inside Gameplay Options. Does not require OSF Settings or OSF UI. Test branch: installs settings-panel replacements only. Does not replace the main-menu or pause-menu SWFs. Other settings-panel replacements may conflict.</description>
               <files>
                 <folder source="Options/Gameplay" destination="" priority="10" />
               </files>

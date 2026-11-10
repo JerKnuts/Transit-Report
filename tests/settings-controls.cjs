@@ -5,7 +5,7 @@ function get(name){let start=source.indexOf('private function '+name+'('),a=sour
 const values=Object.fromEntries(definitions.map(d=>[d.key,d.default]));
 const api=(command,key,value)=>{if(command==='set'){const d=definitions.find(d=>d.key===key);if(!d||!d.values.includes(value))return {ok:false};values[key]=value;}return {ok:true,...values};};
 const host={parent:null,TRConfig:api};
-const panel={parent:host,TRDefinitions:definitions,TRVanillaRows:[],SetPromptText(message){this.error=message;}};
+const panel={TRConfig:api,parent:host,TRDefinitions:definitions,TRVanillaRows:[],SetPromptText(message){this.error=message;}};
 const bridge=get('TRBridge'),build=get('TRBuildRows'),change=get('TRSettingChange');
 const uint=x=>Number(x)>>>0;
 panel.TRBridge=()=>bridge.call(panel,null,null,uint);
@@ -23,5 +23,14 @@ for(let i=0;i<definitions.length;i++){
  assert.equal(values[d.key],d.values[choice],'Persist encoded value, not dropdown index: '+d.key);
 }
 assert(!panel.error);assert.equal(new Set(rows.map(r=>r.uID)).size,rows.length);
-delete host.TRConfig;assert.deepEqual(panel.TRBuildRows(original),original,'Missing native bridge must leave vanilla UI alone');
+delete panel.TRConfig;assert.deepEqual(panel.TRBuildRows(original),original,'Missing native bridge must leave vanilla UI alone');
 console.log('Passed: Gameplay controls, native option preservation, default mapping, all choice encodings, unique row IDs and graceful missing-bridge behavior.');
+
+assert(source.includes('public var TRConfig:Function;'),'Panel owns its settings connection');
+assert(!bridge.toString().includes('host.parent'),'No menu-root connection required');
+const marker=source.indexOf('public function TRRefreshSettings('),begin=source.indexOf('{',marker);let finish=begin+1,nesting=1;
+while(nesting){if(source[finish]==='{')nesting++;if(source[finish]==='}')nesting--;finish++;}
+const refresh=new Function(source.slice(begin+1,finish-1).replace(/var (\w+):\w+/g,'let $1'));
+panel.TRConfig=api;panel.TRVanillaRows=original;panel.PEOList_mc.selectedIndex=3;refresh.call(panel);assert.equal(panel.PEOList_mc.selectedIndex,3);assert.equal(panel.PEOList_mc.rows.length,definitions.length+2);
+panel.TRVanillaRows=[];panel.PEOList_mc.InitializeEntries=()=>{throw Error('Do not refresh before engine data exists');};refresh.call(panel);
+console.log('Passed: panel-owned connection and late-binding refresh preserve selection; missing data is left alone.');

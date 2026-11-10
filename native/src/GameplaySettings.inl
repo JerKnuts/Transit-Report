@@ -122,20 +122,28 @@ void BindGameplayBridge(RE::IMenu* menu)
     if(!menu||!menu->uiMovie||!menu->uiMovie->asMovieRoot)return;
     auto* handler=new TRSettingsBridge();RE::Scaleform::GFx::Value function;
     menu->uiMovie->asMovieRoot->CreateFunction(&function,handler);handler->Release();
-    const auto bind=[&](RE::Scaleform::GFx::Value& object)
+    const auto bindPanel=[&](RE::Scaleform::GFx::Value& object)
     {
         if(!object.IsObject())return false;
         RE::Scaleform::GFx::Value slot;
-        return object.GetMember("TRConfig",&slot)&&object.SetMember("TRConfig",function);
+        if(!object.GetMember("TRConfig",&slot)||!object.SetMember("TRConfig",function))return false;
+        object.Invoke("TRRefreshSettings",nullptr,nullptr,0);
+        return true;
     };
-    if(bind(menu->menuObj)){REX::INFO("Transit Report: Gameplay Options bridge bound in {}.",menu->GetName());return;}
+    const auto bindRoot=[&](RE::Scaleform::GFx::Value& root)
+    {
+        if(!root.IsObject())return false;
+        RE::Scaleform::GFx::Value panel;
+        return root.GetMember("SettingsPanel_mc",&panel)&&bindPanel(panel);
+    };
+    if(bindRoot(menu->menuObj)){REX::INFO("Transit Report: panel-only Gameplay bridge bound in {}.",menu->GetName());return;}
     for(const char* path:{menu->GetRootPath(),"root","_root"})
     {
         if(!path||!*path)continue;
         RE::Scaleform::GFx::Value object;
-        if(menu->uiMovie->asMovieRoot->GetVariable(&object,path)&&bind(object))
-        {REX::INFO("Transit Report: Gameplay Options bridge bound at {} in {}.",path,menu->GetName());return;}
+        if(menu->uiMovie->asMovieRoot->GetVariable(&object,path)&&bindRoot(object))
+        {REX::INFO("Transit Report: panel-only Gameplay bridge bound at {}.SettingsPanel_mc in {}.",path,menu->GetName());return;}
     }
-    REX::WARN("Transit Report: Gameplay Options bridge not found in {}. Check the matching Gameplay menu files and their MO2 conflicts.",menu->GetName());
+    REX::WARN("Transit Report: panel-only Gameplay bridge not found in {}. SettingsPanel_mc may not be loaded yet, or a conflicting settings panel is active.",menu->GetName());
 }
 

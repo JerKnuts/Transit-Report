@@ -50,7 +50,7 @@ Install the archive with a FOMOD-capable manager (MO2 or Vortex), choose a setti
 
 ## Compatibility
 
-- **Gameplay Options** replaces the MainMenu, PauseMenu and SettingsPanel SWFs (including large-interface variants) and can conflict with other menu replacers. The OSF Settings and installer-only options don't touch those menus.
+- **Gameplay Options (this test branch)** replaces only mainmenu_settingspanel.swf, settingspanel.swf and settingspanel_lrg.swf. Main-menu and pause-menu SWFs are not included; settings-panel replacers can still conflict. The OSF Settings and installer-only options don't touch those menus.
 - Mods that replace `loadingmenu.swf` or `fadermenu.swf` conflict with all options.
 - No ESM/ESP; safe to add to an existing save.
 
@@ -127,3 +127,5 @@ Lifetime stats are always random. Category and Lifetime display selectors have b
 Lifetime stats can be switched On or Off under Full loading screen (On by default). Enabled stats remain randomized; Hide zero-value stats and page count remain independent. Faction coin glints now use half the previous peak opacity and a slower six-second sweep with shorter travel; the three-second tilt is unchanged. In-game verification pending.
 
 OSF Settings sections use untitled divider groups; the Transit Report page title and setting labels remain visible. No OSF framework files are replaced.
+
+Panel-only Gameplay Options experiment (test/gameplay-panel-bridge): native settings binding moved to SettingsPanel_mc. The Gameplay option ships only mainmenu_settingspanel.swf, settingspanel.swf and settingspanel_lrg.swf. Mainmenu.swf, pausemenu.swf and pausemenu_lrg.swf are excluded. Install with Replace and fully restart. Test settings from both main and pause menus and check persistence. Panel availability at the menu-creation callback needs in-game verification; missing binding logs a warning and leaves vanilla options.

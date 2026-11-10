@@ -15,8 +15,9 @@ shutil.copytree(r/'installer/fomod',p/'fomod',dirs_exist_ok=True)
 for f in (r/'build/ui/loading').glob('*.swf'):copy(f.relative_to(r),Path('Core/Interface')/f.name)
 assert (p/'Core/Interface/loadingmenu.swf').is_file(),'Run build-ui.ps1 first'
 copy('native/staged/SFSE/Plugins/LSCNativeBridge.dll','Core/SFSE/Plugins/LSCNativeBridge.dll')
-for f in (r/'build/ui/gameplay').glob('*.swf'):copy(f.relative_to(r),Path('Options/Gameplay/Interface')/f.name)
-assert len(list((p/'Options/Gameplay/Interface').glob('*.swf')))==6
+for name in ['mainmenu_settingspanel.swf','settingspanel.swf','settingspanel_lrg.swf']:
+ copy(Path('build/ui/gameplay')/name,Path('Options/Gameplay/Interface')/name)
+assert len(list((p/'Options/Gameplay/Interface').glob('*.swf')))==3
 copy('src/osf/loading-screen-configurator.json','Options/OSF/SFSE/Plugins/OSF/Settings/schemas/loading-screen-configurator.json')
 for name,value in [('OSF','osf'),('Gameplay','gameplay')]:
  f=p/'Options'/name/'SFSE/Plugins/TransitReportBackend.ini';f.parent.mkdir(parents=True,exist_ok=True);f.write_text('[Settings]\nBackend='+value+'\n', encoding="utf-8")

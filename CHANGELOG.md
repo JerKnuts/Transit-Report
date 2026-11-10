@@ -2,6 +2,8 @@
 
 ## 0.9.8
 
+- Test branch: moved the Gameplay Options connection into settings panels and excluded main-menu/pause-menu replacements. In-game verification pending.
+
 - Removed OSF section heading text, retaining untitled divider groups and the Transit Report page title.
 
 - Added Lifetime stats On/Off under Full loading screen in all three settings methods; defaults to On.

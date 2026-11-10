@@ -40,3 +40,5 @@ Simplified lifetime settings: all three methods expose only Hide zero-value stat
 Lifetime stats can be switched On or Off under Full loading screen (On by default). Enabled stats remain randomized; Hide zero-value stats and page count remain independent. Faction coin glints now use half the previous peak opacity and a slower six-second sweep with shorter travel; the three-second tilt is unchanged. In-game verification pending.
 
 OSF schema uses distinct whitespace group names for untitled dividers. All setting keys are unchanged. Check divider appearance in-game with the installed OSF version; no framework overrides are shipped.
+
+Panel-only Gameplay Options experiment (test/gameplay-panel-bridge): native settings binding moved to SettingsPanel_mc. The Gameplay option ships only mainmenu_settingspanel.swf, settingspanel.swf and settingspanel_lrg.swf. Mainmenu.swf, pausemenu.swf and pausemenu_lrg.swf are excluded. Install with Replace and fully restart. Test settings from both main and pause menus and check persistence. Panel availability at the menu-creation callback needs in-game verification; missing binding logs a warning and leaves vanilla options.
