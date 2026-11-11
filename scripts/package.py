@@ -23,6 +23,8 @@ for name,value in [('OSF','osf'),('Gameplay','gameplay')]:
  f=p/'Options'/name/'SFSE/Plugins/TransitReportBackend.ini';f.parent.mkdir(parents=True,exist_ok=True);f.write_text('[Settings]\nBackend='+value+'\n', encoding="utf-8")
 shutil.copytree(r/'src/custom-artwork',p/'Core/Docs/Transit Report/Artwork',dirs_exist_ok=True)
 for f in ['README.md','CHANGELOG.md','LICENSE','EXCEPTIONS','THIRD_PARTY_NOTICES.md']:copy(f,Path('Core/Docs/Transit Report')/f)
+copy('RELEASE_VALIDATION.md','Core/Docs/Transit Report/RELEASE_VALIDATION.md')
+for f in ['INSTALL.md','BUILD.md','PANEL_BRIDGE_TEST.md']:copy(Path('docs')/f,Path('Core/Docs/Transit Report/docs')/f)
 shutil.copytree(r/'docs/licenses',p/'Core/Docs/Transit Report/Licenses',dirs_exist_ok=True)
 from configure_installer import configure
 configure(p,r/'src/settings-catalog.json')

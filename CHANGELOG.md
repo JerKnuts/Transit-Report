@@ -2,6 +2,8 @@
 
 ## 0.9.8
 
+- Release preparation: consolidated current README/install/artwork instructions, corrected panel-file counts and GIF support, archived obsolete staging material, and recorded remaining 1.0 checks without a version bump.
+
 - Panel Bridge Test 2: replaced immediate construction-time panel lookup/refresh with queued connection and panel-owned frame refresh after repeated immediate-Esc crashes. Runtime verification pending.
 
 - Test branch: moved the Gameplay Options connection into settings panels and excluded main-menu/pause-menu replacements. In-game verification pending.

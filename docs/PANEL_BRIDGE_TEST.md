@@ -1,6 +1,6 @@
-# Panel-only Gameplay Options test
+# Panel-only Gameplay Options test history
 
-Branch: `test/gameplay-panel-bridge`. Version remains 0.9.8. This experiment is not published or merged into main.
+Branch: `test/gameplay-panel-bridge`. Version remains 0.9.8. Current implementation is Test 2 (deferred connection); earlier sections are preserved history. This work is not published or merged into main.
 
 The native callback binds `TRConfig` to `SettingsPanel_mc` instead of the main-menu/pause-menu root. The panel owns the function slot and can refresh existing rows when binding occurs after settings data arrives. No menu references are retained and no polling or new UI hooks are introduced.
 
@@ -34,3 +34,7 @@ Test 2 removes nested GetMember lookups and all native Invoke calls from the men
 Reference: https://help.autodesk.com/cloudhelp/ENU/Scaleform-Help/cpp_ref/01109.html
 
 Install **Transit Report 0.9.8 Panel Bridge Test 2.zip** with Replace, choose Gameplay Options and fully restart. Compare immediate Esc and delayed Esc after entering a save on both characters. Also test main-menu settings, pause-menu settings, controller navigation and persistence. Logs distinguish deferred bridge assigned/queued; queued is not proof of successful runtime binding. This is a targeted fix attempt, not a verified crash fix.
+
+## Test 2 user result
+
+The user subsequently reported that Test 2 seemed fine and had no crashes during their follow-up testing. This records the positive result without declaring long-term stability or completion of cold-start/persistence checks.

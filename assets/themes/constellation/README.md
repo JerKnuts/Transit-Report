@@ -1,3 +1,5 @@
-Constellation theme: approved beveled enamel coin with gentle six-second tilt/glint, used identically for character badge and loading indicator. Wallpaper 02 is the approved Lodge-inspired library interior with warm wood, Constellation wall emblem and dark lower area for stats. Static wallpaper; no added orbit decorations. Source PNGs retained.
+# Constellation artwork
 
-Animation revision: approved three-second tilt/glint comparison applied. Identical badge/indicator; filtered 192px texture retained.
+Approved faction coin and wallpaper sources are retained as coin.png and wallpaper.png. The packaged coin SWF is used for both character badge and loading indicator. It uses a filtered 192px runtime texture, a three-second tilt and a six-second glint sweep with half the previous peak opacity and shorter travel. The wallpaper SWF is static; it has no added rings or orbiting balls.
+
+Change artwork only through its tracked generator and approved source files. Runtime appearance and compatibility are assessed separately from successful compilation. Earlier animation notes are historical.
