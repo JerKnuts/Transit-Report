@@ -2,7 +2,7 @@
 
 Loading screen customization for Starfield: randomized lifetime stats, faction themes, animated badges and indicators, custom artwork and a local clock.
 
-Current build: **0.9.8**, on the `test/gameplay-panel-bridge` branch. This package prepares for 1.0; it does not declare or publish a 1.0 release.
+Current build: **1.0**. This is the packaged 1.0 build; online publication is a separate step.
 
 [Download on Nexus Mods](https://www.nexusmods.com/starfield/mods/18687) | [Source on GitHub](https://github.com/JerKnuts/Transit-Report)
 
@@ -67,7 +67,7 @@ Still-image limits: 64 MB per source file, 16 megapixels, with large output redu
 - OSF Settings and installer-only do not install those settings-panel replacements. No OSF Settings or OSF UI framework files are modified.
 - Stats are snapshots captured automatically after entering a save. No Status-menu visit is needed. Initial save loading omits unavailable stats; play briefly before triggering another full load.
 - No ESM/ESP is installed. Personal artwork and saved settings remain in Documents when the mod is removed.
-- The panel-only Gameplay Options connection is still on a test branch. The user reported no crashes with Test 2 after earlier immediate-Esc crashes; this does not establish long-term stability. Final release checks are recorded in [RELEASE_VALIDATION.md](RELEASE_VALIDATION.md).
+- Gameplay Options uses a deferred, panel-owned connection. The user reported no crashes in follow-up testing after earlier immediate-Esc crashes. Test history and remaining validation are recorded in [RELEASE_VALIDATION.md](RELEASE_VALIDATION.md).
 
 ## Source, license and credits
 
@@ -78,3 +78,5 @@ The native filename `LSCNativeBridge.dll` and internal OSF ID `loading-screen-co
 Authored code is GPL-3.0-or-later with the included exceptions: [LICENSE](LICENSE), [EXCEPTIONS](EXCEPTIONS). Third-party components and game-derived templates retain their respective terms; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 Thanks to the developers of SFSE, Address Library, OSF Settings, CommonLibSF and JPEXS FFDec, and everyone testing Transit Report. Development and documentation assistance: OpenAI ChatGPT/Codex.
+
+Artwork choice order ends with **Theme, Hidden, Custom** for badge, indicator and background. Hidden background uses plain black while preserving enabled information.

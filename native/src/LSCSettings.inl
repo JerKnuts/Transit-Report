@@ -49,6 +49,7 @@ void RefreshOSF() noexcept
         else if(value=="grav")next["background"]=3;
         else if(value=="custom")next["background"]=4;
         else if(value=="survey-sweep")next["background"]=8;
+        else if(value=="hidden")next["background"]=11;
     }}
     {bool value; if(g_osf.GetBool(kModId,"character",&value)==OSFSettings::API::Status::Ok){next["character"] = value?1:0;++readCount;}}
     {bool value; if(g_osf.GetBool(kModId,"progress",&value)==OSFSettings::API::Status::Ok){next["progress"] = value?1:0;++readCount;}}

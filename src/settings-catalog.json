@@ -36,19 +36,19 @@
     "values": [
       0,
       1,
-      2,
       6,
       9,
       10,
+      2,
       3
     ],
     "labels": [
       "Original",
       "Orbiting Star",
-      "Hidden",
       "Jump Gate",
       "Signal Star",
       "Theme",
+      "Hidden",
       "Custom"
     ],
     "default": 1,
@@ -62,19 +62,19 @@
     "values": [
       0,
       1,
-      2,
       6,
       9,
       10,
+      2,
       3
     ],
     "labels": [
       "Original",
       "Orbiting Star",
-      "Hidden",
       "Jump Gate",
       "Signal Star",
       "Theme",
+      "Hidden",
       "Custom"
     ],
     "default": 2,
@@ -91,6 +91,7 @@
       3,
       8,
       10,
+      11,
       4
     ],
     "labels": [
@@ -99,6 +100,7 @@
       "Grav-jump tunnel",
       "Survey Sweep",
       "Theme",
+      "Hidden",
       "Custom"
     ],
     "default": 1,

@@ -1,6 +1,20 @@
 # Changelog
 
+## 1.0
+
+- Added Random Each Load faction themes, independent Theme/Hidden/Custom artwork choices and adjustable badge/indicator sizes.
+- Simplified lifetime statistics to automatic random selection, with On/Off, hide-zero and one to five pages of four stats.
+- Refined all faction coins with filtered textures, tilt and softer, slower glints.
+- Gameplay Options now replaces only three settings panels; main-menu and pause-menu SWFs are no longer included. Uses the deferred panel-owned connection tested in Panel Bridge Test 2.
+- Added Hidden background for plain black behind enabled information. All artwork selectors end with Theme, Hidden, Custom.
+- Updated player instructions, custom PNG/JPG/JPEG/GIF guidance and release documentation.
+
+Earlier entries below preserve the development history and testing notes as recorded.
+
+
 ## 0.9.8
+
+- Artwork selectors now end with Theme, Hidden, Custom in every settings method. Added Hidden background for a plain black backdrop.
 
 - Release preparation: consolidated current README/install/artwork instructions, corrected panel-file counts and GIF support, archived obsolete staging material, and recorded remaining 1.0 checks without a version bump.
 

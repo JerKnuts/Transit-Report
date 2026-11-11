@@ -1,6 +1,6 @@
-# Release preparation status
+# Version 1.0 validation record
 
-Current version: **0.9.8**. Current branch: **test/gameplay-panel-bridge**. Preparing documentation and staging for 1.0 does not approve, tag, merge or publish 1.0.
+Current version: **1.0**, built at the user's request on 2026-11-10. Source branch: **test/gameplay-panel-bridge**. Packaging does not publish, tag or merge the repository.
 
 ## Evidence recorded
 
@@ -11,7 +11,7 @@ Current version: **0.9.8**. Current branch: **test/gameplay-panel-bridge**. Prep
 - The user previously verified Custom animated GIF badge playback and reported the post-load freeze resolved.
 - Native/UI builds and automated settings, installer, random-stat, zero-filter, artwork and package checks passed on the current test code.
 
-## Before 1.0
+## Remaining hands-on validation
 
 - [ ] Confirm main-menu and pause-menu Gameplay settings both work after a cold start.
 - [ ] Confirm settings survive fully exiting and restarting with each chosen backend, especially Gameplay and installer-only.
@@ -19,7 +19,9 @@ Current version: **0.9.8**. Current branch: **test/gameplay-panel-bridge**. Prep
 - [ ] Check all seven coin glints, sizes, short-transition exclusivity, Custom pools and animated GIFs.
 - [ ] Verify the untitled OSF dividers, Lifetime stats On/Off, hide-zero and 1-5-page navigation with keyboard/controller.
 - [ ] Review compatibility with the user's other settings-panel mods.
-- [ ] Approve the 1.0 release decision, reconcile the test branch with main, bump version metadata together, rebuild final archives and validate their contents.
+- [x] User approved version 1.0 metadata and release packaging.
+- [ ] Check the newly added Hidden background in-game.
+- [ ] Reconcile/tag/publish the repository when requested.
 
 ## Limits and unresolved history
 

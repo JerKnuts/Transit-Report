@@ -25,5 +25,5 @@ for key,value,option,label in [('badge',6,'jump-gate','Jump Gate'),('spinner',9,
     assert f'if(value=="{option}")next["{key}"]={value};' in native
     allowed=re.search(r'\{"'+key+r'",\d+,\{([^}]*)\}',definitions).group(1)
     assert value in [int(v) for v in allowed.split(',')]
-assert (root/'VERSION').read_text().strip()=='0.9.8'
+assert (root/'VERSION').read_text().strip()=='1.0'
 print('Passed: Custom values/defaults match OSF, Gameplay/native and FOMOD catalog; clean production menu paths.')

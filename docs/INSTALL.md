@@ -1,6 +1,6 @@
 # Installing Transit Report
 
-Current preparation build: 0.9.8. Use the latest package named in START HERE.txt in the staging folder. The panel-only test branch is not yet a published 1.0 release.
+Version 1.0. Install Transit Report 1.0.zip. The staging START HERE.txt identifies the current installer and source archives.
 
 ## Install or update
 
@@ -47,3 +47,5 @@ Still images: 64 MB per file, up to 16 megapixels; output is reduced to at most 
 - Old settings or artwork choices: confirm only one Transit Report copy is enabled, replace the old installation, and restart. Do not delete your personal artwork to reset a menu preference.
 - For a crash report, include the chosen settings method, game version, reproduction steps and relevant SFSE/crash logs.
 - Disable/remove Transit Report to uninstall. No ESM/ESP is installed. Personal images and settings in Documents remain; generated cache files can be removed separately.
+
+Artwork choice order ends with **Theme, Hidden, Custom** for badge, indicator and background. Hidden background uses plain black while preserving enabled information.

@@ -758,6 +758,33 @@ package
       private function LSCUpdateBackground() : void
       {
          if(this.TRArtBackground())return;
+         if(int(this.LSCOptions.background) == 11)
+         {
+            if(this.LSCBackground_mc == null)
+            {
+               this.LSCBackground_mc = new Sprite();
+               this.LSCBackground_mc.mouseEnabled = false;
+               this.addChildAt(this.LSCBackground_mc,this.getChildIndex(this.Texture_mc)+1);
+            }
+            this.LSCCosmicMode = -1;
+            if(this.LSCTestMotion != null)this.LSCTestMotion.visible = false;
+            this.LSCBackground_mc.visible = !this.InMinimalMode && !this.LSCShortMode && this.LeftText_mc.visible;
+            if(this.LSCBackground_mc.visible)
+            {
+               this.Texture_mc.visible = false;
+               var hiddenRect:Rectangle = Extensions.visibleRect;
+               var hiddenSize:String = "hidden:"+hiddenRect.toString();
+               if(this.LSCBackgroundSize != hiddenSize)
+               {
+                  this.LSCBackgroundSize = hiddenSize;
+                  this.LSCBackground_mc.graphics.clear();
+                  this.LSCBackground_mc.graphics.beginFill(0x000000,1);
+                  this.LSCBackground_mc.graphics.drawRect(hiddenRect.x,hiddenRect.y,hiddenRect.width,hiddenRect.height);
+                  this.LSCBackground_mc.graphics.endFill();
+               }
+            }
+            return;
+         }
          var backgroundMode:int = int(this.LSCOptions.background) >= 4 ? 1 : int(this.LSCOptions.background);
          if(backgroundMode >= 2 && !this.InMinimalMode && !this.LSCShortMode && this.LeftText_mc.visible)
          {
