@@ -2,6 +2,8 @@
 
 ## 1.0
 
+- User verified the new 1.0 features in-game and reported all worked on 2026-11-10.
+
 - Added Random Each Load faction themes, independent Theme/Hidden/Custom artwork choices and adjustable badge/indicator sizes.
 - Simplified lifetime statistics to automatic random selection, with On/Off, hide-zero and one to five pages of four stats.
 - Refined all faction coins with filtered textures, tilt and softer, slower glints.

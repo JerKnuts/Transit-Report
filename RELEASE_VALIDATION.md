@@ -4,6 +4,8 @@ Current version: **1.0**, built at the user's request on 2026-11-10. Source bran
 
 ## Evidence recorded
 
+- On 2026-11-10, the user tested the new 1.0 features in-game and reported that all worked.
+
 - The user confirmed the OSF installation works.
 - Gameplay Panel Bridge Test 1 could save/apply settings, but immediate Esc after loading produced repeated crashes, including on another character/save. It is superseded and must not be the release candidate.
 - Test 2 removed native creation-time panel lookup/refresh calls, queues the connection, and refreshes from the panel's own frame event after readiness.
@@ -20,7 +22,7 @@ Current version: **1.0**, built at the user's request on 2026-11-10. Source bran
 - [ ] Verify the untitled OSF dividers, Lifetime stats On/Off, hide-zero and 1-5-page navigation with keyboard/controller.
 - [ ] Review compatibility with the user's other settings-panel mods.
 - [x] User approved version 1.0 metadata and release packaging.
-- [ ] Check the newly added Hidden background in-game.
+- [x] User tested the newly added 1.0 features in-game and reported all worked.
 - [ ] Reconcile/tag/publish the repository when requested.
 
 ## Limits and unresolved history
