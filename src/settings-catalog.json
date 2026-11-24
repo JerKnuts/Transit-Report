@@ -25,7 +25,7 @@
       "United Colonies",
       "Random Each Load"
     ],
-    "default": 0,
+    "default": 8,
     "kind": "enum",
     "group": "Appearance"
   },
@@ -51,7 +51,7 @@
       "Hidden",
       "Custom"
     ],
-    "default": 1,
+    "default": 10,
     "kind": "enum",
     "group": "Appearance"
   },
@@ -103,7 +103,7 @@
       "Hidden",
       "Custom"
     ],
-    "default": 1,
+    "default": 10,
     "kind": "enum",
     "group": "Appearance"
   },
@@ -163,7 +163,7 @@
       "Off",
       "On"
     ],
-    "default": 0,
+    "default": 1,
     "kind": "bool",
     "group": "Stats"
   },
@@ -219,6 +219,38 @@
     "key": "tips",
     "label": "Loading tips",
     "hint": "Show loading tips on loading screens.",
+    "values": [
+      0,
+      1
+    ],
+    "labels": [
+      "Off",
+      "On"
+    ],
+    "default": 1,
+    "kind": "bool",
+    "group": "Full loading screen"
+  },
+  {
+    "key": "save_stats",
+    "label": "Initial save stats",
+    "hint": "Show the save date, time, playtime and location on the initial loading screen.",
+    "values": [
+      0,
+      1
+    ],
+    "labels": [
+      "Off",
+      "On"
+    ],
+    "default": 1,
+    "kind": "bool",
+    "group": "Full loading screen"
+  },
+  {
+    "key": "loading_music",
+    "label": "Loading music",
+    "hint": "Play Far Horizon at low volume during full loading screens.",
     "values": [
       0,
       1

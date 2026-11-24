@@ -1,3 +1,15 @@
+# Version 1.1.4 validation record
+
+Verify that **Initial save stats** shows and hides the save details on a full initial load without changing contextual tips. Verify that **Loading music** starts only on full loading screens when enabled and stops when the screen closes. Check both settings from OSF Settings, Gameplay Options and the installer-only setup. On a fresh install, verify that music plays, zero-value counters are hidden, and the badge and background use the same randomly selected faction. In-game verification is pending.
+
+# Version 1.1.2 validation record
+
+Save-selection capture test. Earlier 1.1 tests failed to display metadata. Log confirmed the main menu had been destroyed. Capture now uses selection events. In-game verification pending.
+
+# Version 1.1 validation record
+
+Save details Test 2, 2026-11-20. The first test showed no added details in-game. Capture timing and script-object lookup were revised. In-game verification pending for Continue and manually selected older saves. Version 1.0 validation below is historical.
+
 # Version 1.0 validation record
 
 Current version: **1.0**, built at the user's request on 2026-11-10. Source branch: **test/gameplay-panel-bridge**. Packaging does not publish, tag or merge the repository.

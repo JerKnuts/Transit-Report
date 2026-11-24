@@ -12,6 +12,7 @@ for art in (r/'assets/extra-artwork/runtime').glob('*.swf'):
  if art.name in {'background-survey-sweep.swf','badge-jump-gate.swf','badge-signal-star.swf'}:copy(art.relative_to(r),Path('Core/Interface/TransitReport/Defaults')/art.name)
 for art in (r/'assets/themes').rglob('*.swf'):copy(art.relative_to(r),Path('Core/Interface/TransitReport/Defaults')/art.name)
 shutil.copytree(r/'installer/fomod',p/'fomod',dirs_exist_ok=True)
+copy('assets/audio/Far Horizon.wav','Core/Interface/TransitReport/Audio/Far Horizon.wav')
 for f in (r/'build/ui/loading').glob('*.swf'):copy(f.relative_to(r),Path('Core/Interface')/f.name)
 assert (p/'Core/Interface/loadingmenu.swf').is_file(),'Run build-ui.ps1 first'
 copy('native/staged/SFSE/Plugins/LSCNativeBridge.dll','Core/SFSE/Plugins/LSCNativeBridge.dll')

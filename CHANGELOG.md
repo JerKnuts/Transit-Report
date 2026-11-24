@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.1.4 - save stats and loading music settings
+
+- Added an Initial save stats switch for the saved date, time, playtime and location. Defaults to On.
+- Loading music defaults to On. It now plays Far Horizon, an original 36-second ambient loop, at half the previous test build's playback gain.
+- Default to hiding zero-value stats and picking a random faction for the themed character badge and background on each full load.
+- Both switches are available in OSF Settings, Gameplay Options and the installer-only setup.
+- Rotate contextual tips for New Atlantis, the Lodge, the Well, Neon, Akila City, Cydonia, Hopetown, New Homestead, Paradiso, the Key and the Den.
+
+## 1.1.2 - save selection capture test
+
+- Show a contextual tip on the initial load when the saved location is available.
+- Show recent milestones from six lifetime counters on later full loading screens. The milestone baseline resets when a save loads, and the Loading Tips setting controls both types of message.
+
+- Display save playtime as total hours and minutes for Continue and manual save selection, including saves beyond 24 hours.
+
+- Capture save details on Continue/load selection before the main menu is destroyed, then pass the cached text to the initial loading screen.
+- Earlier tests displayed no details because the main menu was already unavailable. This revision requires in-game verification.
+
+## 1.1 - initial save details test
+
+- Test 2 captures save-menu fields during loading-screen creation, uses the actual menu script object and records field-availability diagnostics. The first test showed no details in-game.
+
+- Initial loads can show the selected save's saved date/time, playtime and location, using existing save-menu data. No main-menu replacement is included.
+- Save details are omitted when the matching menu data is unavailable. Continue and manual save selection require in-game verification.
+
 ## 1.0
 
 - User verified the new 1.0 features in-game and reported all worked on 2026-11-10.

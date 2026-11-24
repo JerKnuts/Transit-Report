@@ -3,7 +3,7 @@ constexpr const char* kModId="loading-screen-configurator";
 OSFSettings::API::Client g_osf;
 OSFSettings::API::Subscription g_osfSubscription{};
 std::mutex g_settingsMutex;
-std::map<std::string,int> g_displaySettings={{"lifetime_enabled",1},{"badge_size",100},{"indicator_size",100},{"hide_zero",0},{"theme",0},{"badge",1},{"spinner",2},{"background",1},{"character",1},{"progress",1},{"credits",1},{"location",1},{"clock",1},{"tips",1},{"vitals",1},{"carry_weight",1},{"resistances",1},{"condition_capacity",1},{"lifetime_test",1},{"lifetime_mode",1},{"lifetime_general",1},{"lifetime_combat",1},{"lifetime_exploration",1},{"lifetime_crafting",1},{"lifetime_quests",1},{"lifetime_ship",1},{"lifetime_crime",1},{"details",0},{"diagnostics",0},{"name",1},{"level",1},{"xp_bar",1},{"xp_numbers",1},{"health",1},{"oxygen",1},{"co2",1},{"power",1},{"physical_resist",1},{"energy_resist",1},{"em_resist",1},{"experience_raw",0},{"cell",0},{"coordinates",0},{"short",0},{"density",0},{"page_count",2},{"wait_continue",0}};
+std::map<std::string,int> g_displaySettings={{"lifetime_enabled",1},{"badge_size",100},{"indicator_size",100},{"hide_zero",1},{"theme",8},{"badge",10},{"spinner",2},{"background",10},{"character",1},{"progress",1},{"credits",1},{"location",1},{"clock",1},{"tips",1},{"save_stats",1},{"loading_music",1},{"vitals",1},{"carry_weight",1},{"resistances",1},{"condition_capacity",1},{"lifetime_test",1},{"lifetime_mode",1},{"lifetime_general",1},{"lifetime_combat",1},{"lifetime_exploration",1},{"lifetime_crafting",1},{"lifetime_quests",1},{"lifetime_ship",1},{"lifetime_crime",1},{"details",0},{"diagnostics",0},{"name",1},{"level",1},{"xp_bar",1},{"xp_numbers",1},{"health",1},{"oxygen",1},{"co2",1},{"power",1},{"physical_resist",1},{"energy_resist",1},{"em_resist",1},{"experience_raw",0},{"cell",0},{"coordinates",0},{"short",0},{"density",0},{"page_count",2},{"wait_continue",0}};
 bool g_settingsReady{false};
 void RefreshOSF() noexcept
 {
@@ -59,6 +59,8 @@ void RefreshOSF() noexcept
         else if(value=="24h")next["clock"]=2;
     }}
     {bool value; if(g_osf.GetBool(kModId,"tips",&value)==OSFSettings::API::Status::Ok){next["tips"] = value?1:0;++readCount;}}
+    {bool value; if(g_osf.GetBool(kModId,"save_stats",&value)==OSFSettings::API::Status::Ok){next["save_stats"] = value?1:0;++readCount;}}
+    {bool value; if(g_osf.GetBool(kModId,"loading_music",&value)==OSFSettings::API::Status::Ok){next["loading_music"] = value?1:0;++readCount;}}
     {std::string value;if(g_osf.GetEnum(kModId,"badge_size",value)==OSFSettings::API::Status::Ok){++readCount;if(value=="extra-small")next["badge_size"] =50;else if(value=="small")next["badge_size"]=75;else if(value=="normal")next["badge_size"]=100;else if(value=="large")next["badge_size"]=125;else if(value=="extra-large")next["badge_size"]=150;}}
     {std::string value;if(g_osf.GetEnum(kModId,"indicator_size",value)==OSFSettings::API::Status::Ok){++readCount;if(value=="extra-small")next["indicator_size"] =50;else if(value=="small")next["indicator_size"]=75;else if(value=="normal")next["indicator_size"]=100;else if(value=="large")next["indicator_size"]=125;else if(value=="extra-large")next["indicator_size"]=150;}}
     {bool value;if(g_osf.GetBool(kModId,"hide_zero",&value)==OSFSettings::API::Status::Ok){++readCount;next["hide_zero"]=value?1:0;}}

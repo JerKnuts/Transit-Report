@@ -25,7 +25,7 @@ def configure(installer: Path, catalog: Path):
     marker=installer/'Options/Installer/SFSE/Plugins/TransitReportBackend.ini'
     marker.parent.mkdir(parents=True,exist_ok=True);marker.write_text('[Settings]\nBackend=installer\n', encoding="utf-8")
     groups=[('Appearance',['theme','badge','spinner','background','badge_size','indicator_size']),
-            ('Display and pages',['character','progress','lifetime_enabled','tips','clock','page_count','hide_zero'])]
+            ('Display and pages',['character','progress','lifetime_enabled','tips','save_stats','loading_music','clock','page_count','hide_zero'])]
     by_key={d['key']:d for d in definitions}
     for title,keys in groups:
         step=ET.SubElement(steps,'installStep',name=title)

@@ -86,6 +86,42 @@ package
       private var LSCCoins:Number = -1;
       private var LSCPlace:String = "";
       private var LSCLastName:String = "";
+      private var LSCGameTip:String = "";
+      private var LSCDisplayedTip:String = "";
+      private var LSCTipSeed:Number = Math.random();
+      private const LSCLocationTips:Array = [
+         {match:/\bthe lodge\b/i, tips:[
+            "Check your mission list before heading out with Constellation.",
+            "Take a moment to sort your notes and choose your next lead."
+         ]},
+         {match:/\bthe well\b/i, tips:[
+            "Track your active mission if you're headed for a specific door.",
+            "Finish nearby errands before heading back to the surface."
+         ]},
+         {match:/\bnew atlantis\b/i, tips:[
+            "Use the transit system to get around the city.",
+            "Group your errands by district to save yourself a return trip.",
+            "Set an active mission before leaving the spaceport."
+         ]},
+         {match:/\bneon(?: core)?\b/i, tips:[
+            "Check your active mission before heading into the city.",
+            "If you have several stops, check which ones are on the way.",
+            "Leave some room in your pack if you're doing a shopping run."
+         ]},
+         {match:/\bakila city\b/i, tips:[
+            "Stock up before heading back out to explore.",
+            "Pick up supplies before following a lead beyond the city.",
+            "Check your mission list before crossing town."
+         ]},
+         {match:/\b(cydonia|hopetown|new homestead|paradiso)\b/i, tips:[
+            "Check your mission list for other stops nearby.",
+            "Before you leave, make sure you've picked up what you came for."
+         ]},
+         {match:/\b(the key|the den)\b/i, tips:[
+            "Check your cargo before leaving the station.",
+            "Pick your next destination before you undock."
+         ]}
+      ];
       private var LSCLoadEvents:uint = 0;
       private var LSCInventoryEvents:uint = 0;
       private var LSCMapEvents:uint = 0;
@@ -253,7 +289,9 @@ package
                this.LeftText_mc.Player_Level_Icon.visible = false;
                this.LeftText_mc.PlayerName_mc.visible = false;
             }
-            this.SetLoadingText(param1.data.sLoadText);
+            this.LSCGameTip = param1.data.sLoadText || "";
+            this.SetLoadingText(this.LSCGameTip);
+            this.LSCDisplayedTip = this.LSCGameTip;
             if(this.LoadingTexture != param1.data.sTextureName)
             {
                if(param1.data.sTextureName != "")
@@ -309,6 +347,7 @@ package
                snapshot = this.LSCNativeGetSnapshot();
             }
             this.LSCReadOptions(snapshot);
+            this.LSCUpdateTip(snapshot);
             this.LSCDrawExtras(snapshot);
             if(snapshot == null || !snapshot.ready)
             {
@@ -346,6 +385,42 @@ package
          }
       }
 
+      private function LSCUpdateTip(snapshot:Object) : void
+      {
+         if(this.LSCShortMode || this.InMinimalMode || !this.LeftText_mc.visible)return;
+         var tip:String = this.LSCGameTip;
+         if(snapshot != null && this.LSCEnabled("tips"))
+         {
+            if(snapshot.saveLocation)
+            {
+               var location:String = String(snapshot.saveLocation);
+               tip = this.LSCSaveLocationTip(location);
+            }
+            else if(snapshot.sessionMilestones)
+            {
+               var milestones:Array = String(snapshot.sessionMilestones).split("\n");
+               tip = String(milestones[int(this.LSCTipSeed * milestones.length)]);
+            }
+         }
+         if(tip == this.LSCDisplayedTip)return;
+         this.LSCDisplayedTip = tip;
+         GlobalFunc.SetText(this.LeftText_mc.LoadScreenText_tf,tip,false);
+      }
+
+      private function LSCSaveLocationTip(location:String) : String
+      {
+         var headline:String = "Returning to " + location.replace(/[.!?]+$/,"") + ".";
+         for each(var entry:Object in this.LSCLocationTips)
+         {
+            if(entry.match.test(location))
+            {
+               var tips:Array = entry.tips;
+               return headline + " " + String(tips[int(this.LSCTipSeed * tips.length)]);
+            }
+         }
+         return headline;
+      }
+
       private function LSCEscape(value:String) : String
       {
          return value.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
@@ -368,7 +443,7 @@ package
          return "<p><font size=\"14\" color=\"#AEB9BE\" letterSpacing=\"0.2\">" + label + "</font></p><p><font size=\"24\" color=\"#E0E5E7\">" + this.LSCEscape(value) + "</font></p>";
       }
 
-      private var LSCOptions:Object = {"badge": 1, "spinner": 2, "background": 1, "short": 1, "name": 1, "level": 1, "xp_bar": 1, "xp_numbers": 1, "credits": 1, "location": 1, "tips": 1, "diagnostics": 0, "clock": 1, "density": 0, "health": 1, "oxygen": 1, "co2": 1, "carry_weight": 1, "physical_resist": 1, "energy_resist": 1, "em_resist": 1, "power": 1, "experience_raw": 0, "cell": 0, "coordinates": 0};
+      private var LSCOptions:Object = {"badge": 1, "spinner": 2, "background": 1, "short": 1, "name": 1, "level": 1, "xp_bar": 1, "xp_numbers": 1, "credits": 1, "location": 1, "tips": 1, "save_stats": 1, "diagnostics": 0, "clock": 1, "density": 0, "health": 1, "oxygen": 1, "co2": 1, "carry_weight": 1, "physical_resist": 1, "energy_resist": 1, "em_resist": 1, "power": 1, "experience_raw": 0, "cell": 0, "coordinates": 0};
       private var LSCOSFReady:Boolean = false;
       private function LSCRefreshOptions() : void {}
       private function LSCReadOptions(snapshot:Object) : void
@@ -494,6 +569,16 @@ package
                lifetimeGroups.push({title:"RANDOM HIGHLIGHTS",items:randomPool.slice(randomStart,randomStart+4)});
             groups = groups.concat(lifetimeGroups);
          }
+         var showSaveStats:Boolean = this.LSCEnabled("save_stats") && snapshot != null && !snapshot.ready && snapshot.saveLocation != null;
+         if(groups.length == 0 && showSaveStats)
+         {
+            var saveItems:Array = [];
+            var saved:String = String(snapshot.saveDate || "")+" "+String(snapshot.saveTime || "");
+            if(saved.replace(/\s/g,"") != "")saveItems.push({label:"SAVED",value:saved});
+            if(snapshot.savePlaytime)saveItems.push({label:"PLAYTIME",value:String(snapshot.savePlaytime)});
+            if(snapshot.saveLocation)saveItems.push({label:"LOADING FROM",value:String(snapshot.saveLocation)});
+            if(saveItems.length > 0)groups.push({title:"",items:saveItems});
+         }
          var pageLimit:int = this.LSCOptions.hasOwnProperty("page_count") ? Math.max(1,Math.min(5,int(this.LSCOptions.page_count))) : 2;
          if(groups.length > pageLimit)
          {
@@ -513,7 +598,7 @@ package
          if(!this.LSCTestManual)this.LSCTestPage = page;
          var selected:Array = groups.length > 0 ? groups[page].items : [];
          var title:String = groups.length > 0 ? String(groups[page].title) : "";
-         var columns:int = 4;
+         var columns:int = showSaveStats ? 3 : 4;
          var count:int = Math.min(4,selected.length);
          var rows:int = Math.ceil(count/columns);
          rows = 1;

@@ -9,7 +9,7 @@
         "label": "Theme",
         "hint": "Choose a faction, or Random Each Load to pick one faction per loading screen. Artwork slots set to Theme share that choice. Other artwork choices stay independent.",
         "type": "enum",
-        "default": "individual",
+        "default": "random",
         "options": {
           "individual": "Individual selections",
           "constellation": "Constellation",
@@ -27,7 +27,7 @@
         "label": "Character badge",
         "hint": "Theme uses the selected faction artwork (or Orbiting Star/Orbital Chart with Individual selections). All other choices apply independently. Choose a built-in design or Custom. Custom randomly selects a PNG/JPG/JPEG/GIF from Documents/My Games/Starfield/Transit Report/Artwork/Badges each load. Any filenames; up to 64 images. Restart after changes.",
         "type": "enum",
-        "default": "custom",
+        "default": "theme",
         "options": {
           "original": "Original",
           "custom": "Orbiting Star",
@@ -59,7 +59,7 @@
         "label": "Loading background",
         "hint": "Theme uses the selected faction artwork (or Orbiting Star/Orbital Chart with Individual selections). All other choices apply independently. Choose a built-in design or Custom. Custom randomly selects a PNG/JPG/JPEG/GIF from Documents/My Games/Starfield/Transit Report/Artwork/Backgrounds each load. Any filenames; up to 64 images. Restart after changes.",
         "type": "enum",
-        "default": "orbital",
+        "default": "theme",
         "options": {
           "original": "Game images",
           "orbital": "Orbital chart",
@@ -129,6 +129,20 @@
         "default": true
       },
       {
+        "key": "save_stats",
+        "label": "Initial save stats",
+        "hint": "Show the save date, time, playtime and location on the initial loading screen.",
+        "type": "bool",
+        "default": true
+      },
+      {
+        "key": "loading_music",
+        "label": "Loading music",
+        "hint": "Play Far Horizon at low volume during full loading screens.",
+        "type": "bool",
+        "default": true
+      },
+      {
         "key": "clock",
         "label": "Local PC time",
         "hint": "Your computer clock in its local time zone. Updates during loading.",
@@ -163,7 +177,7 @@
         "label": "Hide zero-value stats",
         "hint": "Omit numeric zero readings before building pages, including random highlights. Empty pages are not displayed.",
         "type": "bool",
-        "default": false
+        "default": true
       }
     ]
   }

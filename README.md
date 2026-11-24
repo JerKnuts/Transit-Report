@@ -1,8 +1,18 @@
 # Transit Report
 
+In 1.1.4, **Initial save stats** toggles the save date, time, playtime and location on the first load. It defaults to On. **Loading music** plays *Far Horizon*, an original ambient loop, at low volume on full loading screens. It defaults to On. **Hide zero-value stats** also defaults to On. By default, each full load picks a random faction theme and uses its character badge and background. These settings are available in OSF Settings and Gameplay Options, and on the installer’s **Display and pages** step if you choose **Neither - configure in installer**.
+
+The 1.1.4 Contextual Tips Test rotates tips for familiar cities, settlements and stations on the initial save load. Other saved locations show a short “Returning to…” message.
+
+The 1.1.2 Milestones Test adds location based tips to initial save loads and session milestones to later full loads. Turn on Loading Tips to see both. Milestones count progress since the first gameplay scan after loading a save. Counters refresh roughly every 15 seconds, so a change may appear on a later load. Starfield's regular tips appear when neither message is available.
+
+Playtime uses total hours and minutes, for example 1d 2h 15m becomes 26h 15m.
+
+Version 1.1.2 save details test: the initial loading screen can display Saved date/time, Playtime and Loading from when the matching save-menu data is available. Test both Continue and manually selecting an older save. In-game verification is pending. Published version remains 1.0.
+
 Loading screen customization for Starfield: randomized lifetime stats, faction themes, animated badges and indicators, custom artwork and a local clock.
 
-Current build: **1.0**. This is the packaged 1.0 build; online publication is a separate step.
+Current build: **1.1.4**. Save details require in-game verification before release.
 
 [Download on Nexus Mods](https://www.nexusmods.com/starfield/mods/18687) | [Source on GitHub](https://github.com/JerKnuts/Transit-Report)
 

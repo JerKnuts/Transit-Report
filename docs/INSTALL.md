@@ -1,6 +1,6 @@
 # Installing Transit Report
 
-Version 1.0. Install Transit Report 1.0.zip. The staging START HERE.txt identifies the current installer and source archives.
+Version 1.1.4 test build. Install Transit Report 1.1.4.zip. The staging START HERE.txt identifies the current installer and source archives.
 
 ## Install or update
 
@@ -14,17 +14,19 @@ Version 1.0. Install Transit Report 1.0.zip. The staging START HERE.txt identifi
 
 - **OSF Settings:** open OSF Settings, then Transit Report. Its groups have untitled dividers.
 - **Gameplay Options:** open Settings > Gameplay Options > TRANSIT REPORT, from the main menu or pause menu. This method needs no OSF integration. It installs three settings-panel replacements: mainmenu_settingspanel.swf, settingspanel.swf and settingspanel_lrg.swf. Other settings-panel replacements may conflict.
-- **Neither - configure in installer:** choose all 13 controls during installation. No in-game settings entry. Reinstall with Replace to change the choices; older menu preferences are ignored by this method.
+- **Neither - configure in installer:** choose all 15 controls during installation. No in-game settings entry. Reinstall with Replace to change the choices; older menu preferences are ignored by this method.
 
 The package does not include mainmenu.swf, pausemenu.swf or pausemenu_lrg.swf. OSF Settings and installer-only do not install settings-panel replacements. All methods include loadingmenu.swf and fadermenu.swf.
 
 ## Defaults and using the loading screen
 
-Defaults: Individual theme selections, Orbiting Star badge, Hidden indicator, Orbital Chart background, Normal (100%) badge and indicator sizes, character/progress/tips/lifetime stats On, 12-hour clock, two stat pages, and Hide zero-value stats Off. Saved preferences can retain your previous selections.
+Defaults: Theme set to Random Each Load, character badge and loading background set to Theme, Hidden indicator, Normal (100%) badge and indicator sizes, character/progress/tips/lifetime stats On, 12-hour clock, two stat pages, Initial save stats On, and Loading music and Hide zero-value stats On. Saved preferences can retain your previous selections.
 
 Normal (100%) uses the enlarged baseline, equal to the earlier 150% size. Sizes range from 50% to 150% in 25% steps.
 
-Enabled lifetime stats are automatically randomized from the available pool of 67 counters. Change pages with A/D or controller D-pad left/right. Hide zero-value stats filters zeros before pages are selected. Short transitions show the indicator only. Initial save loading omits stats that have not been captured yet; no Status-menu visit is required.
+Enabled lifetime stats are automatically randomized from the available pool of 67 counters. Change pages with A/D or controller D-pad left/right. Hide zero-value stats filters zeros before pages are selected. Short transitions show the indicator only. Initial save loading shows the saved date, time, playtime and location when available and **Initial save stats** is On. Lifetime stats appear after gameplay data is collected automatically.
+
+With **Loading music** On, the included ambient loop *Far Horizon* plays during full loading screens. Playback stops when the loading screen closes. Both switches are on the FOMOD **Display and pages** step for installer-only configuration.
 
 Choose a faction and set the desired badge, indicator and/or background to **Theme** to use it. Other choices, including Hidden, Original and Custom, remain independent. Random Each Load uses one matching faction for all Theme slots on that loading screen.
 

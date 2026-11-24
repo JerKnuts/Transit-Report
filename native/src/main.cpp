@@ -10,6 +10,7 @@
 #include <cmath>
 #include <map>
 #include <format>
+#include <charconv>
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
@@ -31,6 +32,8 @@
 #include "ArtworkCache.h"
 #include "ArtworkTheme.h"
 #include "ArtworkRandom.h"
+#include "SavePlaytime.h"
+#include "LoadingAudio.h"
 
 
 
@@ -44,11 +47,27 @@ namespace
     constexpr REL::Version kRuntime{1, 16, 244, 0};
     constexpr std::uint32_t kCreditForm = 0x0000000F;
     using Clock = std::chrono::steady_clock;
+    TransitReport::LoadingAudio g_loadingAudio;
+    bool g_loadingAudioAvailable=false;
+
+    class LoadingAudioMenuSink final : public RE::BSTEventSink<RE::MenuOpenCloseEvent>
+    {
+        RE::BSEventNotifyControl ProcessEvent(
+            const RE::MenuOpenCloseEvent& event,
+            RE::BSTEventSource<RE::MenuOpenCloseEvent>*) override
+        {
+            if (!event.opening && event.menuName == "LoadingMenu")
+                g_loadingAudio.SetPlaying(false);
+            return RE::BSEventNotifyControl::kContinue;
+        }
+    };
+    LoadingAudioMenuSink g_loadingAudioMenuSink;
 
     struct Snapshot
     {
         // Extra-stat snapshot
         std::map<std::string,std::string> extra;
+        std::string milestones;
         bool ready{false};
         bool creditsAvailable{false};
         std::uint64_t credits{0};
@@ -77,8 +96,10 @@ namespace
 
     std::mutex g_captureMutex;
     Clock::time_point g_counterReadySince{};
-    bool g_counterAttempted{false};
+    Clock::time_point g_nextCounterScan{};
     std::map<std::string,std::string> g_counterValues;
+    std::map<std::string,std::string> g_sessionBaseline;
+    std::string g_sessionMilestones;
     struct CounterScan
     {
         bool active{false};
@@ -89,12 +110,12 @@ namespace
         double workMs{0}, peakMs{0};
     };
     CounterScan g_counterScan;
-    void CaptureSingleCounter()
+    void CaptureLifetimeCounters()
     {
         bool enabled=false;
-        {std::scoped_lock lock(g_settingsMutex);enabled=g_displaySettings.at("lifetime_test")!=0;}
+        {std::scoped_lock lock(g_settingsMutex);enabled=g_displaySettings.at("lifetime_test")!=0||g_displaySettings.at("tips")!=0;}
         if(!enabled){g_counterReadySince={};g_counterScan={};return;}
-        if(g_counterAttempted)return;
+        if(Clock::now()<g_nextCounterScan)return;
         if(g_counterReadySince==Clock::time_point{}){g_counterReadySince=Clock::now();return;}
         if(Clock::now()-g_counterReadySince<std::chrono::seconds(3))return;
         // Never traverse the entire table in one game-thread task.
@@ -104,7 +125,7 @@ namespace
         std::uint32_t count{};std::uintptr_t table{};
         using namespace LSCStatMemory;
         if(!CopyStatBytes(&count,countAddress.get(),sizeof(count))||count==0||count>512||!CopyStatBytes(&table,tableAddress.get(),sizeof(table)))
-        {g_counterScan={};g_counterAttempted=true;return;}
+        {g_counterScan={};g_nextCounterScan=Clock::now()+std::chrono::seconds(15);return;}
         struct CounterName {const char* name;const char* group;};
         static constexpr CounterName catalog[]={
             {"Hours Slept","general"},
@@ -195,7 +216,7 @@ namespace
             RE::MiscStatManager::Entry entry{};
             const auto offset=g_counterScan.cursor++;
             if(!CopyStatBytes(&entry,reinterpret_cast<void*>(table+offset*sizeof(entry)),sizeof(entry)))
-            {g_counterScan={};g_counterAttempted=true;return;}
+            {g_counterScan={};g_nextCounterScan=Clock::now()+std::chrono::seconds(15);return;}
             if(entry.value>=0)
             {
                 const auto name=NormalizeStatName(StatPoolString(entry.name));
@@ -208,8 +229,40 @@ namespace
         const double elapsed=std::chrono::duration<double,std::milli>(Clock::now()-sliceStart).count();
         g_counterScan.workMs+=elapsed;g_counterScan.peakMs=std::max(g_counterScan.peakMs,elapsed);++g_counterScan.slices;
         if(g_counterScan.cursor<count)return;
-        g_counterValues=std::move(g_counterScan.pending);g_counterAttempted=true;
-        REX::INFO("TR lifetime capture: {} counters, {} slices, {:.3f} ms work, {:.3f} ms peak slice, {:.1f} ms elapsed.",
+        g_counterValues=std::move(g_counterScan.pending);
+        g_nextCounterScan=Clock::now()+std::chrono::seconds(15);
+        const bool firstScan=g_sessionBaseline.empty();
+        g_sessionMilestones.clear();
+        struct Milestone {const char* key;const char* singular;const char* plural;};
+        static constexpr Milestone milestones[]={
+            {"Locations Discovered","location discovered","locations discovered"},
+            {"Systems Visited","system visited","systems visited"},
+            {"Quests Completed","quest completed","quests completed"},
+            {"Planets Fully Surveyed","planet fully surveyed","planets fully surveyed"},
+            {"Grav Jumps","grav jump made","grav jumps made"},
+            {"Items Manufactured","item manufactured","items manufactured"},
+        };
+        for(const auto& milestone:milestones)
+        {
+            const auto index=lookup.find(NormalizeStatName(milestone.key));
+            if(index==lookup.end())continue;
+            const auto key="counter_"+std::to_string(index->second);
+            const auto current=g_counterValues.find(key);
+            if(current==g_counterValues.end())continue;
+            const auto [baseline,inserted]=g_sessionBaseline.try_emplace(key,current->second);
+            if(inserted)continue;
+            const auto readCount=[](const std::string& value)
+            {
+                std::int64_t count{};
+                std::from_chars(value.data(),value.data()+value.size(),count);
+                return count;
+            };
+            const auto difference=readCount(current->second)-readCount(baseline->second);
+            if(difference<=0)continue;
+            if(!g_sessionMilestones.empty())g_sessionMilestones+='\n';
+            g_sessionMilestones+=std::format("{} {} this session.",difference,difference==1?milestone.singular:milestone.plural);
+        }
+        if(firstScan)REX::INFO("TR lifetime capture: {} counters, {} slices, {:.3f} ms work, {:.3f} ms peak slice, {:.1f} ms elapsed.",
             g_counterValues.size(),g_counterScan.slices,g_counterScan.workMs,g_counterScan.peakMs,
             std::chrono::duration<double,std::milli>(Clock::now()-g_counterScan.started).count());
         g_counterScan.active=false;
@@ -223,7 +276,8 @@ namespace
         g_snapshot.generation=generation;
         g_snapshot.status=std::move(status);
         g_uiStats=UIStats{};
-        g_fullPanelActive=false;g_counterReadySince={};g_counterAttempted=false;g_counterValues.clear();g_counterScan={};
+        g_fullPanelActive=false;g_counterReadySince={};g_nextCounterScan={};g_counterValues.clear();g_counterScan={};
+        g_sessionBaseline.clear();g_sessionMilestones.clear();
     }
 
     void ClearSnapshot(std::string status)
@@ -268,7 +322,8 @@ namespace
         next.status="pre-transition gameplay snapshot";
         next.captured=now;
         if(const auto* name=player->GetDisplayFullName())next.character=name;
-        CaptureSingleCounter();
+        CaptureLifetimeCounters();
+        next.milestones=g_sessionMilestones;
         for(const auto& [key,value]:g_counterValues)next.extra[key]=value;
         bool first=false;
         {
@@ -325,13 +380,123 @@ namespace
         args.movie->asMovieRoot->CreateString(args.ret,selected.c_str());
       }
     };
+    struct SaveDetails
+    {
+        std::string character, date, time, playtime, location;
+    };
+
+    std::mutex g_saveDetailsMutex;
+    SaveDetails g_pendingSaveDetails;
+
+    // Selection events run on the UI thread while the populated menu is alive.
+    SaveDetails ReadSelectedSaveDetails(RE::Scaleform::GFx::Value menuObject)
+    {
+        SaveDetails details;
+        using Value=RE::Scaleform::GFx::Value;
+        // menuObj is the actual script instance. Root-path strings can refer to
+        // the movie container rather than MainMenu's ActionScript object.
+        const auto member=[](Value object,const char* path)
+        {
+            std::string remaining=path;
+            std::size_t start=0;
+            while(start<remaining.size())
+            {
+                const auto end=remaining.find('.',start);
+                Value next;
+                if(!object.IsObject()||!object.GetMember(remaining.substr(start,end-start),&next))return Value{};
+                object=std::move(next);
+                if(end==std::string::npos)break;
+                start=end+1;
+            }
+            return object;
+        };
+        const auto text=[&](Value object,const char* path)
+        {
+            auto value=member(object,path);
+            return value.IsString()?std::string(value.GetString()):std::string{};
+        };
+        auto action=member(menuObject,"MainPanel_mc.currentAction");
+        const bool continuing=(action.IsInt()&&action.GetInt()==1)||(action.IsUInt()&&action.GetUInt()==1)||(action.IsNumber()&&action.GetNumber()==1);
+        if(continuing)
+        {
+            auto info=member(menuObject,"LoadPanel_mc.ContinueInfo_mc");
+            details.character=text(info,"PlayerName_mc.PlayerName_tf.text");
+            details.date=text(info,"SaveDate_mc.text_tf.text");
+            details.time=text(info,"SaveTime_mc.text_tf.text");
+            details.playtime=TransitReport::FormatSavePlaytime(text(info,"PlayTime_mc.PlayTime_tf.text"));
+            details.location=text(info,"Location_mc.Location_tf.text");
+        }
+        else
+        {
+            auto entry=member(menuObject,"LoadPanel_mc.LoadList_mc.selectedEntry");
+            details.character=text(entry,"sPlayerName");
+            details.date=text(entry,"sFileDate");details.time=text(entry,"sFileTime");
+            details.location=text(entry,"sLocation");
+            details.playtime=TransitReport::FormatSavePlaytime(text(entry,"sPlayTime"));
+        }
+        REX::INFO("TR save details: mode={} character={} date={} time={} playtime={} location={}",
+            continuing?"continue":"selection",!details.character.empty(),!details.date.empty(),
+            !details.time.empty(),!details.playtime.empty(),!details.location.empty());
+        return details;
+    }
+
+    class CaptureSaveSelection final:public RE::Scaleform::GFx::FunctionHandler
+    {
+        void Call(const Params& args) override
+        {
+            if(!args.args||args.argCount<1||!args.args[0].IsObject())return;
+            using Value=RE::Scaleform::GFx::Value;
+            Value target,type;
+            if(!args.args[0].GetMember("currentTarget",&target)||!target.IsObject()||
+               !args.args[0].GetMember("type",&type)||!type.IsString())return;
+            const std::string_view event=type.GetString();
+            SaveDetails details;
+            if(event=="LoadPanel_EntryPress"||event=="LoadPanel_ConfirmLoad")
+                details=ReadSelectedSaveDetails(target);
+            else if(event=="MainPanel_EntryPress")
+            {
+                Value params,action;
+                if(args.args[0].GetMember("params",&params)&&params.IsObject()&&params.GetMember("entryAction",&action)&&
+                   ((action.IsInt()&&action.GetInt()==1)||(action.IsUInt()&&action.GetUInt()==1)||(action.IsNumber()&&action.GetNumber()==1)))
+                    details=ReadSelectedSaveDetails(target);
+            }
+            std::scoped_lock lock(g_saveDetailsMutex);
+            g_pendingSaveDetails=std::move(details);
+        }
+    };
+
+    void BindSaveSelection(RE::IMenu* menu)
+    {
+        {std::scoped_lock lock(g_saveDetailsMutex);g_pendingSaveDetails={};}
+        if(!menu->uiMovie||!menu->uiMovie->asMovieRoot||!menu->menuObj.IsObject())return;
+        auto* root=menu->uiMovie->asMovieRoot.get();
+        auto* handler=new CaptureSaveSelection();
+        using Value=RE::Scaleform::GFx::Value;
+        Value function;
+        root->CreateFunction(&function,handler);handler->Release();
+        // Only call the inherited EventDispatcher here, without resolving
+        // constructor-time panel children. Capture before the game's handler.
+        for(const char* event:{"MainPanel_EntryPress","LoadPanel_EntryPress","LoadPanel_ConfirmLoad","LoadPanel_CancelLoad","MainPanel_CancelAction"})
+        {
+            Value parameters[5];
+            root->CreateString(&parameters[0],event);
+            parameters[1]=function;parameters[2]=Value(true);
+            parameters[3]=Value(100);parameters[4]=Value(false);
+            const bool bound=menu->menuObj.Invoke("addEventListener",nullptr,parameters,5);
+            REX::INFO("TR save selection listener {}: {}",event,bound);
+        }
+    }
+
     class ReadSnapshot final:public RE::Scaleform::GFx::FunctionHandler
     {
         LSCNavigation::State m_navigation;
         std::mutex m_navigationMutex;
         bool m_loadingMenu{false};
+        SaveDetails m_saveDetails;
+        std::string m_loadingCharacter;
+        Clock::time_point m_audioEligibleSince{};
     public:
-        explicit ReadSnapshot(bool full):m_loadingMenu(full){}
+        explicit ReadSnapshot(bool full, SaveDetails details):m_loadingMenu(full),m_saveDetails(std::move(details)){}
         void Call(const Params& args) override
         {
             if(!args.ret||!args.movie||!args.movie->asMovieRoot)return;
@@ -358,6 +523,7 @@ namespace
                     {
                         const auto l=number(level),x=number(xp),n=number(nextXP);
                         const char* name=character.GetString();
+                        if(m_loadingMenu&&name)m_loadingCharacter=name;
                         if(name&&*name&&l>0&&l<100000&&x>=0&&x<1e12&&n>0&&n<1e12)
                             g_uiStats=UIStats{name,l,x,n,g_snapshot.generation,true};
                     }
@@ -378,6 +544,19 @@ namespace
             bool fullActive=false;
             { std::scoped_lock lock(g_mutex);fullActive=g_fullPanelActive; }
             auto* ui=RE::UI::GetSingleton();
+            if(m_loadingMenu&&g_loadingAudioAvailable)
+            {
+                bool musicEnabled;
+                {
+                    std::scoped_lock lock(g_settingsMutex);
+                    musicEnabled=g_displaySettings.at("loading_music")!=0;
+                }
+                const bool eligible=musicEnabled&&fullActive&&ui&&ui->IsMenuOpen("LoadingMenu");
+                const auto now=Clock::now();
+                if(!eligible)m_audioEligibleSince={};
+                else if(m_audioEligibleSince==Clock::time_point{})m_audioEligibleSince=now;
+                g_loadingAudio.SetPlaying(eligible&&now-m_audioEligibleSince>=std::chrono::milliseconds(350));
+            }
             args.ret->SetMember("hideShortPanel",Value(fullActive&&ui&&ui->IsMenuOpen("LoadingMenu")));
             args.ret->SetMember("loadingMenuOpen",Value(ui&&ui->IsMenuOpen("LoadingMenu")));
             args.ret->SetMember("level",Value(uiValid?stats.level:0));
@@ -391,6 +570,14 @@ namespace
                 root->CreateString(&value,text.c_str());
                 args.ret->SetMember(key,value);
             };
+            if(m_loadingMenu&&!copy.ready&&!m_saveDetails.character.empty()&&m_saveDetails.character==m_loadingCharacter)
+            {
+                setString("saveDate",m_saveDetails.date);setString("saveTime",m_saveDetails.time);
+                setString("savePlaytime",m_saveDetails.playtime);setString("saveLocation",m_saveDetails.location);
+            }
+            if(m_loadingMenu&&m_saveDetails.character.empty()&&copy.ready&&
+               !m_loadingCharacter.empty()&&copy.character==m_loadingCharacter)
+                setString("sessionMilestones",copy.milestones);
             for(const auto& [key,text]:copy.extra)setString(("stat_"+key).c_str(),text);
             setString("artworkBadgeFiles",TransitArtwork::manifest(0));
             setString("artworkIndicatorFiles",TransitArtwork::manifest(1));
@@ -425,13 +612,14 @@ namespace
             setString("location",copy.location);
             setString("status",copy.status);
             setString("counterStatus",!copy.ready ? "WAITING FOR GAMEPLAY" : copy.extra.contains("counter_12") ? "CAPTURED" : "WAITING / NO CAPTURE");
-            setString("version","0.9.7");
+            setString("version","1.1.4");
         }
     };
 
     void OnMenuCreated(RE::IMenu* menu)
     {
         const char* name=menu?menu->GetName():nullptr;
+        if(name&&std::string_view(name)=="MainMenu")BindSaveSelection(menu);
         if(name&&g_useGameplaySettings&&(std::string_view(name)=="PauseMenu"||std::string_view(name)=="MainMenu"))
         {BindGameplayBridge(menu);return;}
         if(!name||(std::string_view(name)!="LoadingMenu"&&std::string_view(name)!="FaderMenu"))return;
@@ -442,7 +630,15 @@ namespace
         }
         if(std::string_view(name)=="LoadingMenu")
         {std::scoped_lock lock(g_mutex);g_fullPanelActive=false;}
-        auto* handler=new ReadSnapshot(std::string_view(name)=="LoadingMenu");
+        const bool full=std::string_view(name)=="LoadingMenu";
+        SaveDetails details;
+        if(full)
+        {
+            std::scoped_lock lock(g_saveDetailsMutex);
+            details=std::move(g_pendingSaveDetails);g_pendingSaveDetails={};
+            REX::INFO("TR loading save details cached: {}",!details.character.empty());
+        }
+        auto* handler=new ReadSnapshot(full,std::move(details));
         RE::Scaleform::GFx::Value function;
         menu->uiMovie->asMovieRoot->CreateFunction(&function,handler);
         handler->Release();
@@ -485,11 +681,23 @@ namespace
         if(message->type!=SFSE::MessagingInterface::kPostPostLoad||g_started)return;
         g_started=true;
 #ifdef LSC_DIAGNOSTIC_NO_GAMEPLAY_READS
-        REX::WARN("LSC 0.9.7 DIAGNOSTIC: all gameplay and lifetime-counter sampling disabled.");
+        REX::WARN("Transit Report 1.1.4 DIAGNOSTIC: all gameplay and lifetime-counter sampling disabled.");
 #else
-        REX::INFO("LSC 0.9.7: normal lifetime capture; confirmation removed; settings backend selected by installer.");
+        REX::INFO("Transit Report 1.1.4: normal lifetime capture; confirmation removed; settings backend selected by installer.");
 #endif
         InitializeSettingsBackend();
+
+        if(auto* ui=RE::UI::GetSingleton())
+        {
+            const auto track=TRGameDirectory()/L"Data"/L"Interface"/L"TransitReport"/L"Audio"/L"Far Horizon.wav";
+            std::error_code error;
+            if(std::filesystem::is_regular_file(track,error))
+            {
+                g_loadingAudioAvailable=g_loadingAudio.Prepare(track);
+                if(g_loadingAudioAvailable)ui->RegisterSink(&g_loadingAudioMenuSink);
+                REX::INFO("TR loading music ready: {}",g_loadingAudioAvailable);
+            }
+        }
 
         if(auto* source=RE::TESLoadGameEvent::GetEventSource())source->RegisterSink(&g_loadSink);
         SFSE::GetTaskInterface()->AddPermanentTask(CaptureGameplaySnapshot);
