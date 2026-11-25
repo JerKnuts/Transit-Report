@@ -1,5 +1,7 @@
 # Transit Report
 
+Version 1.1.5 adds a full-screen fallback for save loads started from the main menu. It also logs which loading mode the game requests so intermittent black screens can be traced.
+
 In 1.1.4, **Initial save stats** toggles the save date, time, playtime and location on the first load. It defaults to On. **Loading music** plays *Far Horizon*, an original ambient loop, at low volume on full loading screens. It defaults to On. **Hide zero-value stats** also defaults to On. By default, each full load picks a random faction theme and uses its character badge and background. These settings are available in OSF Settings and Gameplay Options, and on the installer’s **Display and pages** step if you choose **Neither - configure in installer**.
 
 The 1.1.4 Contextual Tips Test rotates tips for familiar cities, settlements and stations on the initial save load. Other saved locations show a short “Returning to…” message.
@@ -12,7 +14,7 @@ Version 1.1.2 save details test: the initial loading screen can display Saved da
 
 Loading screen customization for Starfield: randomized lifetime stats, faction themes, animated badges and indicators, custom artwork and a local clock.
 
-Current build: **1.1.4**. Save details require in-game verification before release.
+Current build is **1.1.5**. The initial-load black-screen fix was verified in-game.
 
 [Download on Nexus Mods](https://www.nexusmods.com/starfield/mods/18687) | [Source on GitHub](https://github.com/JerKnuts/Transit-Report)
 

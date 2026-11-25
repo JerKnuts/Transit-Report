@@ -1,6 +1,6 @@
 # Installing Transit Report
 
-Version 1.1.4 test build. Install Transit Report 1.1.4.zip. The staging START HERE.txt identifies the current installer and source archives.
+Version 1.1.5. Install the Transit Report 1.1.5 ZIP. The staging START HERE.txt identifies the current installer archive.
 
 ## Install or update
 

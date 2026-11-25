@@ -1,3 +1,7 @@
+# Version 1.1.5 validation record
+
+The user confirmed that the 1.1.5 initial-load black-screen fix worked in-game. If the issue recurs, check the `TR initial load` entries in `LSCNativeBridge.log` and note whether music played and gameplay started.
+
 # Version 1.1.4 validation record
 
 Verify that **Initial save stats** shows and hides the save details on a full initial load without changing contextual tips. Verify that **Loading music** starts only on full loading screens when enabled and stops when the screen closes. Check both settings from OSF Settings, Gameplay Options and the installer-only setup. On a fresh install, verify that music plays, zero-value counters are hidden, and the badge and background use the same randomly selected faction. In-game verification is pending.

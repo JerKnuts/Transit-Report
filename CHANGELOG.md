@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.5 - initial loading screen fix
+
+- Added a full loading-screen fallback for main-menu save loads that start in a minimal or spinner-only view.
+- Updated the OSF schema check to recognize all 15 settings.
+
 ## 1.1.4 - save stats and loading music settings
 
 - Added an Initial save stats switch for the saved date, time, playtime and location. Defaults to On.

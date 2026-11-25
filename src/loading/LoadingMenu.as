@@ -74,6 +74,8 @@ package
       public var LSCCard_mc:MovieClip;
       private var LSCCompactTimer:Timer;
       private var LSCShortMode:Boolean = false;
+      private var LSCClientLoadMode:int = -1;
+      private var LSCInitialSaveLoad:Boolean = false;
       private var LSCPollTimer:Timer;
       private var LSCNativeState:String = "absent";
       private var LSCNativeSequence:Number = -1;
@@ -252,18 +254,20 @@ package
          this.LSCLevel = uint(param1.data.uLevel);
          this.LSCXP = Number(param1.data.fLevelXP);
          this.LSCNextXP = Number(param1.data.fNextLevelXP);
-         if(this.LSCLastName != "" && this.LSCLastName != String(param1.data.sPlayerName))
+         var playerName:String = param1.data.sPlayerName || "";
+         if(this.LSCLastName != "" && this.LSCLastName != playerName)
          {
             this.LSCCoins = -1;
             this.LSCPlace = "";
          }
-         this.LSCLastName = String(param1.data.sPlayerName);
-         this.LSCShortMode = Boolean(param1.data.bSpinnerOnly) || Boolean(param1.data.bMinimalMode);
-         this.InMinimalMode = param1.data.bMinimalMode;
+         this.LSCLastName = playerName;
+         this.LSCClientLoadMode = param1.data.bSpinnerOnly ? 1 : param1.data.bMinimalMode ? 2 : 0;
+         this.LSCShortMode = this.LSCClientLoadMode != 0 && !this.LSCInitialSaveLoad;
+         this.InMinimalMode = this.LSCShortMode && Boolean(param1.data.bMinimalMode);
          this.ScreenWidth = param1.data.uScreenWidth;
          this.ScreenHeight = param1.data.uScreenHeight;
          this.PhotoModeScreen = param1.data.bPhotoModeScreen;
-         if(param1.data.bSpinnerOnly)
+         if(this.LSCShortMode && param1.data.bSpinnerOnly)
          {
             this.SpinnerOnly();
          }
@@ -274,13 +278,13 @@ package
          else
          {
             this.LeftText_mc.visible = true;
-            GlobalFunc.SetText(this.LeftText_mc.PlayerLevel_mc.text_tf,"$$Level " + param1.data.uLevel.toString());
+            GlobalFunc.SetText(this.LeftText_mc.PlayerLevel_mc.text_tf,"$$Level " + this.LSCLevel.toString());
             if(!this.InMinimalMode && param1.data.uLevel > 0)
             {
                this.LeftText_mc.Player_Level_Icon.visible = true;
                this.LeftText_mc.PlayerName_mc.visible = true;
                this.LeftText_mc.Player_Level_Icon.Initialize(param1.data.uLevel,false,LEVEL_ICON_SCALE);
-               GlobalFunc.SetText(this.LeftText_mc.PlayerName_mc.text_tf,param1.data.sPlayerName);
+               GlobalFunc.SetText(this.LeftText_mc.PlayerName_mc.text_tf,playerName);
                this.LeftText_mc.PlayerName_mc.x = this.StartPlayerNameLevel_x + (this.LeftText_mc.Player_Level_Icon.width - LEVEL_ICON_START_WIDTH);
                this.LeftText_mc.PlayerLevel_mc.x = this.StartPlayerNameLevel_x + (this.LeftText_mc.Player_Level_Icon.width - LEVEL_ICON_START_WIDTH);
             }
@@ -292,11 +296,12 @@ package
             this.LSCGameTip = param1.data.sLoadText || "";
             this.SetLoadingText(this.LSCGameTip);
             this.LSCDisplayedTip = this.LSCGameTip;
-            if(this.LoadingTexture != param1.data.sTextureName)
+            var textureName:String = param1.data.sTextureName || "";
+            if(this.LoadingTexture != textureName)
             {
-               if(param1.data.sTextureName != "")
+               if(textureName != "")
                {
-                  this.Texture_mc.LoadImage(param1.data.sTextureName);
+                  this.Texture_mc.LoadImage(textureName);
                }
                else
                {
@@ -304,7 +309,7 @@ package
                }
                this.Texture_mc.visible = true;
             }
-            this.LoadingTexture = param1.data.sTextureName;
+            this.LoadingTexture = textureName;
          }
          this.ApplyLSCInformation();
          this.PollLSCNative();
@@ -339,7 +344,7 @@ package
             var snapshot:Object;
             if(this.LSCNeedsStatsPost)
             {
-               snapshot = this.LSCNativeGetSnapshot({character:this.LSCLastName, level:this.LSCLevel, xp:this.LSCXP, nextXP:this.LSCNextXP, panelActive:!this.InMinimalMode && !this.LSCShortMode && this.LeftText_mc.visible});
+               snapshot = this.LSCNativeGetSnapshot({character:this.LSCLastName, level:this.LSCLevel, xp:this.LSCXP, nextXP:this.LSCNextXP, panelActive:!this.InMinimalMode && !this.LSCShortMode && this.LeftText_mc.visible, clientLoadMode:this.LSCClientLoadMode});
                this.LSCNeedsStatsPost = false;
             }
             else
@@ -347,6 +352,7 @@ package
                snapshot = this.LSCNativeGetSnapshot();
             }
             this.LSCReadOptions(snapshot);
+            this.LSCEnsureInitialSavePanel(snapshot);
             this.LSCUpdateTip(snapshot);
             this.LSCDrawExtras(snapshot);
             if(snapshot == null || !snapshot.ready)
@@ -383,6 +389,20 @@ package
             this.LSCNativeState = "error";
             trace("LSC native snapshot error: " + error.toString());
          }
+      }
+
+      private function LSCEnsureInitialSavePanel(snapshot:Object) : void
+      {
+         if(snapshot == null || !snapshot.initialSaveLoad || !snapshot.loadingMenuOpen)return;
+         this.LSCInitialSaveLoad = true;
+         if(!this.InMinimalMode && !this.LSCShortMode && this.LeftText_mc.visible)return;
+
+         // An initial save can arrive without a full-screen data event.
+         this.InMinimalMode = false;
+         this.LSCShortMode = false;
+         this.LeftText_mc.visible = true;
+         this.BlackRect_mc.visible = true;
+         this.LSCNeedsStatsPost = true;
       }
 
       private function LSCUpdateTip(snapshot:Object) : void
@@ -877,7 +897,8 @@ package
          }
          this.LSCCosmicMode = -1;
          if(this.LSCTestMotion != null)this.LSCTestMotion.visible = true;
-         var show:Boolean = backgroundMode == 1 && !this.InMinimalMode && !this.LSCShortMode && this.LeftText_mc.visible;
+         var needsFallback:Boolean = this.LSCInitialSaveLoad && this.LSCClientLoadMode != 0 && this.Texture_mc.imageInstance == null;
+         var show:Boolean = (backgroundMode == 1 || needsFallback) && !this.InMinimalMode && !this.LSCShortMode && this.LeftText_mc.visible;
          if(this.LSCBackground_mc == null)
          {
             this.LSCBackground_mc = new Sprite();

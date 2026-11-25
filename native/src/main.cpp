@@ -383,6 +383,7 @@ namespace
     struct SaveDetails
     {
         std::string character, date, time, playtime, location;
+        bool selectedFromMainMenu{false};
     };
 
     std::mutex g_saveDetailsMutex;
@@ -392,6 +393,7 @@ namespace
     SaveDetails ReadSelectedSaveDetails(RE::Scaleform::GFx::Value menuObject)
     {
         SaveDetails details;
+        details.selectedFromMainMenu=true;
         using Value=RE::Scaleform::GFx::Value;
         // menuObj is the actual script instance. Root-path strings can refer to
         // the movie container rather than MainMenu's ActionScript object.
@@ -494,6 +496,7 @@ namespace
         bool m_loadingMenu{false};
         SaveDetails m_saveDetails;
         std::string m_loadingCharacter;
+        int m_lastClientLoadMode=-2;
         Clock::time_point m_audioEligibleSince{};
     public:
         explicit ReadSnapshot(bool full, SaveDetails details):m_loadingMenu(full),m_saveDetails(std::move(details)){}
@@ -508,7 +511,7 @@ namespace
                 {
                     using Value=RE::Scaleform::GFx::Value;
                     Value active;
-                    if(args.args[0].GetMember("panelActive",&active)&&active.IsBoolean())g_fullPanelActive=active.GetBoolean();
+                    if(m_loadingMenu&&args.args[0].GetMember("panelActive",&active)&&active.IsBoolean())g_fullPanelActive=active.GetBoolean();
                     Value character,level,xp,nextXP;
                     const auto number=[](const Value& value)->double
                     {
@@ -544,6 +547,21 @@ namespace
             bool fullActive=false;
             { std::scoped_lock lock(g_mutex);fullActive=g_fullPanelActive; }
             auto* ui=RE::UI::GetSingleton();
+            const bool initialSaveLoad=m_loadingMenu&&m_saveDetails.selectedFromMainMenu;
+            args.ret->SetMember("initialSaveLoad",Value(initialSaveLoad));
+            if(initialSaveLoad&&args.argCount>0&&args.args&&args.args[0].IsObject())
+            {
+                Value mode;
+                if(args.args[0].GetMember("clientLoadMode",&mode)&&(mode.IsInt()||mode.IsUInt()||mode.IsNumber()))
+                {
+                    const int current=mode.IsInt()?mode.GetInt():mode.IsUInt()?static_cast<int>(mode.GetUInt()):static_cast<int>(mode.GetNumber());
+                    if(current!=m_lastClientLoadMode)
+                    {
+                        m_lastClientLoadMode=current;
+                        REX::INFO("TR initial load: client mode={} (-1 no data, 0 full, 1 spinner-only, 2 minimal), panel active={}",current,fullActive);
+                    }
+                }
+            }
             if(m_loadingMenu&&g_loadingAudioAvailable)
             {
                 bool musicEnabled;
@@ -612,7 +630,7 @@ namespace
             setString("location",copy.location);
             setString("status",copy.status);
             setString("counterStatus",!copy.ready ? "WAITING FOR GAMEPLAY" : copy.extra.contains("counter_12") ? "CAPTURED" : "WAITING / NO CAPTURE");
-            setString("version","1.1.4");
+            setString("version","1.1.5");
         }
     };
 
@@ -681,9 +699,9 @@ namespace
         if(message->type!=SFSE::MessagingInterface::kPostPostLoad||g_started)return;
         g_started=true;
 #ifdef LSC_DIAGNOSTIC_NO_GAMEPLAY_READS
-        REX::WARN("Transit Report 1.1.4 DIAGNOSTIC: all gameplay and lifetime-counter sampling disabled.");
+        REX::WARN("Transit Report 1.1.5 DIAGNOSTIC: all gameplay and lifetime-counter sampling disabled.");
 #else
-        REX::INFO("Transit Report 1.1.4: normal lifetime capture; confirmation removed; settings backend selected by installer.");
+        REX::INFO("Transit Report 1.1.5: normal lifetime capture; confirmation removed; settings backend selected by installer.");
 #endif
         InitializeSettingsBackend();
 

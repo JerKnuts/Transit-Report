@@ -96,7 +96,7 @@ void RefreshOSF() noexcept
     next["short"]=0;next["density"]=0;
         std::scoped_lock lock(g_settingsMutex);
         g_displaySettings=std::move(next);
-        g_settingsReady=g_osf.IsReady()&&readCount==13;
+        g_settingsReady=g_osf.IsReady()&&readCount==15;
         if(!g_settingsReady)REX::WARN("LSC OSF schema incomplete: {} settings read.",readCount);
     }
     catch(...){REX::WARN("LSC settings refresh failed; previous settings retained.");}
