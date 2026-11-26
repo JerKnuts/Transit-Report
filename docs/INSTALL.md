@@ -1,6 +1,6 @@
 # Installing Transit Report
 
-Version 1.1.5. Install the Transit Report 1.1.5 ZIP. The staging START HERE.txt identifies the current installer archive.
+Version 1.1.6. Install the Transit Report 1.1.6 ZIP. The staging START HERE.txt identifies the current installer archive.
 
 ## Install or update
 

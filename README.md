@@ -1,6 +1,6 @@
 # Transit Report
 
-Version 1.1.5 registers save-selection listeners after the main menu opens. An in-game test confirmed that manual save selection captured the save details and reached gameplay.
+Version 1.1.6 registers save-selection listeners after the main menu opens. An in-game test confirmed that manual save selection captured the save details and reached gameplay.
 
 Version 1.1.5 adds a full-screen fallback for save loads started from the main menu. It also logs which loading mode the game requests so intermittent black screens can be traced.
 
@@ -16,7 +16,7 @@ Version 1.1.2 save details test: the initial loading screen can display Saved da
 
 Loading screen customization for Starfield: randomized lifetime stats, faction themes, animated badges and indicators, custom artwork and a local clock.
 
-Current build is **1.1.5**. The initial-load black-screen fix was verified in-game.
+Current build is **1.1.6**.
 
 [Download on Nexus Mods](https://www.nexusmods.com/starfield/mods/18687) | [Source on GitHub](https://github.com/JerKnuts/Transit-Report)
 

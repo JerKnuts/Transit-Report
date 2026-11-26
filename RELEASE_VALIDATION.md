@@ -1,3 +1,7 @@
+# Version 1.1.6 validation record
+
+Version 1.1.6 contains the fix tested in-game in the 1.1.5 Save Menu Stability Test. The fix restores save details, location tips and the initial-load fallback by registering the listeners after the main menu opens. The user reported that the build appeared to work. The OSF Settings test log confirms registration of all five listeners, capture of all five save fields from a manually selected save, a transition from minimal to full loading mode, and arrival in gameplay. The log does not establish coverage of Continue, cancel-and-reselect, or the other settings backends.
+
 # Version 1.1.5 validation record
 
 The user confirmed that the 1.1.5 initial-load black-screen fix worked in-game. If the issue recurs, check the `TR initial load` entries in `LSCNativeBridge.log` and note whether music played and gameplay started.
@@ -5,8 +9,6 @@ The user confirmed that the 1.1.5 initial-load black-screen fix worked in-game. 
 Three November 24 crash logs place the 1.1.4 bridge on the stack during main-menu save listener registration. Two other logs show Scaleform crashes without a Transit Report frame. The same registration code is present in 1.1.5. A separate crash isolation build uses `diagnostic_no_save_selection` to skip that code path. Initial save details, location tips and the initial-save fallback depend on the listeners and are unavailable in that build.
 
 On November 25, the user reported no crashes with the isolation build. The native log confirms that OSF Settings and the isolation build were active, the save reached gameplay, and lifetime stats were collected. This supports main-menu listener registration as the suspected cause of the three crashes that included Transit Report. The other two crashes remain unattributed.
-
-The Save Menu Stability Test restores save details, location tips and the initial-load fallback by registering the listeners after the main menu opens. The user reported that the build appeared to work. The OSF Settings test log confirms registration of all five listeners, capture of all five save fields from a manually selected save, a transition from minimal to full loading mode, and arrival in gameplay. The log does not establish coverage of Continue, cancel-and-reselect, or the other settings backends.
 
 # Version 1.1.4 validation record
 

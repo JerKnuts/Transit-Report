@@ -1,5 +1,5 @@
 set_project("LSCNativeBridge")
-set_version("1.1.5")
+set_version("1.1.6")
 set_arch("x64")
 set_languages("c++23")
 add_rules("mode.debug", "mode.release", "mode.releasedbg")

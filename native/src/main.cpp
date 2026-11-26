@@ -655,7 +655,7 @@ namespace
             setString("location",copy.location);
             setString("status",copy.status);
             setString("counterStatus",!copy.ready ? "WAITING FOR GAMEPLAY" : copy.extra.contains("counter_12") ? "CAPTURED" : "WAITING / NO CAPTURE");
-            setString("version","1.1.5");
+            setString("version","1.1.6");
         }
     };
 
@@ -731,9 +731,9 @@ namespace
         if(message->type!=SFSE::MessagingInterface::kPostPostLoad||g_started)return;
         g_started=true;
 #ifdef LSC_DIAGNOSTIC_NO_GAMEPLAY_READS
-        REX::WARN("Transit Report 1.1.5 DIAGNOSTIC: all gameplay and lifetime-counter sampling disabled.");
+        REX::WARN("Transit Report 1.1.6 DIAGNOSTIC: all gameplay and lifetime-counter sampling disabled.");
 #else
-        REX::INFO("Transit Report 1.1.5: normal lifetime capture; confirmation removed; settings backend selected by installer.");
+        REX::INFO("Transit Report 1.1.6: normal lifetime capture; confirmation removed; settings backend selected by installer.");
 #endif
         InitializeSettingsBackend();
 #ifdef LSC_DIAGNOSTIC_NO_SAVE_SELECTION
