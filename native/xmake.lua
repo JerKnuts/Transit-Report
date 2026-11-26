@@ -11,6 +11,10 @@ option("diagnostic_no_gameplay_reads")
     set_default(false)
     set_showmenu(true)
 option_end()
+option("diagnostic_no_save_selection")
+    set_default(false)
+    set_showmenu(true)
+option_end()
 includes(path.join(os.getenv("LSC_COMMONLIBSF") or "deps/commonlibsf", "xmake.lua"))
 target("LSCNativeBridge")
     add_rules("commonlibsf.plugin", {
@@ -21,6 +25,9 @@ target("LSCNativeBridge")
     add_files("src/*.cpp")
     if has_config("diagnostic_no_gameplay_reads") then
         add_defines("LSC_DIAGNOSTIC_NO_GAMEPLAY_READS")
+    end
+    if has_config("diagnostic_no_save_selection") then
+        add_defines("LSC_DIAGNOSTIC_NO_SAVE_SELECTION")
     end
     add_syslinks("user32","shell32","ole32","windowscodecs","xaudio2")
     set_installdir("staged")

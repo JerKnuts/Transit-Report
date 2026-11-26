@@ -38,3 +38,14 @@ ensurePanel.call(noDataPanel, mainMenuLoad);
 assert.equal(noDataPanel.LeftText_mc.visible, true, 'A main-menu save load can open before client data arrives');
 
 console.log('Passed: initial save fallback only opens on a main-menu save load and reports its new state once.');
+
+const bridge = fs.readFileSync('native/src/main.cpp', 'utf8');
+const creation = bridge.slice(bridge.indexOf('void OnMenuCreated('), bridge.indexOf('class LoadSink'));
+const opening = bridge.slice(bridge.indexOf('class MainMenuSaveListenerSink'), bridge.indexOf('class ReadSnapshot'));
+assert(!creation.includes('BindSaveSelection('), 'Movie construction must never invoke main-menu listener registration');
+assert.match(opening, /event\.opening\s*&&\s*event\.menuName\s*==\s*"MainMenu"/);
+assert.match(opening, /ui->GetMenu\(event\.menuName\)/);
+assert.match(opening, /!g_saveListenersBound\.exchange\(true\)/);
+assert.match(opening, /BindSaveSelection\(\*menu\)/);
+assert.match(bridge, /ui->RegisterSink\(&g_mainMenuSaveListenerSink\)/);
+console.log('Passed: registration uses the live main menu on opening and runs once per movie.');

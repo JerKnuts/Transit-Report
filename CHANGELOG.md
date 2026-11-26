@@ -2,6 +2,8 @@
 
 ## 1.1.5 - initial loading screen fix
 
+- Moved save-selection listener registration to the main-menu open event to address intermittent crashes while preserving initial save details, location tips, and the initial-load fallback.
+
 - Added a full loading-screen fallback for main-menu save loads that start in a minimal or spinner-only view.
 - Updated the OSF schema check to recognize all 15 settings.
 

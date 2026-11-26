@@ -2,6 +2,7 @@
 // Native companion source. Python authoring tools retain their separate license.
 #include <SFSE/SFSE.h>
 #include <RE/Starfield.h>
+#include <atomic>
 #include <chrono>
 #include <mutex>
 #include <string>
@@ -467,27 +468,51 @@ namespace
         }
     };
 
-    void BindSaveSelection(RE::IMenu* menu)
+#ifndef LSC_DIAGNOSTIC_NO_SAVE_SELECTION
+    std::atomic_bool g_saveListenersBound{false};
+
+    void BindSaveSelection(RE::IMenu& menu)
     {
-        {std::scoped_lock lock(g_saveDetailsMutex);g_pendingSaveDetails={};}
-        if(!menu->uiMovie||!menu->uiMovie->asMovieRoot||!menu->menuObj.IsObject())return;
-        auto* root=menu->uiMovie->asMovieRoot.get();
+        auto* root=menu.uiMovie->asMovieRoot.get();
         auto* handler=new CaptureSaveSelection();
         using Value=RE::Scaleform::GFx::Value;
         Value function;
         root->CreateFunction(&function,handler);handler->Release();
-        // Only call the inherited EventDispatcher here, without resolving
-        // constructor-time panel children. Capture before the game's handler.
+        // Capture before the game's handler can close the main menu.
+        unsigned registered=0;
         for(const char* event:{"MainPanel_EntryPress","LoadPanel_EntryPress","LoadPanel_ConfirmLoad","LoadPanel_CancelLoad","MainPanel_CancelAction"})
         {
             Value parameters[5];
             root->CreateString(&parameters[0],event);
             parameters[1]=function;parameters[2]=Value(true);
             parameters[3]=Value(100);parameters[4]=Value(false);
-            const bool bound=menu->menuObj.Invoke("addEventListener",nullptr,parameters,5);
-            REX::INFO("TR save selection listener {}: {}",event,bound);
+            Value result;
+            if(menu.menuObj.Invoke("addEventListener",&result,parameters,5))++registered;
         }
+        REX::INFO("TR main menu opened: registered {}/5 save selection listeners.",registered);
     }
+
+    class MainMenuSaveListenerSink final : public RE::BSTEventSink<RE::MenuOpenCloseEvent>
+    {
+        RE::BSEventNotifyControl ProcessEvent(
+            const RE::MenuOpenCloseEvent& event,
+            RE::BSTEventSource<RE::MenuOpenCloseEvent>*) override
+        {
+            if(event.opening&&event.menuName=="MainMenu")
+            {
+                auto* ui=RE::UI::GetSingleton();
+                auto menu=ui?ui->GetMenu(event.menuName):RE::Scaleform::Ptr<RE::IMenu>{};
+                // Use the live menu in its UI lifecycle callback. Do not queue
+                // Movie or GFx references onto an SFSE command-processing task.
+                if(menu&&menu->uiMovie&&menu->uiMovie->asMovieRoot&&menu->menuObj.IsObject()&&
+                   !g_saveListenersBound.exchange(true))
+                    BindSaveSelection(*menu);
+            }
+            return RE::BSEventNotifyControl::kContinue;
+        }
+    };
+    MainMenuSaveListenerSink g_mainMenuSaveListenerSink;
+#endif
 
     class ReadSnapshot final:public RE::Scaleform::GFx::FunctionHandler
     {
@@ -637,7 +662,14 @@ namespace
     void OnMenuCreated(RE::IMenu* menu)
     {
         const char* name=menu?menu->GetName():nullptr;
-        if(name&&std::string_view(name)=="MainMenu")BindSaveSelection(menu);
+#ifndef LSC_DIAGNOSTIC_NO_SAVE_SELECTION
+        if(name&&std::string_view(name)=="MainMenu")
+        {
+            std::scoped_lock lock(g_saveDetailsMutex);
+            g_pendingSaveDetails={};
+            g_saveListenersBound=false;
+        }
+#endif
         if(name&&g_useGameplaySettings&&(std::string_view(name)=="PauseMenu"||std::string_view(name)=="MainMenu"))
         {BindGameplayBridge(menu);return;}
         if(!name||(std::string_view(name)!="LoadingMenu"&&std::string_view(name)!="FaderMenu"))return;
@@ -704,9 +736,15 @@ namespace
         REX::INFO("Transit Report 1.1.5: normal lifetime capture; confirmation removed; settings backend selected by installer.");
 #endif
         InitializeSettingsBackend();
+#ifdef LSC_DIAGNOSTIC_NO_SAVE_SELECTION
+        REX::WARN("TR diagnostic: main-menu save selection listeners disabled.");
+#endif
 
         if(auto* ui=RE::UI::GetSingleton())
         {
+#ifndef LSC_DIAGNOSTIC_NO_SAVE_SELECTION
+            ui->RegisterSink(&g_mainMenuSaveListenerSink);
+#endif
             const auto track=TRGameDirectory()/L"Data"/L"Interface"/L"TransitReport"/L"Audio"/L"Far Horizon.wav";
             std::error_code error;
             if(std::filesystem::is_regular_file(track,error))

@@ -1,5 +1,7 @@
 # Transit Report
 
+Version 1.1.5 registers save-selection listeners after the main menu opens. An in-game test confirmed that manual save selection captured the save details and reached gameplay.
+
 Version 1.1.5 adds a full-screen fallback for save loads started from the main menu. It also logs which loading mode the game requests so intermittent black screens can be traced.
 
 In 1.1.4, **Initial save stats** toggles the save date, time, playtime and location on the first load. It defaults to On. **Loading music** plays *Far Horizon*, an original ambient loop, at low volume on full loading screens. It defaults to On. **Hide zero-value stats** also defaults to On. By default, each full load picks a random faction theme and uses its character badge and background. These settings are available in OSF Settings and Gameplay Options, and on the installer’s **Display and pages** step if you choose **Neither - configure in installer**.

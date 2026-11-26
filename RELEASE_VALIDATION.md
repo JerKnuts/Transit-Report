@@ -2,6 +2,12 @@
 
 The user confirmed that the 1.1.5 initial-load black-screen fix worked in-game. If the issue recurs, check the `TR initial load` entries in `LSCNativeBridge.log` and note whether music played and gameplay started.
 
+Three November 24 crash logs place the 1.1.4 bridge on the stack during main-menu save listener registration. Two other logs show Scaleform crashes without a Transit Report frame. The same registration code is present in 1.1.5. A separate crash isolation build uses `diagnostic_no_save_selection` to skip that code path. Initial save details, location tips and the initial-save fallback depend on the listeners and are unavailable in that build.
+
+On November 25, the user reported no crashes with the isolation build. The native log confirms that OSF Settings and the isolation build were active, the save reached gameplay, and lifetime stats were collected. This supports main-menu listener registration as the suspected cause of the three crashes that included Transit Report. The other two crashes remain unattributed.
+
+The Save Menu Stability Test restores save details, location tips and the initial-load fallback by registering the listeners after the main menu opens. The user reported that the build appeared to work. The OSF Settings test log confirms registration of all five listeners, capture of all five save fields from a manually selected save, a transition from minimal to full loading mode, and arrival in gameplay. The log does not establish coverage of Continue, cancel-and-reselect, or the other settings backends.
+
 # Version 1.1.4 validation record
 
 Verify that **Initial save stats** shows and hides the save details on a full initial load without changing contextual tips. Verify that **Loading music** starts only on full loading screens when enabled and stops when the screen closes. Check both settings from OSF Settings, Gameplay Options and the installer-only setup. On a fresh install, verify that music plays, zero-value counters are hidden, and the badge and background use the same randomly selected faction. In-game verification is pending.
